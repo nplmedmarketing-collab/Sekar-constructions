@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.classList.remove('active');
             if (currentLink === 'services' && href === '#services') {
               link.classList.add('active');
-            } else if (currentLink === 'home' && (href === '#home' || href === '#')) {
+            } else if (currentLink === 'home' && href === '#home') {
               link.classList.add('active');
             }
           }
