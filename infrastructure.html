@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infrastructure & Assets | Sekar Constructions</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles Link (Fallback) -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Embedded Modern Infrastructure Page Styles -->
+  <style>
+    /* Hero Banner Modern Styling */
+    .infra-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+      padding: 180px 0 100px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    /* Floating Search Section Dashboard */
+    .infra-search-section {
+      background-color: var(--white);
+      padding: 35px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+      margin-top: -50px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .infra-search-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .infra-search-grid {
+        grid-template-columns: 3fr 2fr;
+        gap: 25px;
+      }
+    }
+
+    /* Custom Search Box Wrapper */
+    .infra-search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .infra-search-input {
+      width: 100%;
+      height: 54px;
+      padding: 12px 16px 12px 50px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary);
+      background-color: #f8fafc;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .infra-search-input:focus {
+      background-color: var(--white);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+      outline: none;
+    }
+
+    .infra-search-icon {
+      position: absolute;
+      left: 18px;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      pointer-events: none;
+    }
+
+    /* Custom Select Box Wrapper */
+    .infra-filter-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .infra-filter-select {
+      width: 100%;
+      height: 54px;
+      padding: 12px 45px 12px 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary);
+      background-color: #f8fafc;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .infra-filter-select:focus {
+      background-color: var(--white);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+      outline: none;
+    }
+
+    .infra-filter-chevron {
+      position: absolute;
+      right: 18px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    /* Table Container & Layout spacing */
+    .infra-table-wrapper {
+      background-color: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+      margin-bottom: 80px;
+    }
+
+    .infra-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+    }
+
+    .infra-table th {
+      background-color: #f8fafc;
+      color: var(--primary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      padding: 20px 24px;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .infra-table td {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 1rem;
+      color: var(--text-color);
+      vertical-align: middle;
+    }
+
+    .infra-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .infra-table tbody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    .infra-table tbody tr:hover {
+      background-color: rgba(220, 38, 38, 0.01);
+    }
+
+    .infra-table tr.hidden {
+      display: none !important;
+    }
+
+    /* Category Badges Styling */
+    .infra-cat-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-machinery {
+      background-color: rgba(220, 38, 38, 0.08);
+      color: var(--secondary);
+    }
+
+    .badge-scaffolding {
+      background-color: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+    }
+
+    .badge-quarry {
+      background-color: rgba(5, 150, 105, 0.08);
+      color: #059669;
+    }
+
+    .badge-instruments {
+      background-color: rgba(217, 119, 6, 0.08);
+      color: #d97706;
+    }
+
+    .badge-vehicles {
+      background-color: rgba(124, 58, 237, 0.08);
+      color: #7c3aed;
+    }
+
+    .badge-heavy {
+      background-color: rgba(75, 85, 99, 0.08);
+      color: #4b5563;
+    }
+
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link active">Infrastructure</a></li>
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link">Careers</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Infrastructure Page Header Banner -->
+  <section class="infra-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">Our Infrastructure & Assets</h1>
+    </div>
+  </section>
+
+  <!-- Infrastructure Page Content -->
+  <section class="section-padding bg-light" style="padding-top: 80px;">
+    <div class="container">
+      
+      <!-- Intro Section -->
+      <div class="section-title-wrapper" style="margin-bottom: 50px;">
+        <span class="section-subtitle">Owned Assets</span>
+        <h2 class="section-title">Complete Inventory</h2>
+        <p style="margin-top: 20px; max-width: 850px; color: var(--text-color); font-size: 1.05rem; line-height: 1.8;">
+          To ensure strict quality standards, zero supply delay, and maximum reliability, Sekar Constructions operates with its own supply chain assets. We own and operate 3 blue metal quarries, 2 crushing plants, and an expansive inventory of heavy machinery, concrete batching plants, and logistics vehicles.
+        </p>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="infra-search-section">
+        <div class="infra-search-grid">
+          <!-- Search input with custom wrapper -->
+          <div class="infra-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass infra-search-icon"></i>
+            <input type="text" id="infraSearch" class="infra-search-input" placeholder="Search machinery, equipment, scaffolding vertical/ledger...">
+          </div>
+          <!-- Dropdown filter with custom chevron styling -->
+          <div class="infra-filter-wrapper">
+            <select id="infraFilter" class="infra-filter-select">
+              <option value="all">All Categories</option>
+              <option value="machinery">Concrete & Batching Machinery</option>
+              <option value="scaffolding">Scaffolding & Formwork</option>
+              <option value="heavy">Heavy Lifting & Excavation</option>
+              <option value="vehicles">Vehicles & Transport</option>
+              <option value="instruments">Site Instruments & Testing</option>
+              <option value="quarry">Quarries & Crushing Plants</option>
+            </select>
+            <i class="fa-solid fa-chevron-down infra-filter-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Infrastructure Table -->
+      <div class="infra-table-wrapper">
+        <table class="infra-table">
+          <thead>
+            <tr>
+              <th style="width: 100px; text-align: center;">Sl. No.</th>
+              <th>Description</th>
+              <th style="width: 120px; text-align: center;">Qty</th>
+              <th style="width: 120px; text-align: center;">Unit</th>
+              <th style="width: 260px; text-align: center;">Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">1</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Concrete Boom Pump – Model No. S36X</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 2 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">2</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Batching Plant - Model No. M1T & M1C</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 3 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">3</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Batching Plant – KYB Conmat 450 & SS CP45</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 4 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">4</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Batching Plant - Model No. MP Z30 & CP30</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 5 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">5</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">RMC Transit Mixer</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">14</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 6 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">6</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Concrete Pump 1800</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">4</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 7 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">7</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Tower Crane [Potain Make]</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 8 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">8</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Mobile Tower Crane [ACE Make]</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 9 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">9</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Excavator - Hitachi EX 210</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 10 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">10</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">JCB</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">6</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 11 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">11</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Vibromax - Roller</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 12 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">12</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Walking Roller 1MT</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 13 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">13</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">BOBCAT</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">4</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 14 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">14</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Tipper</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 15 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">15</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Tractor with Front Loader & Compressor</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 16 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">16</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Tractor</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 17 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">17</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">TATA Diesel Tanker</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 18 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">18</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Mahindra Van</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">5</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 19 -->
+            <tr data-category="vehicles">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">19</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Eicher Van</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-vehicles">Vehicles & Transport</span></td>
+            </tr>
+            <!-- Row 20 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">20</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Building Hoist</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">5</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Sets</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 21 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">21</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Vertical 3m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">20,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 22 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">22</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Vertical 2.5m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">5,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 23 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">23</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Vertical 2m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">10,500</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 24 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">24</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Vertical 1.5m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 25 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">25</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Ledger 1.2m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">120,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 26 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">26</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Ledger 1.15m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">30,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 27 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">27</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Ledger 0.9m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">30,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 28 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">28</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Cuplock Pipes Ledger 0.6m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">10,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 29 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">29</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">System Form Work</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">4,120</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Sqm</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 30 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">30</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Jolly (Platform)</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">6,500</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 31 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">31</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Scaffolding Pipes</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">30,000</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 32 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">32</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Props 2+2m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1,200</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Sets</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 33 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">33</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Props 2+3m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1,500</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Sets</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 34 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">34</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Agrow Spans 2.4m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">800</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Sets</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 35 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">35</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Agrow Spans 3.0m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">150</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Sets</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 36 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">36</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Centering Sheets 3' x 2', 4' x 2'</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1,500</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 37 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">37</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Velor 1.50m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">500</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 38 -->
+            <tr data-category="scaffolding">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">38</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">MS Velor 1.20m</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">800</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-scaffolding">Scaffolding & Formwork</span></td>
+            </tr>
+            <!-- Row 39 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">39</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Bar Shearing Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">14</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 40 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">40</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Bar Bending Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">12</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 41 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">41</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Bar Rings Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 42 -->
+            <tr data-category="instruments">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">42</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Concrete Vibrators</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">28</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-instruments">Site Instruments</span></td>
+            </tr>
+            <!-- Row 43 -->
+            <tr data-category="instruments">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">43</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Watering & De-Watering Pumps 5HP, 3HP</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">21</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-instruments">Site Instruments</span></td>
+            </tr>
+            <!-- Row 44 -->
+            <tr data-category="instruments">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">44</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Total Station</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">7</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-instruments">Site Instruments</span></td>
+            </tr>
+            <!-- Row 45 -->
+            <tr data-category="instruments">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">45</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Levelling Instrument</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">18</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-instruments">Site Instruments</span></td>
+            </tr>
+            <!-- Row 46 -->
+            <tr data-category="instruments">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">46</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Cube Testing Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">6</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-instruments">Site Instruments</span></td>
+            </tr>
+            <!-- Row 47 -->
+            <tr data-category="heavy">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">47</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Soil Compacting Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">7</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-heavy">Lifting & Excavation</span></td>
+            </tr>
+            <!-- Row 48 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">48</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Wood Planning Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 49 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">49</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Wood Circular Saw Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">25</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 50 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">50</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Welding Machine 3PH & 1PH</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">15</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 51 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">51</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Hydraulic Block Making Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 52 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">52</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Fly Ash brick manufacturing Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 53 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">53</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Paver/Cover block Vibration Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 54 -->
+            <tr data-category="quarry">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">54</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Stone Crushing Machine</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-quarry">Quarry & Crushing</span></td>
+            </tr>
+            <!-- Row 55 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">55</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Mixer Machine - Diesel</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 56 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">56</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Mixer Machine - Electrical</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 57 -->
+            <tr data-category="machinery">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">57</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Baby Mixer Machine - Electrical</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-machinery">Concrete Machinery</span></td>
+            </tr>
+            <!-- Row 58 -->
+            <tr data-category="quarry">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">58</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Crusher Plant</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">2</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-quarry">Quarry & Crushing</span></td>
+            </tr>
+            <!-- Row 59 -->
+            <tr data-category="quarry">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">59</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Blue Metal Quarry</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">3</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-quarry">Quarry & Crushing</span></td>
+            </tr>
+            <!-- Row 60 -->
+            <tr data-category="quarry">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">60</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Weight Bridge 100MT</td>
+              <td style="text-align: center; font-weight: 700; color: var(--primary);">1</td>
+              <td style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nos</td>
+              <td style="text-align: center;"><span class="infra-cat-badge badge-quarry">Quarry & Crushing</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- Custom JS -->
+  <script src="script.js?v=19"></script>
+
+  <!-- Search & Filter Logic JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('infraSearch');
+      const filterSelect = document.getElementById('infraFilter');
+      const tableRows = document.querySelectorAll('.infra-table tbody tr');
+
+      function filterTable() {
+        const query = searchInput.value.toLowerCase().trim();
+        const category = filterSelect.value;
+
+        tableRows.forEach(row => {
+          const description = row.querySelector('.col-desc').textContent.toLowerCase();
+          const rowCategory = row.getAttribute('data-category');
+
+          const matchesSearch = description.includes(query);
+          const matchesCategory = category === 'all' || rowCategory === category;
+
+          if (matchesSearch && matchesCategory) {
+            row.classList.remove('hidden');
+          } else {
+            row.classList.add('hidden');
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterTable);
+      filterSelect.addEventListener('change', filterTable);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Gallery | Sekar Constructions</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles Link -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Gallery Page Custom Styles -->
+  <style>
+    /* Hero Banner Modern Styling */
+    .gallery-hero {
+      background: linear-gradient(135deg, #1e293b 0%, var(--primary) 100%);
+      padding: 180px 0 100px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    /* Gallery Grid & Card Styling */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    @media (min-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+      }
+    }
+
+    .gallery-card {
+      background-color: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-color);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(220, 38, 38, 0.08);
+      border-color: rgba(220, 38, 38, 0.2);
+    }
+
+    .gallery-img-wrapper {
+      position: relative;
+      height: 320px;
+      overflow: hidden;
+      background-color: #1e293b;
+    }
+
+    .gallery-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gallery-card:hover .gallery-img-wrapper img {
+      transform: scale(1.05);
+    }
+
+    .gallery-value-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: 'Outfit', sans-serif;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 2;
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, rgba(17, 34, 68, 0.8) 0%, rgba(17, 34, 68, 0) 60%);
+      opacity: 0.9;
+      z-index: 1;
+    }
+
+    .gallery-card-content {
+      padding: 30px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .gallery-card-cat {
+      color: var(--secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .gallery-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+      line-height: 1.3;
+    }
+
+    .gallery-card-desc {
+      color: var(--text-color);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .gallery-card-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.88rem;
+    }
+
+    .gallery-card-meta span {
+      color: var(--text-muted);
+    }
+
+    .gallery-card-meta strong {
+      color: var(--primary);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* Quick view overlay prompt */
+    .gallery-zoom-prompt {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: var(--white);
+      z-index: 2;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-card:hover .gallery-zoom-prompt {
+      opacity: 1;
+    }
+
+    /* Desktop Hover Dropdown Style Override */
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+        <!-- Portfolio Dropdown Menu -->
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link">Careers</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Gallery Hero Banner -->
+  <section class="gallery-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">Project Gallery</h1>
+    </div>
+  </section>
+
+  <!-- Gallery Grid Section -->
+  <section class="section-padding bg-light" style="padding-top: 80px;">
+    <div class="container">
+      
+      <!-- Intro Section -->
+      <div class="section-title-wrapper" style="margin-bottom: 30px;">
+        <span class="section-subtitle">Visual Showcase</span>
+        <h2 class="section-title">Featured Case Studies</h2>
+        <p style="margin-top: 20px; max-width: 800px; color: var(--text-color); font-size: 1.05rem; line-height: 1.8;">
+          Take a visual tour of our key civil engineering projects. Click on any card to open a full details window detailing client scope, values, locations, and structural complexity.
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div class="portfolio-filters" style="margin-bottom: 40px;">
+        <button class="filter-btn active" data-filter="all">All Gallery</button>
+        <button class="filter-btn" data-filter="infrastructure">Infrastructure</button>
+        <button class="filter-btn" data-filter="industrial">Industrial</button>
+        <button class="filter-btn" data-filter="commercial">Commercial</button>
+      </div>
+
+      <!-- Grid list -->
+      <div class="gallery-grid">
+        
+        <!-- Card 1: BHEL Ennore -->
+        <div class="gallery-card" data-category="industrial"
+             data-title="BHEL, 2 x 660 MW Ennore SEZ STPP"
+             data-client="BHEL / TANGEDCO"
+             data-value="₹88.40 Crore"
+             data-loc="Ennore, Chennai, TN"
+             data-scope="Thermal power plant turbine foundations, boiler structures, substations"
+             data-image="bhel-power-plant.jpg"
+             data-desc="Heavy civil infrastructure works for the 2 x 660 MW supercritical Ennore SEZ Thermal Power Project. Scope included constructing heavy concrete turbine generator foundations, boiler support structures, sub-station structures, auxiliary plant buildings, and surrounding utility trenches.">
+          <div class="gallery-img-wrapper">
+            <img src="bhel-power-plant.jpg" alt="BHEL Ennore SEZ Power Plant Construction">
+            <div class="gallery-value-badge">₹88.40 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Power Station & Energy</span>
+              <h3 class="gallery-card-title">BHEL Ennore SEZ STPP</h3>
+              <p class="gallery-card-desc">Civil foundations and boiler structural framing works for the 2 x 660 MW Thermal Power Plant at Ennore.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>BHEL / TANGEDCO</strong></span>
+              <span>Scope<strong>Turbine & Boiler Civil</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: BHEL BTG Area Civil Works -->
+        <div class="gallery-card" data-category="industrial"
+             data-title="BTG Area Civil Works, BHEL Thermal Power Plant"
+             data-client="TNEB / BHEL"
+             data-value="₹93.13 Crore"
+             data-loc="Voyalur PO, Minjur, Ponneri, Tiruvallur Dist., TN"
+             data-scope="Civil, Structural & Architectural works for Unit #2 BTG area"
+             data-image="bhel-btg-civil.png"
+             data-desc="Execution of civil, structural, and architectural works for the foundation and superstructure of various buildings and miscellaneous structures within Unit #2 of the Boiler-Turbine-Generator (BTG) area at the 2x660MW Ennore SEZ Supercritical Thermal Power Project.">
+          <div class="gallery-img-wrapper">
+            <img src="bhel-btg-civil.png" alt="BTG Area Balance Civil Works, BHEL Thermal Power Plant">
+            <div class="gallery-value-badge">₹93.13 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Power Station & Energy</span>
+              <h3 class="gallery-card-title">BHEL BTG Area Civil Works</h3>
+              <p class="gallery-card-desc">Civil, structural, and architectural superstructure works for Unit #2 BTG area at Ennore SEZ STPP.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>TNEB / BHEL</strong></span>
+              <span>Scope<strong>BTG Area Civil Works</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: 400 MLD Desalination -->
+        <div class="gallery-card" data-category="infrastructure"
+             data-title="400 MLD Desalination Project"
+             data-client="Cobratecton / CMWSSB"
+             data-value="₹120.40 Crore"
+             data-loc="East Coast Road, Chennai, TN"
+             data-scope="Desalination plant basins, pump houses, SWRO intake foundations"
+             data-image="desalination-plant.jpg"
+             data-desc="Executed marine-grade concrete containment basins and processing structures for the 400 MLD Seawater Reverse Osmosis (SWRO) desalination facility. Used highly resilient anti-corrosive concrete mixes to withstand high-salinity environment and coastal elements.">
+          <div class="gallery-img-wrapper">
+            <img src="desalination-plant.jpg" alt="400MLD Desalination Project Site">
+            <div class="gallery-value-badge">₹120.40 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Water Utilities</span>
+              <h3 class="gallery-card-title">400 MLD Desalination Plant</h3>
+              <p class="gallery-card-desc">Marine-grade concrete process basins, intake structures, and pump house civil works along ECR.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>Cobratecton / CMWSSB</strong></span>
+              <span>Scope<strong>SWRO Concrete Basins</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: 150 MLD Desalination -->
+        <div class="gallery-card" data-category="infrastructure"
+             data-title="150 MLD Desalination Project"
+             data-client="Cobratecton Pvt. Ltd. Chennai"
+             data-value="₹52.32 Crore"
+             data-loc="ECR, Nemmeli, Chennai, TN"
+             data-scope="SWRO plant civil works, process basins, foundations"
+             data-image="nemmeli-desalination.jpg"
+             data-desc="Execution of civil engineering works for the 150 MLD Seawater Reverse Osmosis (SWRO) desalination plant at Nemmeli. The project involved constructing robust structural concrete systems, massive water storage basins, and foundations for processing machinery under strict marine environmental specifications.">
+          <div class="gallery-img-wrapper">
+            <img src="nemmeli-desalination.jpg" alt="150 MLD Desalination Plant, Nemmeli">
+            <div class="gallery-value-badge">₹52.32 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Water Utilities</span>
+              <h3 class="gallery-card-title">150 MLD Desalination Plant</h3>
+              <p class="gallery-card-desc">Civil engineering and concrete structural works for the 150 MLD SWRO plant at Nemmeli, Chennai.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>Cobratecton Pvt. Ltd.</strong></span>
+              <span>Scope<strong>SWRO Civil Works</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Perur 400 MLD Desalination -->
+        <div class="gallery-card" data-category="infrastructure"
+             data-title="Perur 400 MLD Desalination Project"
+             data-client="VA TECH WABAG Ltd. / CMWSSB"
+             data-value="₹66.88 Crore"
+             data-loc="Perur, ECR, Chennai, TN"
+             data-scope="SWRO plant civil works, massive intake sump, process plant foundations"
+             data-image="perur-desalination.jpg"
+             data-desc="Civil, structural, and architectural construction works for the mega 400 MLD Seawater Reverse Osmosis (SWRO) desalination plant at Perur, Chennai on behalf of VA TECH WABAG Ltd. Works include deep excavation, high-durability marine concrete foundations, water collection reservoirs, and structural framing for main processing halls.">
+          <div class="gallery-img-wrapper">
+            <img src="perur-desalination.jpg" alt="Perur 400 MLD Desalination Plant, Chennai">
+            <div class="gallery-value-badge">₹66.88 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Water Utilities</span>
+              <h3 class="gallery-card-title">Perur 400 MLD SWRO Plant</h3>
+              <p class="gallery-card-desc">Civil and concrete structural works for the mega 400 MLD SWRO plant at Perur on behalf of VA TECH WABAG Ltd.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>VA TECH WABAG Ltd.</strong></span>
+              <span>Scope<strong>Desalination Civil Works</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Kochar Industrial Park -->
+        <div class="gallery-card" data-category="industrial"
+             data-title="Kochar Industrial & Logistics Park"
+             data-client="Kochar Group"
+             data-value="₹40.46 Crore"
+             data-loc="Tiruvallur, Chennai, TN"
+             data-scope="Industrial warehouses, concrete perimeter walling, external roads"
+             data-image="kochar-warehouse.jpg"
+             data-desc="Site development and warehouse block construction inside the Kochar Industrial Park at Tiruvallur. The contract included massive grading, sub-station foundations, heavy compound walls, external drainage, and high-load internal asphalt roads.">
+          <div class="gallery-img-wrapper">
+            <img src="kochar-warehouse.jpg" alt="Kochar Industrial Park logistics warehouse">
+            <div class="gallery-value-badge">₹40.46 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Logistics Park</span>
+              <h3 class="gallery-card-title">Kochar Industrial Park</h3>
+              <p class="gallery-card-desc">Site development, concrete compound walls, construction of Warehouse 1, and external road works.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>Kochar Group</strong></span>
+              <span>Scope<strong>Warehouses & Site Dev</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Polyhose Facility -->
+        <div class="gallery-card" data-category="industrial"
+             data-title="E25 Polyhose Factory Building"
+             data-client="Polyhose India Pvt. Ltd."
+             data-value="₹22.15 Crore"
+             data-loc="Oragadam Industrial Corridor, Chennai, TN"
+             data-scope="Pre-engineered factory hall, heavy equipment foundations, internal roads"
+             data-image="polyhose-facility.png"
+             data-desc="Turnkey construction of the E25 manufacturing hall for Polyhose India. Project covers heavy-load concrete structural framing, machinery foundations, Pre-Engineered Building (PEB) structure erection, interior flooring, and external service pathways.">
+          <div class="gallery-img-wrapper">
+            <img src="polyhose-facility.png" alt="E25 Polyhose Factory Erection Works">
+            <div class="gallery-value-badge">₹22.15 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Industrial Facility</span>
+              <h3 class="gallery-card-title">E25 Polyhose Factory Hall</h3>
+              <p class="gallery-card-desc">PEB steel framing, high-load machine foundation concrete, flooring, and utility integration at Oragadam.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>Polyhose India</strong></span>
+              <span>Scope<strong>Factory Building & PEB</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Great Lakes Campus -->
+        <div class="gallery-card" data-category="commercial"
+             data-title="Great Lakes Institute of Management"
+             data-client="Great Lakes Institute of Management"
+             data-value="₹31.46 Crore"
+             data-loc="Manamai, ECR, Chennai, TN"
+             data-scope="Academic block, student hostel block, canteen, substation, infrastructure development"
+             data-image="great-lakes-campus.png"
+             data-desc="Construction of the main campus facilities for the Great Lakes Institute of Management at Manamai. The project included structural and finishing works for the academic block, student hostel blocks, warehouse, canteen, electric sub-station, library, plumbing works, sewage treatment plant, and comprehensive site development.">
+          <div class="gallery-img-wrapper">
+            <img src="great-lakes-campus.png" alt="Great Lakes Institute of Management Campus, Manamai">
+            <div class="gallery-value-badge">₹31.46 Cr</div>
+            <div class="gallery-overlay"></div>
+            <div class="gallery-zoom-prompt"><i class="fa-solid fa-expand"></i> Click to Zoom & Details</div>
+          </div>
+          <div class="gallery-card-content">
+            <div>
+              <span class="gallery-card-cat">Commercial & Institutional</span>
+              <h3 class="gallery-card-title">Great Lakes Campus</h3>
+              <p class="gallery-card-desc">Academic block, hostel, utility systems, STP, and landscaping for the premier management campus at Manamai.</p>
+            </div>
+            <div class="gallery-card-meta">
+              <span>Client<strong>Great Lakes Institute</strong></span>
+              <span>Scope<strong>Campus Infrastructure</strong></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Lightbox Modal Overlay -->
+  <div id="case-study-modal" class="modal-overlay">
+    <div class="modal-container">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Close Gallery View">&times;</button>
+      <div class="modal-grid">
+        <div class="modal-img">
+          <img id="modalProjectImg" src="" alt="Project Image">
+        </div>
+        <div class="modal-details">
+          <div>
+            <span id="modalProjectCat" class="project-cat">Category</span>
+            <h3 id="modalProjectTitle">Project Title</h3>
+            <p id="modalProjectDesc" class="modal-desc">Detailed project description goes here...</p>
+          </div>
+          <ul class="modal-meta-list">
+            <li><span>Client Name:</span> <strong id="modalProjectClient">Client</strong></li>
+            <li><span>Contract Value:</span> <strong id="modalProjectValue">Value</strong></li>
+            <li><span>Location Details:</span> <strong id="modalProjectLoc">Location</strong></li>
+            <li><span>Scope of Work:</span> <strong id="modalProjectScope">Scope</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="script.js?v=19"></script>
+
+  <!-- Interactive Gallery Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Gallery Filters
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const galleryCards = document.querySelectorAll('.gallery-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+
+          galleryCards.forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // Mobile Menu Toggle
+      const menuToggleBtn = document.getElementById('menuToggleBtn');
+      const navMenu = document.getElementById('navMenu');
+
+      if (menuToggleBtn && navMenu) {
+        menuToggleBtn.addEventListener('click', () => {
+          const expanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
+          menuToggleBtn.setAttribute('aria-expanded', !expanded);
+          menuToggleBtn.classList.toggle('active');
+          navMenu.classList.toggle('active');
+        });
+      }
+
+      // Lightbox modal logic
+      const modal = document.getElementById('case-study-modal');
+      const closeBtn = document.getElementById('modalCloseBtn');
+      const modalImg = document.getElementById('modalProjectImg');
+      const modalTitle = document.getElementById('modalProjectTitle');
+      const modalDesc = document.getElementById('modalProjectDesc');
+      const modalClient = document.getElementById('modalProjectClient');
+      const modalValue = document.getElementById('modalProjectValue');
+      const modalLoc = document.getElementById('modalProjectLoc');
+      const modalScope = document.getElementById('modalProjectScope');
+      const modalCat = document.getElementById('modalProjectCat');
+
+      galleryCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const title = card.getAttribute('data-title');
+          const client = card.getAttribute('data-client');
+          const value = card.getAttribute('data-value');
+          const loc = card.getAttribute('data-loc');
+          const scope = card.getAttribute('data-scope');
+          const image = card.getAttribute('data-image');
+          const desc = card.getAttribute('data-desc');
+          const category = card.getAttribute('data-category');
+
+          modalImg.src = image;
+          modalTitle.textContent = title;
+          modalDesc.textContent = desc;
+          modalClient.textContent = client;
+          modalValue.textContent = value;
+          modalLoc.textContent = loc;
+          modalScope.textContent = scope;
+          modalCat.textContent = category.toUpperCase();
+
+          modal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          modal.classList.remove('open');
+          document.body.style.overflow = 'auto';
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('open');
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

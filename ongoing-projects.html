@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ongoing Projects | Sekar Constructions</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles Link (Fallback) -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Embedded Modern Ongoing Projects Page Styles -->
+  <style>
+    /* Hero Banner Modern Styling */
+    .ongoing-hero {
+      background: linear-gradient(135deg, #1e293b 0%, var(--primary) 100%);
+      padding: 180px 0 100px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    /* Floating Search Section Dashboard */
+    .infra-search-section {
+      background-color: var(--white);
+      padding: 35px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+      margin-top: -50px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .infra-search-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .infra-search-grid {
+        grid-template-columns: 3fr 2fr;
+        gap: 25px;
+      }
+    }
+
+    .infra-search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .infra-search-input {
+      width: 100%;
+      height: 54px;
+      padding: 12px 16px 12px 50px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary);
+      background-color: #f8fafc;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .infra-search-input:focus {
+      background-color: var(--white);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+      outline: none;
+    }
+
+    .infra-search-icon {
+      position: absolute;
+      left: 18px;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      pointer-events: none;
+    }
+
+    .infra-filter-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .infra-filter-select {
+      width: 100%;
+      height: 54px;
+      padding: 12px 45px 12px 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary);
+      background-color: #f8fafc;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .infra-filter-select:focus {
+      background-color: var(--white);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+      outline: none;
+    }
+
+    .infra-filter-chevron {
+      position: absolute;
+      right: 18px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    /* Table & Progress Styling */
+    .infra-table-wrapper {
+      background-color: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+      margin-bottom: 80px;
+    }
+
+    .infra-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+    }
+
+    .infra-table th {
+      background-color: #f8fafc;
+      color: var(--primary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      padding: 20px 24px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .infra-table td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.98rem;
+      color: var(--text-color);
+      vertical-align: middle;
+    }
+
+    .infra-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .infra-table tr.state-header-row td {
+      background-color: #f1f5f9;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .infra-table tbody tr:hover:not(.state-header-row) {
+      background-color: rgba(220, 38, 38, 0.01);
+    }
+
+    .infra-table tr.hidden {
+      display: none !important;
+    }
+
+    /* State badges */
+    .state-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background-color: #e2e8f0;
+      color: #475569;
+    }
+
+    /* Progress bar design */
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-bar-bg {
+      width: 100px;
+      height: 8px;
+      background-color: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      min-width: 45px;
+    }
+
+    /* Progress Colors */
+    .progress-high {
+      background-color: #10b981; /* green */
+    }
+
+    .progress-medium {
+      background-color: #f59e0b; /* amber */
+    }
+
+    .progress-low {
+      background-color: var(--secondary); /* red */
+    }
+
+    /* Scheduled badge with pulsing animation */
+    .scheduled-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #2563eb;
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+      }
+    }
+
+    /* Hover Chevron Menu */
+    .dropdown-toggle {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle active">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link">Careers</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ongoing Projects Page Header Banner -->
+  <section class="ongoing-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">Ongoing Projects & Works</h1>
+    </div>
+  </section>
+
+  <!-- Ongoing Projects Content -->
+  <section class="section-padding bg-light" style="padding-top: 80px;">
+    <div class="container">
+      
+      <!-- Intro Section -->
+      <div class="section-title-wrapper" style="margin-bottom: 50px;">
+        <span class="section-subtitle">Active Sites</span>
+        <h2 class="section-title">Current Work Progress</h2>
+        <p style="margin-top: 20px; max-width: 850px; color: var(--text-color); font-size: 1.05rem; line-height: 1.8;">
+          We are currently executing several high-value industrial, utility, and heavy structural contracts across Tamil Nadu and Andhra Pradesh. Track our live progress metrics, scope allocations, and project locations below.
+        </p>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="infra-search-section">
+        <div class="infra-search-grid">
+          <!-- Search box -->
+          <div class="infra-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass infra-search-icon"></i>
+            <input type="text" id="ongoingSearch" class="infra-search-input" placeholder="Search project description, client, or location...">
+          </div>
+          <!-- Dropdown filter by state -->
+          <div class="infra-filter-wrapper">
+            <select id="ongoingFilter" class="infra-filter-select">
+              <option value="all">All Regions / States</option>
+              <option value="tn">Tamil Nadu</option>
+              <option value="ap">Andhra Pradesh</option>
+            </select>
+            <i class="fa-solid fa-chevron-down infra-filter-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ongoing Projects Table -->
+      <div class="infra-table-wrapper">
+        <table class="infra-table">
+          <thead>
+            <tr>
+              <th style="width: 80px; text-align: center;">Sl. No.</th>
+              <th>Name of Work / Project and Location</th>
+              <th>Owner / Sponsoring Organization</th>
+              <th style="width: 180px; text-align: center;">Cost (Rupees in Lakhs)</th>
+              <th style="width: 200px; text-align: center;">Work Progress</th>
+            </tr>
+          </thead>
+          <tbody id="projectsTableBody">
+            <!-- Tamil Nadu State Header -->
+            <tr class="state-header-row" data-region="tn">
+              <td colspan="5">Tamil Nadu <span class="state-badge" style="margin-left: 10px;">TN</span></td>
+            </tr>
+            <!-- TN Row 1 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">1</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Warehouse 8 Civil works, Ancillary Building and external works in Kochar Industrial Park at Kandamangalam, Tiruvallur Dist - 602105</td>
+              <td class="col-client">Kochar Properties Pvt Ltd, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹2,926 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹29.26 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-low" style="width: 5%;"></div>
+                  </div>
+                  <span class="progress-text">5%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 2 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">2</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Warehouse 5 & 9 Civil works, Ancillary Building and external works in Kochar Industrial Park at Kandamangalam, Tiruvallur Dist - 602105</td>
+              <td class="col-client">Kochar Properties Pvt Ltd, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,455 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹14.55 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-high" style="width: 90%;"></div>
+                  </div>
+                  <span class="progress-text">90%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 3 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">3</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Warehouse, Ancillary Building Works & Plumbing at Irungattukottai, Chennai</td>
+              <td class="col-client">Polyhose, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹2,927 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹29.27 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-high" style="width: 80%;"></div>
+                  </div>
+                  <span class="progress-text">80%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 4 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">4</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Civil, Structural & Architectural works for foundation & superstructure of various buildings & other miscellaneous structures of Unit # 2 of BTG area at 2x660MW Ennore SEZ STPP (on the ash dyke of NCTPS)</td>
+              <td class="col-client">TNEB, BHEL, Ennore, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹9,313 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹93.13 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-high" style="width: 76%;"></div>
+                  </div>
+                  <span class="progress-text">76%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 5 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">5</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 400 MLD SWRO Desalination Plant for CMWSSB at Perur, Chennai</td>
+              <td class="col-client">CMWSSB, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹6,688 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹66.88 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-medium" style="width: 65%;"></div>
+                  </div>
+                  <span class="progress-text">65%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 6 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">6</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Power Station 2 at FRFCF, DAE, Kalpakkam site</td>
+              <td class="col-client">FRFCF, DAE, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹938 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹9.38 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-medium" style="width: 57%;"></div>
+                  </div>
+                  <span class="progress-text">57%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 7 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">7</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Air Supply, Storage & Exhaust Building for SWPB of CWMF, BARCF at Kalpakkam</td>
+              <td class="col-client">CWMF, BARCF, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹691 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹6.91 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-medium" style="width: 58%;"></div>
+                  </div>
+                  <span class="progress-text">58%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 8 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">8</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Commercial Building B+G+3 at Thoraipakkam</td>
+              <td class="col-client">Jain Group, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,505 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹15.05 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-low" style="width: 28%;"></div>
+                  </div>
+                  <span class="progress-text">28%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- TN Row 9 -->
+            <tr data-region="tn">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">9</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Hostel Building G+4 for NMV University</td>
+              <td class="col-client">Savitha College Group</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹2,666 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹26.66 Cr)</span></td>
+              <td style="text-align: center;">
+                <span class="scheduled-badge"><span class="pulse-dot"></span>Order Received</span>
+              </td>
+            </tr>
+
+            <!-- Andhra Pradesh State Header -->
+            <tr class="state-header-row" data-region="ap">
+              <td colspan="5">Andhra Pradesh <span class="state-badge" style="margin-left: 10px;">AP</span></td>
+            </tr>
+            <!-- AP Row 1 -->
+            <tr data-region="ap">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">1</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of E & F superstructure works of TL-3, finishing works and other miscellaneous works of TL 123 at BARC main campus, Near Visakhapatnam, AP</td>
+              <td class="col-client">BARC, Vizag</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,755 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹17.55 Cr)</span></td>
+              <td style="text-align: center;">
+                <div class="progress-container">
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill progress-high" style="width: 84%;"></div>
+                  </div>
+                  <span class="progress-text">84%</span>
+                </div>
+              </td>
+            </tr>
+            <!-- AP Row 2 -->
+            <tr data-region="ap">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">2</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Supply laying installation testing of underground Chilled water pipeline works from UC-1 CAP towards eastern & western side of campus to cover nearby facilities including provision for future expansion at BARC (V), Atchutapuram near Visakhapatnam</td>
+              <td class="col-client">BARC, Vizag</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,380 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹13.80 Cr)</span></td>
+              <td style="text-align: center;">
+                <span class="scheduled-badge"><span class="pulse-dot"></span>Order Received</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- Custom JS -->
+  <script src="script.js?v=19"></script>
+
+  <!-- Search & Filter Logic JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('ongoingSearch');
+      const filterSelect = document.getElementById('ongoingFilter');
+      const tableRows = document.querySelectorAll('.infra-table tbody tr:not(.state-header-row)');
+      const stateHeaders = document.querySelectorAll('.state-header-row');
+
+      function filterTable() {
+        const query = searchInput.value.toLowerCase().trim();
+        const selectedRegion = filterSelect.value;
+
+        // Track if a region has matching rows
+        let hasTnMatches = false;
+        let hasApMatches = false;
+
+        tableRows.forEach(row => {
+          const description = row.querySelector('.col-desc').textContent.toLowerCase();
+          const client = row.querySelector('.col-client').textContent.toLowerCase();
+          const region = row.getAttribute('data-region');
+
+          const matchesSearch = description.includes(query) || client.includes(query);
+          const matchesRegion = selectedRegion === 'all' || region === selectedRegion;
+
+          if (matchesSearch && matchesRegion) {
+            row.classList.remove('hidden');
+            if (region === 'tn') hasTnMatches = true;
+            if (region === 'ap') hasApMatches = true;
+          } else {
+            row.classList.add('hidden');
+          }
+        });
+
+        // Hide/Show State Headers depending on matches
+        stateHeaders.forEach(header => {
+          const region = header.getAttribute('data-region');
+          if (region === 'tn') {
+            if (hasTnMatches && (selectedRegion === 'all' || selectedRegion === 'tn')) {
+              header.classList.remove('hidden');
+            } else {
+              header.classList.add('hidden');
+            }
+          }
+          if (region === 'ap') {
+            if (hasApMatches && (selectedRegion === 'all' || selectedRegion === 'ap')) {
+              header.classList.remove('hidden');
+            } else {
+              header.classList.add('hidden');
+            }
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterTable);
+      filterSelect.addEventListener('change', filterTable);
+    });
+  </script>
+</body>
+</html>

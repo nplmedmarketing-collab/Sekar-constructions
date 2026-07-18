@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Sekar Constructions</title>
+  
+  <!-- FontAwesome for Understated Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Desktop Hover Dropdown Style Override -->
+  <style>
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top" aria-label="Scroll to Top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link active">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link">Careers</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- About Page Header Banner -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">About Our Company</h1>
+    </div>
+  </section>
+
+  <!-- About Us Page Content -->
+  <section class="section-padding bg-light">
+    <div class="container">
+      <!-- Section 1: Core Company Story & Scope -->
+      <div class="about-intro-section" style="margin-bottom: 70px;">
+        <p style="font-family: var(--font-body); font-size: 1.25rem; line-height: 1.6; color: var(--text-main); margin-bottom: 30px; font-weight: 500;">
+          M/s. Sekar Constructions was started in 1995 as a Civil Engineering Construction Company and has undertaken diversified Civil Engineering works:
+        </p>
+        
+        <div class="works-grid">
+          <div class="work-item">
+            <i class="fa-solid fa-building-user"></i>
+            <span>Office Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-landmark"></i>
+            <span>Public Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-hospital"></i>
+            <span>Hospitals Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>College Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-hotel"></i>
+            <span>Residential Multistoried Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-house-chimney"></i>
+            <span>Residential Quarters</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            <span>Electrical Sub-Station Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-plug"></i>
+            <span>Electrical Works</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-masks-theater"></i>
+            <span>Auditoriums Buildings and interiors</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-border-all"></i>
+            <span>Large Compound Walls</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Ware House</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-gears"></i>
+            <span>Workshop Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Storage Buildings</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-network-wired"></i>
+            <span>Underground Electrical Ducting Works</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-faucet-drip"></i>
+            <span>Water Supply and Sewage line works</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-road"></i>
+            <span>Road Works</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Water Retaining Structures</span>
+          </div>
+          <div class="work-item">
+            <i class="fa-solid fa-industry"></i>
+            <span>Power Plants</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Divider -->
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;">
+
+      <!-- Section 2: Financial Capacity & Quality Standards -->
+      <div class="about-financials-section">
+        <div class="section-title-wrapper" style="margin-bottom: 40px;">
+          <span class="section-subtitle">Resources & Quality</span>
+          <h3 style="font-family: var(--font-heading); font-size: 2.2rem; color: var(--primary); font-weight: 500;">Financial Capacity & Quality Standards</h3>
+        </div>
+        
+        <div class="financials-grid">
+          <!-- Card 1: Annual Turnover -->
+          <div class="financial-card">
+            <div class="card-icon-wrapper">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h3>Annual Turnover</h3>
+            <p>The Company has achieved a revenue of Rs. 117.50 Crore for the financial year 2024-25 and we are good improvement in turnover for the current financial year 2025-26 achieving 140+ Crores.</p>
+          </div>
+
+          <!-- Card 2: Financial Resources -->
+          <div class="financial-card">
+            <div class="card-icon-wrapper">
+              <i class="fa-solid fa-vault"></i>
+            </div>
+            <h3>Financial Resources</h3>
+            <p>The financial credibility of the firm has enabled it to secure a Cash Credit Limit of Rs.10.00 Crore and Bank Guarantee Limit of Rs. 25.00 Crore from HDFC, Kalpakkam. Besides this, we are well supported by Banks and Partners.</p>
+          </div>
+
+          <!-- Card 3: Quality Assurance -->
+          <div class="financial-card">
+            <div class="card-icon-wrapper">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <h3>Quality Assurance</h3>
+            <p>Timely Completion of works with best quality and standards has been the specialty of Sekar Constructions and the continuous orders from the department of Atomic Energy is the evidence of our commitment of quality and timely completion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Team Section -->
+  <section class="section-padding bg-white" style="border-top: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="section-title-wrapper text-center" style="margin-bottom: 50px;">
+        <span class="section-subtitle">Managing Directors & Partners</span>
+        <h2 class="section-title">Leadership</h2>
+      </div>
+
+      <!-- Highlighted Founder & Leadership Card -->
+      <div class="team-single-highlight">
+        <div class="team-card-horizontal">
+          <div class="team-img-horizontal-wrapper">
+            <img src="sekar-founder-half-body.jpg" alt="Shri. E. Sekar, Founder and Managing Partner">
+          </div>
+          <div class="team-info-horizontal">
+            <!-- Shri. E. Sekar Section -->
+            <div class="leadership-block">
+              <span class="team-role">FOUNDER & MANAGING PARTNER</span>
+              <h3>Shri. E. Sekar</h3>
+              <p>Shri. E. Sekar, now aged 67 years, the founder of the Company, is a technically experienced leader with over 40 years of service in the field, in India and abroad.</p>
+              <p>Having worked with international firms like NPCC Abu Dhabi for fifteen years, he acquired tremendous skills, technical knowledge, and management capabilities. Under his dynamic direction for about 30 years, Sekar Constructions has achieved major milestones in quality execution and has grown into a premier Class-I civil contractor.</p>
+            </div>
+
+            <!-- Divider -->
+            <hr class="leadership-divider">
+
+            <!-- Smt. S. Sasikala Section -->
+            <div class="leadership-block">
+              <span class="team-role">PARTNER & SUPPLY DIRECTOR</span>
+              <h3>Smt. S. Sasikala</h3>
+              <p>Smt. S. Sasikala is a large-scale civil material supplier in the region, managing river sand, blue metal, and bricks procurement under the name of <strong>M/s. Sasikala Suppliers</strong>, securing huge logistics volume.</p>
+              <p>An enthusiastic entrepreneur, she also owns and manages <strong>M/s. Aniruth Industries</strong> (Chennai-32), an ISO 9001:2000 certified precision mechanical engineering and machining firm. Our strong logistics association with Smt. Sasikala enables Sekar Constructions to easily procure the best quality building materials locally and from Chennai at highly economical costs.</p>
+            </div>
+          </div>
+      </div>
+
+      <!-- Dynamic Executive Team Section -->
+      <div class="dynamic-team-section">
+        <h3 class="team-subheading">Dynamic Executive Team</h3>
+        <div class="dynamic-team-gallery">
+          <div class="gallery-item">
+            <img src="dynamic-team-1.jpg" alt="Sekar Constructions Executive Team">
+          </div>
+          <div class="gallery-item">
+            <img src="dynamic-team-2.png" alt="Sekar Constructions Engineering Team on Site">
+          </div>
+          <div class="gallery-item">
+            <img src="dynamic-team-3.jpg" alt="Sekar Constructions Civil Work Force">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- Custom JS -->
+  <script src="script.js?v=19"></script>
+</body>
+</html>

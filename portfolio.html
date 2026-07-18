@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Completed Projects Portfolio | Sekar Constructions</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles Link (Fallback) -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Embedded Modern Portfolio Page Styles -->
+  <style>
+    /* Hero Banner Modern Styling */
+    .portfolio-hero {
+      background: linear-gradient(135deg, #1e293b 0%, var(--primary) 100%);
+      padding: 180px 0 100px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    /* Floating Search Section Dashboard */
+    .infra-search-section {
+      background-color: var(--white);
+      padding: 35px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+      margin-top: -50px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .infra-search-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .infra-search-grid {
+        grid-template-columns: 3fr 2fr;
+        gap: 25px;
+      }
+    }
+
+    .infra-search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .infra-search-input {
+      width: 100%;
+      height: 54px;
+      padding: 12px 16px 12px 50px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary);
+      background-color: #f8fafc;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .infra-search-input:focus {
+      background-color: var(--white);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+      outline: none;
+    }
+
+    .infra-search-icon {
+      position: absolute;
+      left: 18px;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      pointer-events: none;
+    }
+
+    .infra-filter-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .infra-filter-select {
+      width: 100%;
+      height: 54px;
+      padding: 12px 45px 12px 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary);
+      background-color: #f8fafc;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .infra-filter-select:focus {
+      background-color: var(--white);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+      outline: none;
+    }
+
+    .infra-filter-chevron {
+      position: absolute;
+      right: 18px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    /* Table Container & Layout spacing */
+    .infra-table-wrapper {
+      background-color: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+      margin-bottom: 80px;
+    }
+
+    .infra-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+    }
+
+    .infra-table th {
+      background-color: #f8fafc;
+      color: var(--primary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      padding: 20px 24px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .infra-table td {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.98rem;
+      color: var(--text-color);
+      vertical-align: middle;
+    }
+
+    .infra-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .infra-table tbody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    .infra-table tbody tr:hover {
+      background-color: rgba(220, 38, 38, 0.01);
+    }
+
+    .infra-table tr.hidden {
+      display: none !important;
+    }
+
+    /* Category Badges Styling */
+    .project-cat-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-nuclear {
+      background-color: rgba(220, 38, 38, 0.08);
+      color: var(--secondary);
+    }
+
+    .badge-commercial {
+      background-color: rgba(124, 58, 237, 0.08);
+      color: #7c3aed;
+    }
+
+    .badge-utilities {
+      background-color: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+    }
+
+    /* Desktop Hover Dropdown Style Override */
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle active">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link">Careers</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Portfolio Page Header Banner -->
+  <section class="portfolio-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">Completed Projects</h1>
+    </div>
+  </section>
+
+  <!-- Completed Projects Content Section -->
+  <section class="section-padding bg-light" style="padding-top: 80px;">
+    <div class="container">
+      
+      <!-- Intro Section -->
+      <div class="section-title-wrapper" style="margin-bottom: 50px;">
+        <span class="section-subtitle">Track Record</span>
+        <h2 class="section-title">Completed Works Directory</h2>
+        <p style="margin-top: 20px; max-width: 850px; color: var(--text-color); font-size: 1.05rem; line-height: 1.8;">
+          Since 1995, Sekar Constructions has built an impeccable reputation for executing critical civil engineering structures. Browse our complete audited directory of 45 completed works spanning nuclear R&D structures, commercial quarter blocks, and high-capacity water desalination plants.
+        </p>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="infra-search-section">
+        <div class="infra-search-grid">
+          <!-- Search box -->
+          <div class="infra-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass infra-search-icon"></i>
+            <input type="text" id="completedSearch" class="infra-search-input" placeholder="Search project description, client, or location...">
+          </div>
+          <!-- Dropdown filter by category -->
+          <div class="infra-filter-wrapper">
+            <select id="completedFilter" class="infra-filter-select">
+              <option value="all">All Sectors</option>
+              <option value="nuclear">Nuclear R&D & Industrial</option>
+              <option value="commercial">Commercial & Residential</option>
+              <option value="utilities">Infrastructure & Utilities</option>
+            </select>
+            <i class="fa-solid fa-chevron-down infra-filter-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Projects Table -->
+      <div class="infra-table-wrapper">
+        <table class="infra-table">
+          <thead>
+            <tr>
+              <th style="width: 80px; text-align: center;">Sl. No.</th>
+              <th>Description of Works</th>
+              <th style="width: 220px; text-align: center;">Total Value (In Lakhs)</th>
+              <th style="width: 240px; text-align: center;">Sector Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">1</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Site Development and Compound wall works & Construction of Warehouse (4nos) Civil works, Ancillary Building, external works and Plumbing in Kochar Industrial Park at Kandamangalam, Tiruvallur Dist - 602105</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹8,351.09 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹83.51 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 2 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">2</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of On-Site Emergency support centre at Kalpakkam site</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹5,956.61 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹59.56 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 3 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">3</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of C25 Stage Integration Complex and area development works around the facility at IPRC, Mahendragiri (Civil, PH, storm water drains work and mechanical doors)</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹5,630.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹56.30 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 4 -->
+            <tr data-category="utilities">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">4</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 150 MLD SWRO Desalination Plant for CMWSSB, Nemmeli on behalf of Cobratecton Pvt. Ltd., Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹5,232.66 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹52.32 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-utilities">Water Utilities</span></td>
+            </tr>
+            <!-- Row 5 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">5</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Engineering Hall – V in IGCAR at Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹3,654.76 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹36.54 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 6 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">6</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Student Hostel block, Academic block, Ware House, Canteen, Substation, Library, Plumbing work, Sewage Treatment Plant and other miscellaneous work under Phase – III at Great Lakes Institute of Management, Manamai at Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹3,146.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹31.46 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 7 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">7</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 116 Nos. of type II-B Residential Quarters in DAE Township at Kalpakkam [including electrical work]</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹2,583.04 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹25.83 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 8 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">8</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 233 Nos of New academic block including Civil, Mechanical, Electrical, Public health and other miscellaneous works under Phase - IV at Great Lakes Institute of Management, ECR, Manamai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹2,357.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹23.57 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 9 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">9</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of AUSE Lab Building at IGCAR, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,645.08 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹16.45 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 10 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">10</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Balance works for 120 nos. of type IIIC quarters (Tower 4 -G+15 story) in DAE Township at Anupuram</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,384.33 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹13.84 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 11 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">11</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Infrastructure facilities for Store and workshop for FRFCF at IGCAR, Kalpakkam on behalf of Consolidated Construction Consortium Ltd, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,360.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹13.60 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 12 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">12</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of building 209 at FRFCF Project Site, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,205.81 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹12.05 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 13 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">13</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of RCC Structure of H & I Blocks and other miscellaneous works at BARC main campus, Atchutapuram, near Visakhapatnam, A.P</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,119.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹11.19 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 14 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">14</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Miscellaneous works in Nuclear Island and Connected Buildings in PFBR Plant Site, BHAVINI, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,074.31 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹10.74 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 15 -->
+            <tr data-category="utilities">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">15</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Sea Water Reverse Osmosis Desalination plant 380 m3 / hr (2MIGD) at Kalpakkam on behalf of Tecton Engineering & Construction (India) Pvt. Ltd, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹1,025.45 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹10.25 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-utilities">Water Utilities</span></td>
+            </tr>
+            <!-- Row 16 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">16</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Sub-Structure of ‘M’ Block of Laboratory Building – 2 at BARC campus, Atchutapuram, Visakhapatnam, Andhra Pradesh</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹997.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹9.97 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 17 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">17</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of super structure of G Block of Laboratory Building-3 and other miscellaneous works at BARC campus, Atchutapuram, Visakhapatnam District, Andhra Pradesh</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹961.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹9.61 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 18 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">18</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of K Block and other miscellaneous works at BARC main campus, Atchutapuram, near Visakhapatnam, A.P</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹961.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹9.61 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 19 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">19</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Extension of Admin Building and Civil Engineering Lab at IGCAR & Substation and Technical service Building for 2MGD Plant (NDDP) at Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹758.29 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹7.58 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 20 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">20</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Boiler Building at FRFCF Project site, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹781.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹7.81 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 21 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">21</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Infrastructure facilities for DFRP at IGCAR, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹747.42 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹7.47 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 22 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">22</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Occupational Health Centre and Miscellaneous works at FRFCF project site, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹742.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹7.42 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 23 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">23</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Balance work for MSM mock-up and Maintenance facility building at FRFCF project site, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹702.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹7.02 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 24 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">24</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Pre-Engineering steel structure of workshop and office Building at ECR Road, Manamai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹692.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹6.92 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 25 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">25</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 48 Nos. CISF B Type Quarters at Kalpakkam near CISF Colony</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹535.48 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹5.35 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 26 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">26</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of balance works of E & F blocks of TL-3 up to grade slab and other miscellaneous works at BARC main campus, Atchutapuram, Visakhapatnam District, A.P</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹499.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹4.99 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 27 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">27</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 32 Nos. Type – ‘D’ Quarters for BHAVINI Township at Anupuram</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹489.06 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹4.89 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 28 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">28</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of ANDE Building in IGCAR at Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹455.49 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹4.55 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 29 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">29</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Excavation for Construction of DDUO Storage Building at BARC, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹375.05 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹3.75 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 30 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">30</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of MICA facility building for floor – I and floor – II in IGCAR at Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹354.89 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹3.54 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 31 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">31</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Integrated Radiation Monitoring Service (IRMS) Building in DAE Township, Anupuram</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹339.99 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹3.39 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 32 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">32</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Elemental Boron Production Facility Building at IGCAR, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹293.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹2.93 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 33 -->
+            <tr data-category="utilities">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">33</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Providing and Installing dedicated Fire water system in Zone-I at IGCAR, DAE, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹291.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹2.91 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-utilities">Water Utilities</span></td>
+            </tr>
+            <!-- Row 34 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">34</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Balance Electrification works for 120 Nos. type III-C quarters (Tower 4 G+15 Storey) in DAE Township at Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹240.85 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹2.40 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 35 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">35</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Machine Foundation & RCC Pedestals and associated works for Shaker Facility at PRP, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹228.66 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹2.28 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 36 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">36</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of 48 Nos. II-B Flat residential Quarters at Anupuram Township, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹201.04 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹2.01 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 37 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">37</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of RCC Cable Duct for Project FRFCF at IGCAR Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹175.91 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.75 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 38 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">38</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Balance Internal Electrification works of 55 Nos. type IV-D quarters, 45 Nos. type V-E quarters and other associated works at DAE Township, Anupuram</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹167.08 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.67 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 39 -->
+            <tr data-category="utilities">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">39</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Underground raw water storage sump (502A) in KARP complex (RT), Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹162.59 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.62 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-utilities">Water Utilities</span></td>
+            </tr>
+            <!-- Row 40 -->
+            <tr data-category="utilities">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">40</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Pipe line Works and Providing Air Valve, Butterfly Valve, Scour Valve and Construction of Chambers for Veeranam Projects on behalf of M/S. IVRCL Projects, Thirukkazhukundram</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹158.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.58 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-utilities">Water Utilities</span></td>
+            </tr>
+            <!-- Row 41 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">41</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of Conventional Center Building at Anupuram Township including wall paneling, parquet flooring false ceiling, carpet flooring, construction of Compound Wall around auditorium, Furnishing the Auditorium etc</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹156.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.56 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 42 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">42</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Construction of (18+29) of Scientist apartments for NPCIL at DAE Township, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹150.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.50 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 43 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">43</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Preparation of erection procedures & drawings, erection QAP’s fabrication, fit-up, erection and welding of sodium leak collection trays 50 NB/100 NB CS drain pipes & fittings and firefighting pipe lines at 60m EL and 19m EL in SGB’s at PFBR Plant site BHAVINI, Kalpakkam on behalf of Venkateswara Engineering, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹136.00 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹1.36 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+            <!-- Row 44 -->
+            <tr data-category="commercial">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">44</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Providing Temporary Office for MRPU at DAE complex, Pallavaram, Chennai</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹80.89 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹0.80 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-commercial">Commercial & Logistics</span></td>
+            </tr>
+            <!-- Row 45 -->
+            <tr data-category="nuclear">
+              <td style="text-align: center; font-weight: 500; color: var(--text-muted);">45</td>
+              <td class="col-desc" style="font-weight: 600; color: var(--primary);">Repairing the damaged water proofing at roof terrace of Admin and Library building in IGCAR, Kalpakkam</td>
+              <td style="text-align: center; font-weight: 700; color: var(--secondary);">₹43.84 Lakhs <span style="font-size:0.8rem; color:var(--text-muted); display:block; font-weight:500;">(₹0.43 Cr)</span></td>
+              <td style="text-align: center;"><span class="project-cat-badge badge-nuclear">Nuclear R&D</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- Custom JS -->
+  <script src="script.js?v=19"></script>
+
+  <!-- Search & Filter Logic JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('completedSearch');
+      const filterSelect = document.getElementById('completedFilter');
+      const tableRows = document.querySelectorAll('.infra-table tbody tr');
+
+      // Mobile Menu Toggle
+      const menuToggleBtn = document.getElementById('menuToggleBtn');
+      const navMenu = document.getElementById('navMenu');
+
+      if (menuToggleBtn && navMenu) {
+        menuToggleBtn.addEventListener('click', () => {
+          const expanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
+          menuToggleBtn.setAttribute('aria-expanded', !expanded);
+          menuToggleBtn.classList.toggle('active');
+          navMenu.classList.toggle('active');
+        });
+      }
+
+      function filterTable() {
+        const query = searchInput.value.toLowerCase().trim();
+        const category = filterSelect.value;
+
+        tableRows.forEach(row => {
+          const description = row.querySelector('.col-desc').textContent.toLowerCase();
+          const rowCategory = row.getAttribute('data-category');
+
+          const matchesSearch = description.includes(query);
+          const matchesCategory = category === 'all' || rowCategory === category;
+
+          if (matchesSearch && matchesCategory) {
+            row.classList.remove('hidden');
+          } else {
+            row.classList.add('hidden');
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterTable);
+      filterSelect.addEventListener('change', filterTable);
+    });
+  </script>
+</body>
+</html>

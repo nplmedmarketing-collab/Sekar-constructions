@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Careers | Sekar Constructions</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles Link -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Careers Custom Styles -->
+  <style>
+    .careers-hero {
+      background: linear-gradient(135deg, #1e293b 0%, var(--primary) 100%);
+      padding: 180px 0 100px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    .slogan-banner {
+      background: rgba(220, 38, 38, 0.05);
+      border-left: 5px solid var(--secondary);
+      padding: 24px 30px;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 50px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+    }
+
+    .slogan-banner p {
+      color: var(--primary);
+      font-size: 1.15rem;
+      font-weight: 500;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Openings cards */
+    .opening-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 35px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.01);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .opening-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+      border-color: rgba(220, 38, 38, 0.15);
+    }
+
+    .opening-details h3 {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .opening-reqs {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .opening-reqs li {
+      font-size: 0.95rem;
+      color: var(--text-color);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .opening-reqs li i {
+      color: var(--secondary);
+      font-size: 0.85rem;
+    }
+
+    .opening-card .btn-apply {
+      background-color: #f97316; /* Vibrant orange matching the screenshot */
+      color: var(--white);
+      border: none;
+      padding: 14px 28px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+    }
+
+    .opening-card .btn-apply:hover {
+      background-color: #ea580c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .opening-card {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+      .opening-card .btn-apply {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* Modal Form Overlay */
+    .apply-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(17, 34, 68, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .apply-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .apply-modal-content {
+      background: var(--white);
+      max-width: 550px;
+      width: 90%;
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+      position: relative;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+
+    .apply-modal.active .apply-modal-content {
+      transform: translateY(0);
+    }
+
+    .apply-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .apply-modal-close:hover {
+      color: var(--secondary);
+    }
+
+    /* Hover Dropdown Style Override */
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+        <!-- Portfolio Dropdown Menu -->
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link active">Careers</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Careers Hero Banner -->
+  <section class="careers-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">Careers</h1>
+    </div>
+  </section>
+
+  <!-- Careers Content Section -->
+  <section class="section-padding bg-light" style="padding-top: 80px;">
+    <div class="container" style="max-width: 900px;">
+      
+      <!-- Slogan callout -->
+      <div class="slogan-banner">
+        <p>If you are aiming higher in life, we offer just the right platform to help you bring out the best of your abilities.</p>
+      </div>
+
+      <h2 style="font-size: 2.2rem; color: var(--primary); margin-bottom: 35px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 15px;">Current Openings:</h2>
+
+      <!-- Openings list -->
+      <div class="openings-list">
+        
+        <!-- Job 1: Billing Engineer -->
+        <div class="opening-card">
+          <div class="opening-details">
+            <h3>Billing Engineer</h3>
+            <ul class="opening-reqs">
+              <li><i class="fa-solid fa-graduation-cap"></i> BE Civil</li>
+              <li><i class="fa-solid fa-briefcase"></i> Minimum 5 years experience</li>
+              <li><i class="fa-solid fa-location-dot"></i> Job Location: <strong>Chennai</strong></li>
+            </ul>
+          </div>
+          <div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdGTy0J7XDe-eh-i4h7YOfp1oXwIFBZhTU1aG-bAsSgglDQ1g/viewform" target="_blank" class="btn-apply" style="text-decoration: none; display: inline-block;">Apply Now</a>
+          </div>
+        </div>
+
+        <!-- Job 2: Surveyor -->
+        <div class="opening-card">
+          <div class="opening-details">
+            <h3>Surveyor</h3>
+            <ul class="opening-reqs">
+              <li><i class="fa-solid fa-graduation-cap"></i> DCE or BE Civil</li>
+              <li><i class="fa-solid fa-briefcase"></i> Minimum 3 years experience in Survey</li>
+              <li><i class="fa-solid fa-location-dot"></i> Job Location: <strong>Chennai</strong></li>
+            </ul>
+          </div>
+          <div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdGTy0J7XDe-eh-i4h7YOfp1oXwIFBZhTU1aG-bAsSgglDQ1g/viewform" target="_blank" class="btn-apply" style="text-decoration: none; display: inline-block;">Apply Now</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="script.js?v=19"></script>
+
+  <!-- Careers Interactive Script -->
+  <script>
+    // Direct Google Form Redirection logic is handled by standard HTML links above
+  </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Sekar Constructions</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles Link -->
+  <link rel="stylesheet" href="styles.css?v=41">
+
+  <!-- Contact Page Custom Styles -->
+  <style>
+    /* Hero Banner Modern Styling */
+    .contact-hero {
+      background: linear-gradient(135deg, #1e293b 0%, var(--primary) 100%);
+      padding: 180px 0 100px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    /* Hover Dropdown Style Override */
+    @media (min-width: 1025px) {
+      .nav-menu li:hover .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+
+    /* Interactive Cards CSS styling */
+    .contact-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .contact-card-item {
+      background: var(--white);
+      padding: 40px 30px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .contact-card-link:hover .contact-card-item {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(220, 38, 38, 0.08);
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+
+    .contact-icon-circle {
+      width: 60px;
+      height: 60px;
+      background: rgba(220, 38, 38, 0.05);
+      color: var(--secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      font-size: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .contact-card-link:hover .contact-icon-circle {
+      background: var(--secondary);
+      color: var(--white);
+      transform: scale(1.1) rotate(360deg);
+    }
+
+    .contact-card-title {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .contact-card-link:hover .contact-card-title {
+      color: var(--secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+      </a>
+
+      <!-- Hamburger Menu for Mobile -->
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+        <!-- Portfolio Dropdown Menu -->
+        <li class="dropdown">
+          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
+            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="careers.html" class="nav-link">Careers</a></li>
+        <li><a href="contact.html" class="nav-link active">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="index.html#contact" class="nav-cta-btn">Get A Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contact Hero Banner -->
+  <section class="contact-hero">
+    <div class="container">
+      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">Contact Us</h1>
+    </div>
+  </section>
+
+  <!-- Contact Details Section -->
+  <section class="section-padding bg-light" style="padding-top: 80px;">
+    <div class="container">
+      
+      <!-- Contact Cards Row -->
+      <div class="contact-cards-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px;">
+        
+        <!-- Card 1: Address -->
+        <a href="#contact-map-section" class="contact-card-link">
+          <div class="contact-card-item">
+            <div class="contact-icon-circle">
+              <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <h4 class="contact-card-title">Head Office</h4>
+            <p style="color: var(--text-color); font-size: 0.95rem; line-height: 1.6; margin: 0;">No. 22, First Cross Street,<br>Vedachalam Nagar,<br>Mamallapuram – 603 104.</p>
+          </div>
+        </a>
+
+        <!-- Card 2: Email -->
+        <a href="mailto:ho@sekarconstructions.com" class="contact-card-link">
+          <div class="contact-card-item">
+            <div class="contact-icon-circle">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h4 class="contact-card-title">Email Us</h4>
+            <p style="color: var(--text-color); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+              ho@sekarconstructions.com<br>
+              sudhangan@sekarconstructions.com
+            </p>
+          </div>
+        </a>
+
+        <!-- Card 3: Phone -->
+        <a href="tel:+919443221644" class="contact-card-link">
+          <div class="contact-card-item">
+            <div class="contact-icon-circle">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <h4 class="contact-card-title">Call Us</h4>
+            <p style="color: var(--text-color); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+              +91 94432 21644<br>
+              +91 63825 97029
+            </p>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Google Map Embed -->
+      <div id="contact-map-section" class="contact-map" style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid var(--border-color); line-height: 0; scroll-margin-top: 100px;">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3894.1089293823625!2d80.1397424!3d12.5750685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a53ab00b8c179eb%3A0x3ca3700a0e987958!2sSEKAR%20CONSTRUCTIONS!5e0!3m2!1sen!2sin!4v1707208824227!5m2!1sen!2sin" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo-final.png?v=5" alt="Sekar Constructions Logo">
+        </div>
+        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
+        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Quick Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#services">Our Services</a></li>
+          <li><a href="infrastructure.html">Infrastructure</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Head Office Details</h4>
+        <div class="footer-contact-items">
+          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
+          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
+          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
+      <p>Redesigned & Modernized | Powered by Antigravity</p>
+    </div>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="script.js?v=19"></script>
+
+
+</body>
+</html>
