@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 3. Cinematic Hero Parallax Zoom Scroll
-  const heroBg = document.querySelector('.hero-bg');
+  const heroVideo = document.querySelector('.hero-video');
   window.addEventListener('scroll', () => {
-    if (heroBg) {
+    if (heroVideo) {
       const scrollPos = window.scrollY;
       // Scale slightly and translate slower than the scroll rate (parallax)
-      heroBg.style.transform = `scale(${1.05 + scrollPos * 0.0003}) translateY(${scrollPos * 0.15}px)`;
+      heroVideo.style.transform = `scale(${1.05 + scrollPos * 0.0003}) translateY(${scrollPos * 0.15}px)`;
     }
   });
 

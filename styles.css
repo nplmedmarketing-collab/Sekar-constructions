@@ -309,16 +309,26 @@ header.scrolled .menu-toggle span {
   overflow: hidden;
 }
 
-.hero-bg {
+.hero-video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.55)), url('hero-bg.jpg?v=4') no-repeat center center/cover;
+  object-fit: cover;
   z-index: 1;
   transform: scale(1.05);
   transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.65));
+  z-index: 2;
 }
 
 .hero-grid {
@@ -327,7 +337,7 @@ header.scrolled .menu-toggle span {
   justify-content: flex-start;
   text-align: left;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .hero-content {
