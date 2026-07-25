@@ -1,7 +1,7 @@
 /* 
   Sekar Construction - Premium Editorial Architecture Theme
   Inspired by: Herzog & de Meuron, BIG, and CLB Architects
-  Colors: Charcoal Black (#0F172A), Off-White (#FAF9F6), Premium Blue Accent (#2563EB)
+  Colors: Charcoal Black (#0F172A), Off-White (#FAF9F6), Antique Bronze Gold (#A27B3C)
   Typography: Playfair Display (Serif), Plus Jakarta Sans (Sans-serif)
 */
 
@@ -11,8 +11,8 @@
   --primary: #0F172A; /* Charcoal Black */
   --primary-light: #1E293B; /* Charcoal Slate */
   --secondary: #475569; /* Slate Gray */
-  --accent: #2563EB; /* Premium Blue Accent */
-  --accent-light: #93C5FD;
+  --accent: #A27B3C; /* Antique Bronze Gold */
+  --accent-light: #EBE0CD;
   --bg-light: #FAF9F6; /* Editorial Warm Off-White */
   --bg-card: #FFFFFF;
   --border-color: #E2E8F0; /* Clean thin concrete gray lines */
