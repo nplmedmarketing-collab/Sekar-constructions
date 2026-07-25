@@ -281,6 +281,161 @@
       align-items: center;
     }
 
+    /* Mobile: card layout — no sideways scroll */
+    @media (max-width: 768px) {
+      .ongoing-hero h1 {
+        font-size: 2.25rem !important;
+      }
+
+      .infra-search-section {
+        padding: 20px;
+        margin-top: -36px;
+        margin-bottom: 28px;
+        border-radius: 10px;
+      }
+
+      .infra-table-wrapper {
+        overflow: visible;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        margin-bottom: 48px;
+      }
+
+      .infra-table thead {
+        display: none;
+      }
+
+      .infra-table,
+      .infra-table tbody {
+        display: block;
+        width: 100%;
+      }
+
+      .infra-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+      }
+
+      .infra-table tbody tr:hover:not(.state-header-row) {
+        background: var(--white);
+      }
+
+      .infra-table tbody tr.hidden {
+        display: none !important;
+      }
+
+      /* Region section headers */
+      .infra-table tbody tr.state-header-row {
+        background: #f1f5f9;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin: 8px 0 14px;
+        box-shadow: none;
+      }
+
+      .infra-table tbody tr.state-header-row td {
+        display: block;
+        width: 100%;
+        padding: 0 !important;
+        border: none !important;
+        text-align: left !important;
+        font-size: 1.05rem;
+      }
+
+      .infra-table tbody tr.state-header-row td::before {
+        display: none;
+      }
+
+      .infra-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 0 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        text-align: right !important;
+        font-size: 0.95rem;
+        word-break: break-word;
+      }
+
+      .infra-table td::before {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        text-align: left;
+        flex: 0 0 38%;
+        max-width: 120px;
+        padding-top: 2px;
+      }
+
+      .infra-table td:nth-child(1)::before { content: "Sl. No."; }
+      .infra-table td:nth-child(2)::before { content: "Project"; }
+      .infra-table td:nth-child(3)::before { content: "Client"; }
+      .infra-table td:nth-child(4)::before { content: "Cost"; }
+      .infra-table td:nth-child(5)::before { content: "Progress"; }
+
+      .infra-table td.col-desc {
+        order: -1;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        text-align: left !important;
+        padding-top: 0 !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 2px;
+        border-bottom: 1px solid var(--border-color) !important;
+        font-size: 1.02rem !important;
+        line-height: 1.45;
+      }
+
+      .infra-table td.col-desc::before {
+        display: none;
+      }
+
+      .infra-table td.col-client {
+        text-align: right !important;
+        line-height: 1.4;
+      }
+
+      .infra-table td:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+        align-items: center;
+      }
+
+      .infra-table td .progress-container {
+        flex: 1;
+        justify-content: flex-end;
+        max-width: 62%;
+      }
+
+      .infra-table td .progress-bar-bg {
+        flex: 1;
+        width: auto;
+        min-width: 70px;
+      }
+
+      .infra-table td .scheduled-badge {
+        max-width: 62%;
+        justify-content: flex-end;
+      }
+    }
+
     @media (min-width: 1025px) {
       .nav-menu li:hover .dropdown-menu {
         display: block !important;
