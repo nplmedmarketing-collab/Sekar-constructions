@@ -35,14 +35,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Cinematic Hero Parallax Zoom Scroll
+  // 3. Hero video: force mobile autoplay + parallax; fall back to poster if blocked
   const heroVideo = document.querySelector('.hero-video');
   if (heroVideo) {
+    heroVideo.muted = true;
+    heroVideo.setAttribute('playsinline', '');
+    heroVideo.setAttribute('webkit-playsinline', '');
+
+    const tryPlayHero = () => {
+      const playPromise = heroVideo.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          // Autoplay blocked (Low Power Mode / data saver) — keep poster visible
+          heroVideo.removeAttribute('autoplay');
+        });
+      }
+    };
+
+    if (heroVideo.readyState >= 2) {
+      tryPlayHero();
+    } else {
+      heroVideo.addEventListener('loadeddata', tryPlayHero, { once: true });
+      heroVideo.addEventListener('canplay', tryPlayHero, { once: true });
+    }
+
+    // Retry once on first user interaction (required by some mobile browsers)
+    const resumeOnGesture = () => {
+      tryPlayHero();
+      document.removeEventListener('touchstart', resumeOnGesture);
+      document.removeEventListener('click', resumeOnGesture);
+    };
+    document.addEventListener('touchstart', resumeOnGesture, { once: true, passive: true });
+    document.addEventListener('click', resumeOnGesture, { once: true });
+
     window.addEventListener('scroll', () => {
       const scrollPos = window.scrollY;
-      // Scale slightly and translate slower than the scroll rate (parallax)
       heroVideo.style.transform = `scale(${1.05 + scrollPos * 0.0003}) translateY(${scrollPos * 0.15}px)`;
-    });
+    }, { passive: true });
   }
 
   // 4. Hamburger Menu Toggle (all pages)

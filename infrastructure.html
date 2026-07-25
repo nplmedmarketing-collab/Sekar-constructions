@@ -225,6 +225,123 @@
       color: #4b5563;
     }
 
+    /* Mobile: card layout — no sideways scroll */
+    @media (max-width: 768px) {
+      .infra-hero {
+        padding: 120px 0 72px 0;
+      }
+
+      .infra-search-section {
+        padding: 20px;
+        margin-top: -36px;
+        margin-bottom: 28px;
+        border-radius: 10px;
+      }
+
+      .infra-table-wrapper {
+        overflow: visible;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        margin-bottom: 48px;
+      }
+
+      .infra-table thead {
+        display: none;
+      }
+
+      .infra-table,
+      .infra-table tbody {
+        display: block;
+        width: 100%;
+      }
+
+      .infra-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+      }
+
+      .infra-table tbody tr:hover {
+        background: var(--white);
+      }
+
+      .infra-table tbody tr.hidden {
+        display: none !important;
+      }
+
+      .infra-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 0 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        text-align: right !important;
+        font-size: 0.95rem;
+        word-break: break-word;
+      }
+
+      .infra-table td::before {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        text-align: left;
+        flex: 0 0 38%;
+        max-width: 120px;
+      }
+
+      .infra-table td:nth-child(1)::before { content: "Sl. No."; }
+      .infra-table td:nth-child(2)::before { content: "Description"; }
+      .infra-table td:nth-child(3)::before { content: "Qty"; }
+      .infra-table td:nth-child(4)::before { content: "Unit"; }
+      .infra-table td:nth-child(5)::before { content: "Category"; }
+
+      /* Description as card title */
+      .infra-table td.col-desc {
+        order: -1;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        text-align: left !important;
+        padding-top: 0 !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 2px;
+        border-bottom: 1px solid var(--border-color) !important;
+        font-size: 1.02rem !important;
+        line-height: 1.45;
+      }
+
+      .infra-table td.col-desc::before {
+        display: none;
+      }
+
+      .infra-table td:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+        align-items: flex-start;
+      }
+
+      .infra-table td:last-child .infra-cat-badge {
+        text-align: right;
+        max-width: 58%;
+        white-space: normal;
+        line-height: 1.35;
+      }
+    }
+
     @media (min-width: 1025px) {
       .nav-menu li:hover .dropdown-menu {
         display: block !important;
@@ -857,7 +974,7 @@
   </footer>
 
   <!-- Custom JS -->
-  <script src="script.js?v=20"></script>
+  <script src="script.js?v=22"></script>
 
   <!-- Search & Filter Logic JS -->
   <script>
