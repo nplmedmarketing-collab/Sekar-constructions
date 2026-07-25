@@ -556,7 +556,7 @@
   </footer>
 
   <!-- JS Scripts -->
-  <script src="script.js?v=20"></script>
+  <script src="script.js?v=21"></script>
 
   <!-- Interactive Gallery Logic -->
   <script>
@@ -581,19 +581,6 @@
           });
         });
       });
-
-      // Mobile Menu Toggle
-      const menuToggleBtn = document.getElementById('menuToggleBtn');
-      const navMenu = document.getElementById('navMenu');
-
-      if (menuToggleBtn && navMenu) {
-        menuToggleBtn.addEventListener('click', () => {
-          const expanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
-          menuToggleBtn.setAttribute('aria-expanded', !expanded);
-          menuToggleBtn.classList.toggle('active');
-          navMenu.classList.toggle('active');
-        });
-      }
 
       // Lightbox modal logic
       const modal = document.getElementById('case-study-modal');

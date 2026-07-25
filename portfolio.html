@@ -671,7 +671,7 @@
   </footer>
 
   <!-- Custom JS -->
-  <script src="script.js?v=20"></script>
+  <script src="script.js?v=21"></script>
 
   <!-- Search & Filter Logic JS -->
   <script>
@@ -679,19 +679,6 @@
       const searchInput = document.getElementById('completedSearch');
       const filterSelect = document.getElementById('completedFilter');
       const tableRows = document.querySelectorAll('.infra-table tbody tr');
-
-      // Mobile Menu Toggle
-      const menuToggleBtn = document.getElementById('menuToggleBtn');
-      const navMenu = document.getElementById('navMenu');
-
-      if (menuToggleBtn && navMenu) {
-        menuToggleBtn.addEventListener('click', () => {
-          const expanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
-          menuToggleBtn.setAttribute('aria-expanded', !expanded);
-          menuToggleBtn.classList.toggle('active');
-          navMenu.classList.toggle('active');
-        });
-      }
 
       function filterTable() {
         const query = searchInput.value.toLowerCase().trim();
