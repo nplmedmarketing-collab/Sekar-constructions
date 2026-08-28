@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Security Portal | Sekar Construction</title>
+  <meta name="description" content="Secure Super Admin Authentication Portal for Sekar Construction Executive Management.">
+  <link rel="icon" type="image/png" href="logo-transparent.png">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Base Styles -->
+  <link rel="stylesheet" href="styles.css?v=122">
+
+  <style>
+    :root {
+      --admin-bg: #f8fafc;
+      --admin-card-bg: rgba(255, 255, 255, 0.95);
+      --admin-border: #e2e8f0;
+      --admin-primary: #e65100;
+      --admin-primary-glow: rgba(230, 81, 0, 0.15);
+      --admin-accent: #0284c7;
+      --admin-text: #0f172a;
+      --admin-muted: #64748b;
+      --admin-success: #059669;
+      --admin-danger: #dc2626;
+      --admin-warning: #d97706;
+    }
+
+    body.admin-body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: var(--admin-bg);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--admin-text);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Light Background Effects */
+    .admin-bg-mesh {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(230, 81, 0, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(2, 132, 199, 0.08) 0%, transparent 45%),
+        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+
+    .admin-grid-pattern {
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .admin-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 450px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .admin-brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .admin-brand-logo {
+      height: 64px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+    }
+
+    .admin-portal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(230, 81, 0, 0.08);
+      border: 1px solid rgba(230, 81, 0, 0.25);
+      color: var(--admin-primary);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .admin-card {
+      background: var(--admin-card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--admin-border);
+      border-radius: 18px;
+      padding: 38px 32px;
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08),
+                  0 0 30px var(--admin-primary-glow);
+      transition: all 0.3s ease;
+    }
+
+    .admin-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--admin-text);
+      margin: 0 0 6px 0;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    .admin-card-subtitle {
+      color: var(--admin-muted);
+      font-size: 0.88rem;
+      text-align: center;
+      margin: 0 0 26px 0;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--admin-text);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--admin-muted);
+      font-size: 0.95rem;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    .admin-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 13px 14px 13px 44px;
+      color: var(--admin-text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .admin-input:focus {
+      border-color: var(--admin-primary);
+      box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.12);
+      background: #ffffff;
+    }
+
+    .pwd-toggle {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      color: var(--admin-muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .pwd-toggle:hover { color: var(--admin-text); }
+
+    /* 2FA Digit Boxes */
+    .pin-input-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 24px 0;
+    }
+
+    .pin-box {
+      width: 48px;
+      height: 54px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: var(--admin-accent);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .pin-box:focus {
+      border-color: var(--admin-accent);
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+      background: #ffffff;
+    }
+
+    .btn-admin {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e65100 0%, #f57c00 100%);
+      border: none;
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(230, 81, 0, 0.3);
+      transition: all 0.25s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-admin:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(230, 81, 0, 0.45);
+      background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%);
+    }
+
+    .btn-admin:active { transform: translateY(0); }
+
+    .admin-alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .admin-alert.show { display: flex; }
+    .admin-alert.danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+    .admin-alert.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .admin-alert.success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+
+    .admin-footer-links {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.82rem;
+      color: var(--admin-muted);
+    }
+
+    .admin-footer-links a {
+      color: var(--admin-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .admin-footer-links a:hover { color: var(--admin-primary); }
+
+    .step-view { display: none; }
+    .step-view.active {
+      display: block;
+      animation: fadeInStep 0.25s ease-in-out;
+    }
+
+    @keyframes fadeInStep {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modal Overlay */
+    .qr-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .qr-modal.active { display: flex; }
+
+    .qr-modal-card {
+      background: #ffffff;
+      border: 1px solid var(--admin-border);
+      border-radius: 18px;
+      padding: 28px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+
+    .close-qr-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--admin-muted);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="admin-body">
+  <div class="admin-bg-mesh"></div>
+  <div class="admin-grid-pattern"></div>
+
+  <div class="admin-container">
+    <!-- Brand Header -->
+    <div class="admin-brand-header">
+      <a href="index.html">
+        <img src="logo-final.png?v=6" alt="Sekar Construction Logo" class="admin-brand-logo">
+      </a>
+    </div>
+
+
+    <!-- Login Card -->
+    <div class="admin-card">
+      
+      <!-- Alert Message Box -->
+      <div id="adminAlert" class="admin-alert">
+        <i id="alertIcon" class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMsg">Authentication message</span>
+      </div>
+
+      <!-- STEP 1: Username & Password -->
+      <div id="step1View" class="step-view active">
+        <h1 class="admin-card-title">Executive Sign In</h1>
+        <p class="admin-card-subtitle">Enter your Super Admin credentials to access executive controls.</p>
+
+        <form id="step1Form" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="adminUsername">Super Admin Username</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user-shield input-icon"></i>
+              <input type="text" id="adminUsername" class="admin-input" placeholder="Enter admin username" required autofocus>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adminPassword">Master Password</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-key input-icon"></i>
+              <input type="password" id="adminPassword" class="admin-input" placeholder="••••••••••••" required>
+              <button type="button" id="togglePwdBtn" class="pwd-toggle" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" id="step1Btn" class="btn-admin">
+            <span>Continue to 2FA</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 2: 2FA Master PIN -->
+      <div id="step2View" class="step-view">
+        <h1 class="admin-card-title">2FA Security PIN</h1>
+        <p class="admin-card-subtitle">Open <strong>Google Authenticator</strong> on your phone and enter your 6-digit live code.</p>
+
+        <form id="step2Form">
+          <div class="pin-input-container">
+            <input type="password" maxlength="1" class="pin-box" data-index="0" autofocus>
+            <input type="password" maxlength="1" class="pin-box" data-index="1">
+            <input type="password" maxlength="1" class="pin-box" data-index="2">
+            <input type="password" maxlength="1" class="pin-box" data-index="3">
+            <input type="password" maxlength="1" class="pin-box" data-index="4">
+            <input type="password" maxlength="1" class="pin-box" data-index="5">
+          </div>
+
+          <button type="submit" id="step2Btn" class="btn-admin">
+            <span>Authenticate & Launch</span> <i class="fa-solid fa-lock-open"></i>
+          </button>
+
+          <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+            <button type="button" id="backToStep1Btn" style="background:none; border:none; color: var(--admin-muted); cursor:pointer; font-weight: 500;">
+              <i class="fa-solid fa-arrow-left"></i> Primary Login
+            </button>
+            <button type="button" id="showQrModalBtn" style="background:none; border:none; color: var(--admin-accent); cursor:pointer; font-weight: 600;">
+              <i class="fa-solid fa-qrcode"></i> First Time? Scan QR
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Footer Links -->
+    <div class="admin-footer-links">
+      <p>&copy; 2026 Sekar Constructions. Class-I Civil Engineering Firm.</p>
+      <p><a href="index.html">&larr; Return to Public Website</a></p>
+    </div>
+  </div>
+
+  <!-- QR Pairing Modal -->
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-card">
+      <button class="close-qr-btn" id="closeQrBtn">&times;</button>
+      <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: var(--admin-text);">Pair Google Authenticator</h3>
+      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 12px;">Scan with Google Authenticator or Authy app on your phone to generate 2FA codes.</p>
+      
+      <img id="loginQrImg" src="" alt="Google Authenticator QR Code" style="width: 170px; height: 170px; border-radius: 10px; border: 1px solid #cbd5e1;">
+      
+      <div style="margin-top: 10px; font-size: 0.8rem; color: var(--admin-muted);">Secret Key:</div>
+      <div id="loginSecretText" style="font-family: monospace; font-weight: 700; color: var(--admin-accent); font-size: 0.9rem; letter-spacing: 1px; word-break: break-all;">Enable 2FA in the dashboard after first login</div>
+
+    </div>
+  </div>
+
+  <!-- Security Engine Core -->
+  <script src="config.js?v=121"></script>
+  <script src="admin-auth.js?v=142"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const securityEngine = window.SekarAdminSecurity;
+
+      // Auto redirect if session active
+      if (securityEngine && securityEngine.isSessionValid()) {
+        window.location.href = 'admin-dashboard.html';
+        return;
+      }
+
+      // UI Elements
+      const adminAlert = document.getElementById('adminAlert');
+      const alertMsg = document.getElementById('alertMsg');
+      const alertIcon = document.getElementById('alertIcon');
+
+      const step1View = document.getElementById('step1View');
+      const step2View = document.getElementById('step2View');
+
+      const step1Form = document.getElementById('step1Form');
+      const step2Form = document.getElementById('step2Form');
+
+      const adminUsername = document.getElementById('adminUsername');
+      const adminPassword = document.getElementById('adminPassword');
+      const togglePwdBtn = document.getElementById('togglePwdBtn');
+
+      const pinBoxes = document.querySelectorAll('.pin-box');
+      const backToStep1Btn = document.getElementById('backToStep1Btn');
+
+      const showQrModalBtn = document.getElementById('showQrModalBtn');
+      const qrModal = document.getElementById('qrModal');
+      const closeQrBtn = document.getElementById('closeQrBtn');
+
+      // Populate QR info (phase-2 — no client secret)
+      if (securityEngine) {
+        const info = securityEngine.getTOTPSetupInfo();
+        const qrImg = document.getElementById('loginQrImg');
+        const secretEl = document.getElementById('loginSecretText');
+        if (qrImg && info.qrImageUrl) qrImg.src = info.qrImageUrl;
+        if (secretEl) secretEl.textContent = info.secret || info.message || 'Enable 2FA in the dashboard after first login';
+      }
+
+      if (showQrModalBtn) {
+        showQrModalBtn.addEventListener('click', () => {
+          qrModal.classList.add('active');
+        });
+      }
+      if (closeQrBtn) {
+        closeQrBtn.addEventListener('click', () => {
+          qrModal.classList.remove('active');
+        });
+      }
+
+      // Helper function to show alert banner
+      function showAlert(message, type = 'danger') {
+        adminAlert.className = `admin-alert show ${type}`;
+        alertMsg.textContent = message;
+        
+        if (type === 'danger') {
+          alertIcon.className = 'fa-solid fa-triangle-exclamation';
+        } else if (type === 'warning') {
+          alertIcon.className = 'fa-solid fa-shield-halved';
+        } else {
+          alertIcon.className = 'fa-solid fa-circle-check';
+        }
+      }
+
+      function hideAlert() {
+        adminAlert.className = 'admin-alert';
+      }
+
+      // Check lockout state on load
+      const lockoutState = securityEngine.getLockoutState();
+      if (lockoutState.locked) {
+        const remainingMinutes = Math.ceil((lockoutState.unlockTime - Date.now()) / (60 * 1000));
+        showAlert(`Security Shield Active: Super Admin locked for ${remainingMinutes} minute(s) due to repeated failed attempts.`, 'warning');
+      }
+
+      // Toggle Password Visibility
+      if (togglePwdBtn && adminPassword) {
+        togglePwdBtn.addEventListener('click', () => {
+          const isPwd = adminPassword.type === 'password';
+          adminPassword.type = isPwd ? 'text' : 'password';
+          togglePwdBtn.innerHTML = isPwd ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+        });
+      }
+
+      // STEP 1 Submission
+      step1Form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const userVal = adminUsername.value.trim();
+        const pwdVal = adminPassword.value.trim();
+
+        if (!userVal || !pwdVal) {
+          showAlert('Please enter both Super Admin username and master password.');
+          return;
+        }
+
+        const res = await securityEngine.authenticateCredentials(userVal, pwdVal);
+        if (!res.success) {
+          showAlert(res.message, res.locked ? 'warning' : 'danger');
+        } else if (res.requires2FA === false) {
+          showAlert(res.message, 'success');
+          if (res.mustChangePassword) {
+            showAlert((res.message || '') + ' Use Change Password in the dashboard / API before go-live.', 'warning');
+          }
+          setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 600);
+        } else {
+          step1View.classList.remove('active');
+          step2View.classList.add('active');
+          showAlert(res.message, 'success');
+          pinBoxes[0].focus();
+        }
+      });
+
+      // 2FA Pin Box Handler
+      pinBoxes.forEach((box, idx) => {
+        box.addEventListener('input', async (e) => {
+          const val = e.target.value;
+          if (val && idx < pinBoxes.length - 1) {
+            pinBoxes[idx + 1].focus();
+          }
+
+          const currentPin = Array.from(pinBoxes).map(b => b.value).join('');
+          if (currentPin.length === 6) {
+            step2Form.requestSubmit();
+          }
+        });
+
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !box.value && idx > 0) {
+            pinBoxes[idx - 1].focus();
+          }
+        });
+
+        box.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
+          const digits = pasteData.replace(/\D/g, '').slice(0, 6);
+          if (digits.length > 0) {
+            digits.split('').forEach((char, i) => {
+              if (pinBoxes[i]) pinBoxes[i].value = char;
+            });
+            const focusIndex = Math.min(digits.length, 5);
+            pinBoxes[focusIndex].focus();
+            if (digits.length === 6) {
+              step2Form.requestSubmit();
+            }
+          }
+        });
+      });
+
+      // Back to Step 1
+      if (backToStep1Btn) {
+        backToStep1Btn.addEventListener('click', () => {
+          step2View.classList.remove('active');
+          step1View.classList.add('active');
+          hideAlert();
+        });
+      }
+
+      // STEP 2 Submission
+      step2Form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const enteredPin = Array.from(pinBoxes).map(b => b.value).join('');
+        if (enteredPin.length < 6) {
+          showAlert('Please enter the complete 6-digit master security PIN.');
+          return;
+        }
+
+        const res = await securityEngine.verify2FAPin(enteredPin);
+        if (!res.success) {
+          showAlert(res.message, 'danger');
+          pinBoxes.forEach(b => b.value = '');
+          pinBoxes[0].focus();
+        } else {
+          showAlert(res.message, 'success');
+          setTimeout(() => {
+            window.location.href = 'admin-dashboard.html';
+          }, 800);
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>

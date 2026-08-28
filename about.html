@@ -4,24 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us | Sekar Constructions</title>
+  <meta name="description" content="About Sekar Constructions — Class-I civil contractors based in Mamallapuram near Chennai. Trusted since 1995 for desalination, DAE/atomic energy, and industrial civil works.">
+  <link rel="canonical" href="https://www.sekarconstructions.com/about.html">
+  <meta property="og:title" content="About Us | Sekar Constructions">
+  <meta property="og:description" content="Class-I civil contractors in Mamallapuram near Chennai since 1995 — desalination, atomic energy, and industrial infrastructure.">
+  <meta property="og:image" content="https://www.sekarconstructions.com/hero-bg.jpg">
+  <meta property="og:url" content="https://www.sekarconstructions.com/about.html">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="logo-final.png">
   
   <!-- FontAwesome for Understated Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="styles.css?v=47">
-
-  <!-- Desktop Hover Dropdown Style Override -->
-  <style>
-    @media (min-width: 1025px) {
-      .nav-menu li:hover .dropdown-menu {
-        display: block !important;
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css?v=150">
 </head>
 <body>
 
@@ -31,209 +27,745 @@
   </button>
 
   <!-- Navigation Header -->
-  <header class="scrolled">
-    <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
-      </a>
+  <div id="site-header">
+    <header>
+      <div class="container nav-container">
+        <a href="index.html" class="logo">
+          <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
+        </a>
+        <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#services" class="nav-link">Services</a></li>
+          <li><a href="about.html" class="nav-link active">About Us</a></li>
+          <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+          <li class="dropdown">
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="portfolioDropdownBtn">
+              Portfolio <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu" id="portfolioDropdownMenu" role="menu" aria-label="Portfolio">
+              <li role="none"><a role="menuitem" href="ongoing-projects.html">Ongoing Projects</a></li>
+              <li role="none"><a role="menuitem" href="portfolio.html">Completed Projects</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="galleryDropdownBtn">
+              Gallery <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu--gallery" id="galleryDropdownMenu" role="menu" aria-label="Gallery">
+              <li role="none"><a role="menuitem" href="gallery.html">Projects</a></li>
+              <li role="none"><a role="menuitem" href="gallery-plant-machinery.html">Plant &amp; Machinery</a></li>
+              <li role="none"><a role="menuitem" href="gallery-founder-clients.html">Founder &amp; Clients</a></li>
+              <li role="none"><a role="menuitem" href="gallery-certificates.html" aria-label="Certificates &amp; Accreditations">
+                <span class="nav-label-long">Certificates &amp; Accreditations</span>
+                <span class="nav-label-short">Certificates</span>
+              </a></li>
+            </ul>
+          </li>
+          <li><a href="careers.html" class="nav-link">Careers</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </div>
+    </header>
+  </div>
 
-      <!-- Hamburger Menu for Mobile -->
-      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+  <div class="page-curtain">
 
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="index.html#services" class="nav-link">Services</a></li>
-        <li><a href="about.html" class="nav-link active">About Us</a></li>
-        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
-        <li class="dropdown">
-          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
-          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
-            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
-            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
-          </ul>
-        </li>
-        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-        <li><a href="careers.html" class="nav-link">Careers</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
-
-
+  <!-- Curtain chain: about hero → content -->
+  <div class="sc-curtain-stack">
+  <!-- About Hero -->
+  <section class="about-hero sc-curtain-banner" aria-label="About Sekar Constructions">
+    <div class="about-hero-media" aria-hidden="true">
+      <img src="hero-bg.jpg" alt="Sekar Constructions civil engineering project site" class="about-hero-img">
+      <div class="about-hero-overlay"></div>
     </div>
-  </header>
-
-  <!-- About Page Header Banner -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 style="color: var(--white); margin-top: 8px; font-size: 3.5rem; font-weight: 500;">About Our Company</h1>
+    <div class="container about-hero-content">
+      <p class="about-hero-brand">Sekar Constructions</p>
+      <h1 class="about-hero-title">About Our Company</h1>
+      <p class="about-hero-lead">Founded in 1995 by Mr. Ethiraj Sekar — delivering major civil works for Central &amp; State Government and reputed private institutions.</p>
+      <div class="about-hero-actions">
+        <a href="#about-story" class="btn btn-primary about-hero-cta">Explore Our Story</a>
+      </div>
     </div>
   </section>
 
+  <div class="sc-curtain-panel">
+  <div class="about-layout-shell">
+    <div class="container about-layout">
+      <nav class="about-toc" aria-label="On this page">
+        <details class="about-toc-mobile">
+          <summary class="about-toc-summary">
+            <span class="about-toc-summary-label">On this page</span>
+            <i class="fa-solid fa-chevron-down about-toc-chevron" aria-hidden="true"></i>
+          </summary>
+          <div class="about-toc-body">
+            <ul class="about-toc-list">
+              <li><a href="#about-story" class="about-toc-link" data-toc-target="about-story">About Us</a></li>
+              <li><a href="#about-workstreams" class="about-toc-link" data-toc-target="about-workstreams">Major Civil Works</a></li>
+              <li><a href="#about-capabilities" class="about-toc-link" data-toc-target="about-capabilities">Execution Capabilities</a></li>
+              <li><a href="#about-customers" class="about-toc-link" data-toc-target="about-customers">Our Leading Customers</a></li>
+              <li><a href="#about-financials" class="about-toc-link" data-toc-target="about-financials">Financial Capacity &amp; Quality</a></li>
+              <li><a href="#about-leadership" class="about-toc-link" data-toc-target="about-leadership">Leadership</a></li>
+            </ul>
+          </div>
+        </details>
+        <div class="about-toc-desktop" aria-hidden="false">
+          <p class="about-toc-heading">On this page</p>
+          <ul class="about-toc-list">
+            <li><a href="#about-story" class="about-toc-link" data-toc-target="about-story">About Us</a></li>
+            <li><a href="#about-workstreams" class="about-toc-link" data-toc-target="about-workstreams">Major Civil Works</a></li>
+            <li><a href="#about-capabilities" class="about-toc-link" data-toc-target="about-capabilities">Execution Capabilities</a></li>
+            <li><a href="#about-customers" class="about-toc-link" data-toc-target="about-customers">Our Leading Customers</a></li>
+            <li><a href="#about-financials" class="about-toc-link" data-toc-target="about-financials">Financial Capacity &amp; Quality</a></li>
+            <li><a href="#about-leadership" class="about-toc-link" data-toc-target="about-leadership">Leadership</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="about-layout-main">
   <!-- About Us Page Content -->
-  <section class="section-padding bg-light">
-    <div class="container">
-      <!-- Section 1: Core Company Story & Scope -->
-      <div class="about-intro-section" style="margin-bottom: 70px;">
-        <p style="font-family: var(--font-body); font-size: 1.25rem; line-height: 1.6; color: var(--text-main); margin-bottom: 30px; font-weight: 500;">
-          M/s. Sekar Constructions was started in 1995 as a Civil Engineering Construction Company and has undertaken diversified Civil Engineering works:
+  <section class="section-padding bg-light about-story-section">
+    <div class="about-content">
+      <div id="about-story" class="about-intro">
+        <span class="section-subtitle">Our Journey</span>
+        <h2 class="about-intro-title">About Us</h2>
+        <p class="about-story-lead">
+          Sekar Constructions commenced its journey in <strong>1995</strong> as a civil construction company.
+          Founded by <strong>Mr. Ethiraj Sekar</strong>, the firm has undertaken major civil engineering works for
+          Central Government, State Government, and reputed private-sector institutions and companies.
         </p>
-        
+        <ul class="about-client-pills" aria-label="Client sectors">
+          <li style="--pill-i: 0"><a href="#stream-central">Central Government</a></li>
+          <li style="--pill-i: 1"><a href="#stream-state">State Government</a></li>
+          <li style="--pill-i: 2"><a href="#stream-private">Private Sector</a></li>
+        </ul>
+      </div>
+
+      <div id="about-workstreams" class="about-workstreams">
+        <article id="stream-central" class="about-stream" style="--stream-i: 0">
+          <div class="about-stream-head">
+            <span class="about-stream-index" aria-hidden="true">01</span>
+            <div class="about-stream-titles">
+              <p class="about-stream-eyebrow">Central Government</p>
+              <h3>Major Civil Works</h3>
+            </div>
+            <span class="about-stream-rule" aria-hidden="true"></span>
+          </div>
+          <div class="about-stream-body">
+            <p class="about-stream-note">
+              Executed and under execution for Atomic Research Projects, Nuclear Power Plants, Thermal Power Plants, ISRO, and related programmes.
+            </p>
+            <ul class="about-work-list">
+              <li>Residential Buildings and Towers</li>
+              <li>High Rise Industrial / Workshop Buildings</li>
+              <li>Advanced Facility Buildings</li>
+              <li>Advanced Hospital Buildings</li>
+              <li>Advanced Laboratory Buildings</li>
+              <li>Electrical Substation Buildings</li>
+              <li>Major Fire Water Systems</li>
+              <li>Water Retaining Structures</li>
+              <li>Pre-engineered Steel Structures &amp; Large Warehouses</li>
+              <li>Road Works (Bitumen and RCC)</li>
+            </ul>
+          </div>
+        </article>
+
+        <article id="stream-state" class="about-stream" style="--stream-i: 1">
+          <div class="about-stream-head">
+            <span class="about-stream-index" aria-hidden="true">02</span>
+            <div class="about-stream-titles">
+              <p class="about-stream-eyebrow">State Government</p>
+              <h3>Sea Water Desalination</h3>
+            </div>
+            <span class="about-stream-rule" aria-hidden="true"></span>
+          </div>
+          <div class="about-stream-body">
+            <p class="about-stream-note">
+              Large-scale desalination infrastructure for state projects, including the
+              <strong>150 MLD</strong> and <strong>400 MLD</strong> plants at <strong>Nemmeli, Tamil Nadu</strong>.
+            </p>
+            <div class="about-stream-list-block">
+              <p class="about-desal-label">Key infrastructure delivered</p>
+              <ul class="about-work-list">
+                <li>Intake Well</li>
+                <li>Pump House</li>
+                <li>Lamella</li>
+                <li>GDMF</li>
+                <li>DAF</li>
+                <li>Sledge Tank</li>
+                <li>Sledge Balancing Tank</li>
+                <li>Main Electrical Building</li>
+                <li>Clear Water Reservoir</li>
+                <li>Product Water Tank</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article id="stream-private" class="about-stream" style="--stream-i: 2">
+          <div class="about-stream-head">
+            <span class="about-stream-index" aria-hidden="true">03</span>
+            <div class="about-stream-titles">
+              <p class="about-stream-eyebrow">Private Sector</p>
+              <h3>Institutions &amp; Companies</h3>
+            </div>
+            <span class="about-stream-rule" aria-hidden="true"></span>
+          </div>
+          <div class="about-stream-body">
+            <p class="about-stream-note">
+              Major works executed and under execution for private institutions and companies.
+            </p>
+            <ul class="about-work-list">
+              <li>Large Warehouse Buildings</li>
+              <li>Industrial / Factory Buildings</li>
+              <li>Aesthetic College Buildings</li>
+              <li>Large Compound Walls</li>
+              <li>Water Supply and Sewerage Line Works</li>
+              <li>Sewage Treatment Plants</li>
+              <li>Road Works (Bitumen &amp; RCC)</li>
+              <li>Electrical &amp; Plumbing Works</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+
+      <div id="about-capabilities" class="about-capabilities">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">Areas of Work</span>
+          <h3 class="about-capabilities-title">Execution Capabilities</h3>
+        </div>
+        <p class="about-capabilities-lead">
+          Diversified civil engineering works undertaken across buildings, electrical, water, and infrastructure.
+        </p>
         <div class="works-grid">
           <div class="work-item">
-            <i class="fa-solid fa-building-user"></i>
+            <i class="fa-solid fa-building-user" aria-hidden="true"></i>
             <span>Office Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-landmark"></i>
+            <i class="fa-solid fa-landmark" aria-hidden="true"></i>
             <span>Public Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-hospital"></i>
+            <i class="fa-solid fa-hospital" aria-hidden="true"></i>
             <span>Hospitals Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-graduation-cap"></i>
+            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
             <span>College Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-hotel"></i>
+            <i class="fa-solid fa-hotel" aria-hidden="true"></i>
             <span>Residential Multistoried Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-house-chimney"></i>
+            <i class="fa-solid fa-house-chimney" aria-hidden="true"></i>
             <span>Residential Quarters</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-bolt-lightning"></i>
+            <i class="fa-solid fa-bolt-lightning" aria-hidden="true"></i>
             <span>Electrical Sub-Station Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-plug"></i>
+            <i class="fa-solid fa-plug" aria-hidden="true"></i>
             <span>Electrical Works</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-masks-theater"></i>
+            <i class="fa-solid fa-masks-theater" aria-hidden="true"></i>
             <span>Auditoriums Buildings and interiors</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-border-all"></i>
+            <i class="fa-solid fa-border-all" aria-hidden="true"></i>
             <span>Large Compound Walls</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-warehouse"></i>
+            <i class="fa-solid fa-warehouse" aria-hidden="true"></i>
             <span>Ware House</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-gears"></i>
+            <i class="fa-solid fa-gears" aria-hidden="true"></i>
             <span>Workshop Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-boxes-stacked"></i>
+            <i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
             <span>Storage Buildings</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-network-wired"></i>
+            <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
             <span>Underground Electrical Ducting Works</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-faucet-drip"></i>
+            <i class="fa-solid fa-faucet-drip" aria-hidden="true"></i>
             <span>Water Supply and Sewage line works</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-road"></i>
+            <i class="fa-solid fa-road" aria-hidden="true"></i>
             <span>Road Works</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-shield-halved"></i>
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
             <span>Water Retaining Structures</span>
           </div>
           <div class="work-item">
-            <i class="fa-solid fa-industry"></i>
+            <i class="fa-solid fa-industry" aria-hidden="true"></i>
             <span>Power Plants</span>
           </div>
+        </div>
+      </div>
+
+      <blockquote class="about-quote about-expertise-quote">
+        <p class="about-quote-text about-expertise-quote-text">
+          “Our firm has gained tremendous technical expertise and significant growth in the field of Civil Constructions for 3 Decades”
+        </p>
+      </blockquote>
+
+      <!-- Our Leading Customers -->
+      <div id="about-customers" class="about-customers-section">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">Trusted Partners</span>
+          <h3 class="about-customers-title">Our Leading Customers</h3>
+        </div>
+        <p class="about-customers-intro">
+          We feel very proud in serving as a major Patron for Civil Construction activities of various Projects pertaining to the Premier Central Government Departments like Department of Atomic Energy, Nuclear Power Corporation Ltd., Bharatiya Nabhikiya Vidyut Nigam Ltd., Bharat Heavy Electricals Ltd, Department of Space etc., across the Nation for the past 3 Decades as detailed below:
+        </p>
+        <ul class="about-customers-list" aria-label="Central government patrons">
+          <li style="--customer-i: 0">
+            <span class="about-customer-name">Indira Gandhi Centre for Atomic Research (IGCAR)</span>
+            <span class="about-customer-desc">Premier R&amp;D Centre of DAE</span>
+          </li>
+          <li style="--customer-i: 1">
+            <span class="about-customer-name">Bhabha Atomic Research Centre (BARC)</span>
+            <span class="about-customer-desc">DAE Project at Kalpakkam</span>
+          </li>
+          <li style="--customer-i: 2">
+            <span class="about-customer-name">Bhabha Atomic Research Centre (BARC)</span>
+            <span class="about-customer-desc">DAE Project at Visakhapattinam</span>
+          </li>
+          <li style="--customer-i: 3">
+            <span class="about-customer-name">Indian Space Research Organisation (ISRO)</span>
+            <span class="about-customer-desc">DOS Project at Mahendragiri</span>
+          </li>
+          <li style="--customer-i: 4">
+            <span class="about-customer-name">Bharat Heavy Electricals Ltd., (BHEL)</span>
+            <span class="about-customer-desc">Chennai</span>
+          </li>
+          <li style="--customer-i: 5">
+            <span class="about-customer-name">Fast Reactor Fuel Cycle Facility (FRFCF)</span>
+            <span class="about-customer-desc">BARC Project at Kalpakkam</span>
+          </li>
+          <li style="--customer-i: 6">
+            <span class="about-customer-name">Madras Atomic Power Station (MAPS)</span>
+            <span class="about-customer-desc">NPCIL Project at Kalpakkam</span>
+          </li>
+          <li style="--customer-i: 7">
+            <span class="about-customer-name">Bharatiya Nabhikiya Vidyut Nigam Ltd.</span>
+            <span class="about-customer-desc">BHAVINI Project at Kalpakkam</span>
+          </li>
+          <li style="--customer-i: 8">
+            <span class="about-customer-name">General Service Organisation (GSO)</span>
+            <span class="about-customer-desc">DAE Project at Kalpakkam</span>
+          </li>
+        </ul>
+
+        <div class="about-customers-private">
+          <h4 class="about-customers-subheading">Private Sector Institutions &amp; Companies</h4>
+          <p class="about-customers-intro about-customers-intro--private">
+            We parallely extend our Quality Service to the Private Sector Institutions and Companies as detailed below:
+          </p>
+          <ul class="about-customers-list" aria-label="Private sector clients">
+            <li style="--customer-i: 0">
+              <span class="about-customer-name">M/S. Cobratecton India Private Limited, Chennai</span>
+              <span class="about-customer-desc">150MLD Water Desalination Projects</span>
+            </li>
+            <li style="--customer-i: 1">
+              <span class="about-customer-name">M/S. VA Tech Wabag Ltd., Chennai</span>
+              <span class="about-customer-desc">400MLD Water Desalination Projects</span>
+            </li>
+            <li style="--customer-i: 2">
+              <span class="about-customer-name">M/S. Great Lakes Institute of Management, Manamai</span>
+              <span class="about-customer-desc">Premier Institute for Management Studies</span>
+            </li>
+            <li style="--customer-i: 3">
+              <span class="about-customer-name">M/S. KOCHAR Propeties Pvt. Ltd., Chennai</span>
+              <span class="about-customer-desc">Industrial Park &amp; Housing Developers</span>
+            </li>
+            <li style="--customer-i: 4">
+              <span class="about-customer-name">M/S. Polyhose India Private Ltd., Chennai</span>
+              <span class="about-customer-desc">Pioneers in all kind of Industrial Hose Manufacturer</span>
+            </li>
+            <li style="--customer-i: 5">
+              <span class="about-customer-name">M/S. NMV University</span>
+              <span class="about-customer-desc">Group of Savitha Educational Trust, Chennai</span>
+            </li>
+            <li style="--customer-i: 6">
+              <span class="about-customer-name">M/S. IVRCL</span>
+              <span class="about-customer-desc">Veeranam Projects, Chennai</span>
+            </li>
+          </ul>
         </div>
 
       </div>
 
-      <!-- Divider -->
-      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 60px 0;">
+      <blockquote class="about-quote about-customers-quote">
+        <p class="about-quote-text about-customers-quote-text">
+          “We secure a Very Good Track of Records with the Department of Atomic Energy Units and Department of Science and Technology and are well known for our Absolute Quality Control Systems, Ethical Standards, Sound Technical Manpower, High Resources, State of Art Infrastructure and Ability Innovate”.
+        </p>
+      </blockquote>
 
-      <!-- Section 2: Financial Capacity & Quality Standards -->
-      <div class="about-financials-section">
-        <div class="section-title-wrapper text-center" style="margin-bottom: 40px;">
-          <span class="section-subtitle">Resources & Quality</span>
-          <h3 style="font-family: var(--font-heading); font-size: 2.2rem; color: var(--primary); font-weight: 500;">Financial Capacity & Quality Standards</h3>
+      <hr class="about-divider">
+
+      <!-- Financial Capacity & Quality Standards -->
+      <div id="about-financials" class="about-financials-section">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">Resources &amp; Quality</span>
+          <h3 class="about-financials-title">Financial Capacity &amp; Quality Standards</h3>
         </div>
-        
+
+        <div class="about-quality-block">
+          <p>
+            We always admire the principle of “TIME IS THE ESSENCE OF THE CONTRACT” and consistently deliver all our commitments right on time.
+            Our prime motto is to execute all the works with high, up-to-date standards through our stringent Absolute Quality Control systems.
+          </p>
+          <p>
+            This ethical performance, competitive pricing, and related strengths have enabled Sekar Constructions to secure continuous orders from premier Central Government institutions such as the Department of Atomic Energy (BARC, IGCAR, FRFCF, etc.), the Department of Space (ISRO), Nuclear Power Corporation (MAPS), BHAVINI, BHEL, and private institutions and companies across the country.
+          </p>
+        </div>
+
         <div class="financials-grid">
-          <!-- Card 1: Annual Turnover -->
-          <div class="financial-card">
-            <div class="card-icon-wrapper">
-              <i class="fa-solid fa-chart-line"></i>
+          <!--
+            Turnover chart data (Rs. millions):
+            FY 2019-20 … 2023-24 = illustrative placeholders (ramp toward known peak).
+            FY 2024-25 = 1175 (from published site copy: Rs. 117.50 Crore).
+            FY 2025-26 = 1420 (from card copy / peak figure).
+            Replace placeholder years with official figures when available.
+          -->
+          <div
+            class="financial-card financial-card--flip"
+            data-fin-key="turnover"
+            data-turnover-series="placeholder"
+            tabindex="0"
+            role="button"
+            aria-pressed="false"
+            aria-label="Annual Turnover. Activate to flip and view year-wise turnover chart."
+          >
+            <div class="financial-card-flipper">
+              <div class="financial-card-face financial-card-face--front">
+                <div class="card-icon-wrapper" aria-hidden="true">
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3>Annual Turnover</h3>
+                <p>Our financial progress reached a whopping annual turnover to the tune of Rs.1420 millions during the Financial Year 2025–26.</p>
+              </div>
+
+              <div class="financial-card-face financial-card-face--back" aria-hidden="true">
+                <h3 class="turnover-chart-title">Turnover Trend</h3>
+                <p class="turnover-chart-unit">Rs. millions · FY</p>
+                <div class="turnover-chart" role="img" aria-label="Bar and line chart of annual turnover from FY 2019-20 to FY 2025-26, peaking at 1420 million in FY 2025-26. Earlier years are illustrative placeholders.">
+                  <svg class="turnover-chart-svg" viewBox="0 0 348 198" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <!-- Y-axis title -->
+                    <text class="turnover-axis-y" transform="rotate(-90 13 88)" x="13" y="88" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Turnover (Rs. Millions)</text>
+                    <!-- grid -->
+                    <g class="turnover-chart-grid" stroke="#E2E8F0" stroke-width="1">
+                      <line x1="48" y1="28" x2="336" y2="28" />
+                      <line x1="48" y1="68" x2="336" y2="68" />
+                      <line x1="48" y1="108" x2="336" y2="108" />
+                      <line x1="48" y1="148" x2="336" y2="148" />
+                    </g>
+                    <!-- y labels -->
+                    <g class="turnover-chart-ylabels" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="10" text-anchor="end">
+                      <text x="42" y="31">1500</text>
+                      <text x="42" y="71">1125</text>
+                      <text x="42" y="111">750</text>
+                      <text x="42" y="151">375</text>
+                    </g>
+                    <!--
+                      Bars mapped: value → y = 148 - (value/1500)*120
+                      Plot shifted +8px for Y-axis title clearance
+                    -->
+                    <g class="turnover-chart-bars" data-placeholder-years="2019-20,2020-21,2021-22,2022-23,2023-24">
+                      <rect x="60" y="109.6" width="22" height="38.4" fill="#A27B3C" opacity="0.55" rx="1" data-fy="2019-20" data-value="480" data-source="placeholder" />
+                      <rect x="100" y="103.2" width="22" height="44.8" fill="#A27B3C" opacity="0.6" rx="1" data-fy="2020-21" data-value="560" data-source="placeholder" />
+                      <rect x="140" y="90.4" width="22" height="57.6" fill="#A27B3C" opacity="0.65" rx="1" data-fy="2021-22" data-value="720" data-source="placeholder" />
+                      <rect x="180" y="80" width="22" height="68" fill="#A27B3C" opacity="0.7" rx="1" data-fy="2022-23" data-value="850" data-source="placeholder" />
+                      <rect x="220" y="68.8" width="22" height="79.2" fill="#A27B3C" opacity="0.75" rx="1" data-fy="2023-24" data-value="990" data-source="placeholder" />
+                      <rect x="260" y="54" width="22" height="94" fill="#A27B3C" opacity="0.85" rx="1" data-fy="2024-25" data-value="1175" data-source="published-copy" />
+                      <rect x="300" y="34.4" width="22" height="113.6" fill="#A27B3C" rx="1" data-fy="2025-26" data-value="1420" data-source="card-copy" />
+                    </g>
+                    <!-- trend line -->
+                    <polyline
+                      class="turnover-chart-line"
+                      fill="none"
+                      stroke="#0F172A"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      points="71,109.6 111,103.2 151,90.4 191,80 231,68.8 271,54 311,34.4"
+                    />
+                    <g class="turnover-chart-dots" fill="#A27B3C" stroke="#0F172A" stroke-width="1">
+                      <circle cx="71" cy="109.6" r="3" />
+                      <circle cx="111" cy="103.2" r="3" />
+                      <circle cx="151" cy="90.4" r="3" />
+                      <circle cx="191" cy="80" r="3" />
+                      <circle cx="231" cy="68.8" r="3" />
+                      <circle cx="271" cy="54" r="3" />
+                      <circle cx="311" cy="34.4" r="3.5" />
+                    </g>
+                    <!-- baseline -->
+                    <line x1="48" y1="148" x2="336" y2="148" stroke="#0F172A" stroke-width="1.25" />
+                    <!-- x labels -->
+                    <g class="turnover-chart-xlabels" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" text-anchor="middle">
+                      <text x="71" y="164">19-20</text>
+                      <text x="111" y="164">20-21</text>
+                      <text x="151" y="164">21-22</text>
+                      <text x="191" y="164">22-23</text>
+                      <text x="231" y="164">23-24</text>
+                      <text x="271" y="164">24-25</text>
+                      <text x="311" y="164">25-26</text>
+                    </g>
+                    <!-- X-axis title -->
+                    <text class="turnover-axis-x" x="192" y="186" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Fiscal Year (FY)</text>
+                    <text class="turnover-peak-label" x="311" y="26" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="600">1420</text>
+                  </svg>
+                </div>
+                <p class="turnover-chart-note">Earlier years illustrative · peak FY 2025–26</p>
+              </div>
             </div>
-            <h3>Annual Turnover</h3>
-            <p>The Company has achieved a revenue of Rs. 117.50 Crore for the financial year 2024-25 and we are good improvement in turnover for the current financial year 2025-26 achieving 140+ Crores.</p>
           </div>
 
-          <!-- Card 2: Financial Resources -->
-          <div class="financial-card">
-            <div class="card-icon-wrapper">
-              <i class="fa-solid fa-vault"></i>
+          <!--
+            Resources back-face metrics (hardcoded from published copy):
+            Cash Credit Limit = ₹10.00 Cr · Bank Guarantee Limit = ₹25.00 Cr · HDFC Kalpakkam.
+            Front copy syncs from admin; update these chart values in about.html if limits change.
+          -->
+          <div
+            class="financial-card financial-card--flip"
+            data-fin-key="resources"
+            tabindex="0"
+            role="button"
+            aria-pressed="false"
+            aria-label="Financial Resources. Activate to flip and view cash credit and bank guarantee limits chart."
+          >
+            <div class="financial-card-flipper">
+              <div class="financial-card-face financial-card-face--front">
+                <div class="card-icon-wrapper" aria-hidden="true">
+                  <i class="fa-solid fa-vault"></i>
+                </div>
+                <h3>Financial Resources</h3>
+                <p>The financial credibility of the firm has enabled it to secure a Cash Credit Limit of Rs.10.00 Crore and Bank Guarantee Limit of Rs. 25.00 Crore from HDFC, Kalpakkam. Besides this, we are well supported by Banks and Partners.</p>
+              </div>
+
+              <div class="financial-card-face financial-card-face--back" aria-hidden="true">
+                <h3 class="turnover-chart-title">Bank Facilities</h3>
+                <p class="turnover-chart-unit">₹ Crore · HDFC Kalpakkam</p>
+                <div
+                  class="turnover-chart resources-chart"
+                  role="img"
+                  aria-label="Horizontal bar chart comparing Cash Credit Limit of 10 crore rupees and Bank Guarantee Limit of 25 crore rupees from HDFC Kalpakkam."
+                >
+                  <svg class="turnover-chart-svg resources-chart-svg" viewBox="0 0 348 198" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <!-- Y-axis title (facility type) -->
+                    <text class="turnover-axis-y resources-axis-y" transform="rotate(-90 12 88)" x="12" y="88" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Facility</text>
+                    <!-- grid lines (X scale 0–30 Cr) -->
+                    <g class="resources-chart-grid" stroke="#E2E8F0" stroke-width="1">
+                      <line x1="118" y1="36" x2="118" y2="148" />
+                      <line x1="178" y1="36" x2="178" y2="148" />
+                      <line x1="238" y1="36" x2="238" y2="148" />
+                      <line x1="298" y1="36" x2="298" y2="148" />
+                    </g>
+                    <!--
+                      Plot area: x 118→298 (180px) for 0–30 Cr → 6px per Cr
+                      CC 10 Cr → width 60; BG 25 Cr → width 150
+                    -->
+                    <g class="resources-chart-bars">
+                      <rect x="118" y="48" width="60" height="28" fill="#A27B3C" opacity="0.85" rx="2" data-facility="cash-credit" data-value="10" />
+                      <rect x="118" y="100" width="150" height="28" fill="#A27B3C" rx="2" data-facility="bank-guarantee" data-value="25" />
+                    </g>
+                    <!-- value labels on bars -->
+                    <g class="resources-chart-values" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">
+                      <text x="186" y="67">₹10 Cr</text>
+                      <text x="276" y="119">₹25 Cr</text>
+                    </g>
+                    <!-- category labels (Y) -->
+                    <g class="resources-chart-ylabels" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="10" text-anchor="end">
+                      <text x="110" y="66">Cash Credit</text>
+                      <text x="110" y="118">Bank Guarantee</text>
+                    </g>
+                    <!-- baseline -->
+                    <line x1="118" y1="148" x2="298" y2="148" stroke="#0F172A" stroke-width="1.25" />
+                    <!-- x labels -->
+                    <g class="turnover-chart-xlabels resources-chart-xlabels" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="10" text-anchor="middle">
+                      <text x="118" y="164">0</text>
+                      <text x="178" y="164">10</text>
+                      <text x="238" y="164">20</text>
+                      <text x="298" y="164">30</text>
+                    </g>
+                    <!-- X-axis title -->
+                    <text class="turnover-axis-x" x="208" y="186" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Limit (₹ Crore)</text>
+                  </svg>
+                </div>
+                <p class="turnover-chart-note">Secured limits · HDFC, Kalpakkam</p>
+              </div>
             </div>
-            <h3>Financial Resources</h3>
-            <p>The financial credibility of the firm has enabled it to secure a Cash Credit Limit of Rs.10.00 Crore and Bank Guarantee Limit of Rs. 25.00 Crore from HDFC, Kalpakkam. Besides this, we are well supported by Banks and Partners.</p>
           </div>
 
-          <!-- Card 3: Quality Assurance -->
-          <div class="financial-card">
-            <div class="card-icon-wrapper">
-              <i class="fa-solid fa-award"></i>
+          <!--
+            Quality back-face pillars (thematic, from Absolute Quality Control copy):
+            Quality Standards · Ethical Performance · On-time Delivery · QC Systems.
+            Front copy syncs from admin; no certificate numbers invented.
+          -->
+          <div
+            class="financial-card financial-card--flip"
+            data-fin-key="quality"
+            tabindex="0"
+            role="button"
+            aria-pressed="false"
+            aria-label="Quality Assurance. Activate to flip and view quality focus pillars."
+          >
+            <div class="financial-card-flipper">
+              <div class="financial-card-face financial-card-face--front">
+                <div class="card-icon-wrapper" aria-hidden="true">
+                  <i class="fa-solid fa-award"></i>
+                </div>
+                <h3>Quality Assurance</h3>
+                <p>Timely completion with Absolute Quality Control has long been the specialty of Sekar Constructions. Continuous orders from the Department of Atomic Energy and allied premier institutions stand as evidence of that commitment.</p>
+              </div>
+
+              <div class="financial-card-face financial-card-face--back" aria-hidden="true">
+                <h3 class="turnover-chart-title">Quality Focus</h3>
+                <p class="turnover-chart-unit">Absolute Quality Control · pillars</p>
+                <div
+                  class="turnover-chart quality-chart"
+                  role="img"
+                  aria-label="Four equal quality pillars: Quality Standards, Ethical Performance, On-time Delivery, and QC Systems."
+                >
+                  <svg class="turnover-chart-svg quality-chart-svg" viewBox="0 0 348 198" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <!-- Y-axis title -->
+                    <text class="turnover-axis-y quality-axis-y" transform="rotate(-90 12 88)" x="12" y="88" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Focus</text>
+                    <!-- soft grid -->
+                    <g class="quality-chart-grid" stroke="#E2E8F0" stroke-width="1">
+                      <line x1="40" y1="36" x2="336" y2="36" />
+                      <line x1="40" y1="72" x2="336" y2="72" />
+                      <line x1="40" y1="108" x2="336" y2="108" />
+                    </g>
+                    <!--
+                      Four equal pillars (thematic, not scored metrics).
+                      Plot: baseline y=142; pillar top y=40; height 102.
+                      Centers: 72, 144, 216, 288 · width 40
+                    -->
+                    <g class="quality-chart-pillars">
+                      <rect x="52" y="40" width="40" height="102" fill="#A27B3C" opacity="0.7" rx="2" data-pillar="standards" />
+                      <rect x="124" y="40" width="40" height="102" fill="#A27B3C" opacity="0.8" rx="2" data-pillar="ethics" />
+                      <rect x="196" y="40" width="40" height="102" fill="#A27B3C" opacity="0.9" rx="2" data-pillar="delivery" />
+                      <rect x="268" y="40" width="40" height="102" fill="#A27B3C" rx="2" data-pillar="qc" />
+                    </g>
+                    <!-- navy caps -->
+                    <g class="quality-chart-caps" fill="#0F172A">
+                      <rect x="52" y="40" width="40" height="5" rx="1" />
+                      <rect x="124" y="40" width="40" height="5" rx="1" />
+                      <rect x="196" y="40" width="40" height="5" rx="1" />
+                      <rect x="268" y="40" width="40" height="5" rx="1" />
+                    </g>
+                    <!-- baseline -->
+                    <line x1="40" y1="142" x2="336" y2="142" stroke="#0F172A" stroke-width="1.25" />
+                    <!-- pillar labels (two lines where needed) -->
+                    <g class="quality-chart-xlabels" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9" text-anchor="middle">
+                      <text x="72" y="158">Quality</text>
+                      <text x="72" y="170">Standards</text>
+                      <text x="144" y="158">Ethical</text>
+                      <text x="144" y="170">Performance</text>
+                      <text x="216" y="158">On-time</text>
+                      <text x="216" y="170">Delivery</text>
+                      <text x="288" y="158">QC</text>
+                      <text x="288" y="170">Systems</text>
+                    </g>
+                    <text class="turnover-axis-x" x="188" y="188" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Commitment pillars</text>
+                  </svg>
+                </div>
+                <p class="turnover-chart-note">From Absolute Quality Control practice</p>
+              </div>
             </div>
-            <h3>Quality Assurance</h3>
-            <p>Timely Completion of works with best quality and standards has been the specialty of Sekar Constructions and the continuous orders from the department of Atomic Energy is the evidence of our commitment of quality and timely completion.</p>
           </div>
         </div>
+
+        <blockquote class="about-quote about-quality-quote">
+          <p class="about-quote-text about-quality-quote-text">
+            “Sekar Constructions is always committed to Best Quality, Ethical Standards and Sound Systems.”
+          </p>
+        </blockquote>
       </div>
     </div>
   </section>
 
   <!-- Our Team Section -->
-  <section class="section-padding bg-white" style="border-top: 1px solid var(--border-color);">
-    <div class="container">
-      <div class="section-title-wrapper text-center" style="margin-bottom: 50px;">
-        <span class="section-subtitle">Managing Directors & Partners</span>
+  <section id="about-leadership" class="section-padding about-leadership-section">
+    <div class="about-leadership-inner">
+      <div class="section-title-wrapper text-center about-block-heading">
+        <span class="section-subtitle">Founder &amp; Partners</span>
         <h2 class="section-title">Leadership</h2>
       </div>
 
-      <!-- Highlighted Founder & Leadership Card -->
-      <div class="team-single-highlight">
-        <div class="team-card-horizontal">
-          <div class="team-img-horizontal-wrapper">
-            <img src="sekar-founder-half-body.jpg" alt="Shri. E. Sekar, Founder and Managing Partner">
+      <!-- Leadership people: portrait + bio (swap images in images/leadership/) -->
+      <div class="leadership-people">
+        <article class="leadership-person">
+          <figure class="leadership-portrait" data-initials="ES">
+            <img
+              src="images/leadership/sekar.jpg"
+              alt="Portrait of Mr. E. Sekar, Founder and Managing Partner"
+              width="400"
+              height="500"
+              loading="lazy"
+              decoding="async"
+              onerror="this.classList.add('is-missing'); this.removeAttribute('src');"
+            >
+          </figure>
+          <div class="leadership-person-body leadership-block">
+            <span class="team-role">FOUNDER &amp; MANAGING PARTNER</span>
+            <h3>Mr. E. Sekar</h3>
+            <p>With the world-class technical skills and management expertise gained by serving for more than fifteen years abroad with companies of international repute such as <strong>M/s. National Petroleum Construction Company (Abu Dhabi)</strong>, the founder Mr. E. Sekar commenced the business in 1995.</p>
+            <p>The enthusiastic and visionary founder Mr. Sekar has been leading the company for over 30 years and has brought gradual, steady growth that has established Sekar Constructions as a prominent Class-I civil construction company, identified for its excellent quality, ethical standards, sound systems, and strong credibility.</p>
           </div>
-          <div class="team-info-horizontal">
-            <!-- Shri. E. Sekar Section -->
-            <div class="leadership-block">
-              <span class="team-role">FOUNDER & MANAGING PARTNER</span>
-              <h3>Shri. E. Sekar</h3>
-              <p>Shri. E. Sekar, now aged 67 years, the founder of the Company, is a technically experienced leader with over 40 years of service in the field, in India and abroad.</p>
-              <p>Having worked with international firms like NPCC Abu Dhabi for fifteen years, he acquired tremendous skills, technical knowledge, and management capabilities. Under his dynamic direction for about 30 years, Sekar Constructions has achieved major milestones in quality execution and has grown into a premier Class-I civil contractor.</p>
-            </div>
+        </article>
 
-            <!-- Divider -->
-            <hr class="leadership-divider">
-
-            <!-- Smt. S. Sasikala Section -->
-            <div class="leadership-block">
-              <span class="team-role">PARTNER & SUPPLY DIRECTOR</span>
-              <h3>Smt. S. Sasikala</h3>
-              <p>Smt. S. Sasikala is a large-scale civil material supplier in the region, managing river sand, blue metal, and bricks procurement under the name of <strong>M/s. Sasikala Suppliers</strong>, securing huge logistics volume.</p>
-              <p>An enthusiastic entrepreneur, she also owns and manages <strong>M/s. Aniruth Industries</strong> (Chennai-32), an ISO 9001:2000 certified precision mechanical engineering and machining firm. Our strong logistics association with Smt. Sasikala enables Sekar Constructions to easily procure the best quality building materials locally and from Chennai at highly economical costs.</p>
-            </div>
+        <article class="leadership-person">
+          <figure class="leadership-portrait" data-initials="SK">
+            <img
+              src="images/leadership/sasikala.jpg"
+              alt="Portrait of Mrs. S. Sasikala, Partner"
+              width="400"
+              height="500"
+              loading="lazy"
+              decoding="async"
+              onerror="this.classList.add('is-missing'); this.removeAttribute('src');"
+            >
+          </figure>
+          <div class="leadership-person-body leadership-block">
+            <span class="team-role">PARTNER</span>
+            <h3>Mrs. S. Sasikala</h3>
+            <p>Mrs. S. Sasikala, a manufacturer and supplier of construction materials and a transport supplier, also actively functions as a Partner of Sekar Constructions. Her participation in the business has been highly supportive in securing uninterrupted supply of building materials and transportation.</p>
           </div>
+        </article>
+
+        <article class="leadership-person">
+          <figure class="leadership-portrait" data-initials="SU">
+            <img
+              src="images/leadership/sudhangan.jpg"
+              alt="Portrait of Mr. S. Sudhangan, Partner"
+              width="400"
+              height="500"
+              loading="lazy"
+              decoding="async"
+              onerror="this.classList.add('is-missing'); this.removeAttribute('src');"
+            >
+          </figure>
+          <div class="leadership-person-body leadership-block">
+            <span class="team-role">PARTNER</span>
+            <h3>Mr. S. Sudhangan</h3>
+            <p>Mr. S. Sudhangan, a first-class graduate in Civil Engineering with up-to-date technical know-how, has been directly involved in all aspects of project management in the company. His active participation in Absolute Quality Control has further strengthened the company’s reputation for quality and speedy execution in recent times.</p>
+            <p>In addition to his role in project management, he plays a predominant role in the building materials industry in the Kalpakkam area. He serves as an active partner with <strong>M/s. Thirupathi Blue Metals</strong>, <strong>M/s. Seven Hills Mines</strong>, <strong>M/s. Pallava Mines</strong>, and <strong>M/s. Sree Balaji Blue Metals</strong>. He is also the owner of <strong>M/s. SS Bricks and Concrete</strong> manufacturing company. Thereby, Sekar Constructions enjoys the privilege of procuring all sorts of building materials effortlessly even during scarcities.</p>
+          </div>
+        </article>
       </div>
 
       <!-- Dynamic Executive Team Section -->
@@ -244,7 +776,7 @@
             <img src="dynamic-team-1.jpg" alt="Sekar Constructions Executive Team">
           </div>
           <div class="gallery-item">
-            <img src="dynamic-team-2.png" alt="Sekar Constructions Engineering Team on Site">
+            <img src="dynamic-team-2.jpg" alt="Sekar Constructions Engineering Team on Site">
           </div>
           <div class="gallery-item">
             <img src="dynamic-team-3.jpg" alt="Sekar Constructions Civil Work Force">
@@ -253,49 +785,32 @@
       </div>
     </div>
   </section>
+      </div><!-- /.about-layout-main -->
+    </div><!-- /.about-layout -->
+  </div><!-- /.about-layout-shell -->
+
+  <!-- CTA inside panel so Leadership → surround share one cream paint (no seam) -->
+  <div class="container footer-cta-wrap">
+    <div class="footer-cta">
+      <div class="footer-cta-copy">
+        <span class="footer-cta-eyebrow">Let's Work Together</span>
+        <h2 class="footer-cta-headline">Schedule an appointment with us to discuss your project goals and needs.</h2>
+      </div>
+      <a href="contact.html" class="footer-cta-btn">Let's Get In Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+  </div><!-- /.sc-curtain-panel -->
+  </div><!-- /.sc-curtain-stack -->
+  </div><!-- /.page-curtain -->
 
   <!-- Footer -->
-  <footer>
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
-        </div>
-        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
-        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
-      </div>
-
-      <div class="footer-links">
-        <h4>Quick Navigation</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="index.html#services">Our Services</a></li>
-          <li><a href="infrastructure.html">Infrastructure</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="careers.html">Careers</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-contact">
-        <h4>Head Office Details</h4>
-        <div class="footer-contact-items">
-          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
-          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
-          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="container footer-bottom">
-      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
-      <p>Redesigned & Modernized | Powered by Antigravity</p>
-    </div>
-  </footer>
+  <div id="site-footer"></div>
 
   <!-- Custom JS -->
-  <script src="script.js?v=22"></script>
+  <script src="layout.js?v=140"></script>
+  <script src="config.js?v=121"></script>
+  <script src="cms-public.js?v=121"></script>
+  <script src="script.js?v=150"></script>
+
 </body>
 </html>

@@ -1,0 +1,3689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Executive Dashboard | Sekar Construction</title>
+  <meta name="description" content="Super Admin Executive Dashboard for Sekar Construction.">
+  <link rel="icon" type="image/png" href="logo-transparent.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --dash-bg: #f8fafc;
+      --dash-surface: #ffffff;
+      --dash-card: #ffffff;
+      --dash-border: #e2e8f0;
+      --dash-primary: #e65100;
+      --dash-primary-hover: #f57c00;
+      --dash-accent: #0284c7;
+      --dash-text: #0f172a;
+      --dash-muted: #64748b;
+      --dash-success: #059669;
+      --dash-warning: #d97706;
+      --dash-danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: var(--dash-bg);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--dash-text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .dash-navbar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--dash-border);
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .dash-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .dash-brand-logo {
+      height: 44px;
+    }
+
+    .dash-title-badge {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dash-title-badge h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dash-text);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dash-badge {
+      background: rgba(230, 81, 0, 0.1);
+      border: 1px solid rgba(230, 81, 0, 0.3);
+      color: var(--dash-primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .dash-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #10b981;
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .btn-dash-action {
+      background: #ffffff;
+      border: 1px solid var(--dash-border);
+      color: var(--dash-text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-dash-action:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn-logout {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+    }
+
+    .btn-logout:hover {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Dashboard Layout */
+    .dash-container {
+      padding: 28px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Executive Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric-card {
+      background: var(--dash-surface);
+      border: 1px solid var(--dash-border);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -4px rgba(15, 23, 42, 0.08);
+      border-color: rgba(230, 81, 0, 0.3);
+    }
+
+    .metric-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .metric-icon-box.orange { background: #fff7ed; color: #ea580c; }
+    .metric-icon-box.blue { background: #f0f9ff; color: #0284c7; }
+    .metric-icon-box.green { background: #f0fdf4; color: #16a34a; }
+    .metric-icon-box.purple { background: #faf5ff; color: #9333ea; }
+
+    .metric-info label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--dash-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .metric-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--dash-text);
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .metric-sub {
+      font-size: 0.78rem;
+      color: var(--dash-muted);
+      margin-top: 4px;
+    }
+
+    /* Module Selector Bar */
+    .module-tab-bar {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 5px;
+      border-radius: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .module-tab-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .module-tab-btn {
+      background: transparent;
+      border: none;
+      color: #475569;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      white-space: nowrap;
+      flex: 1 1 auto;
+      text-align: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .module-tab-btn i {
+      font-size: 0.82rem;
+      opacity: 0.85;
+    }
+
+    .module-tab-btn:hover {
+      background: #ffffff;
+      color: var(--dash-text);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .module-tab-btn.active {
+      background: var(--dash-primary);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(230, 81, 0, 0.28);
+    }
+
+    .module-tab-btn.active i {
+      opacity: 1;
+    }
+
+
+    .fleet-edit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 14px;
+    }
+
+    .fleet-edit-item {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .fleet-edit-item:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .fleet-edit-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fleet-edit-icon {
+      font-size: 1.2rem;
+      color: #ea580c;
+      width: 24px;
+      text-align: center;
+    }
+
+    .fleet-edit-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--dash-text);
+    }
+
+    .fleet-edit-input {
+      width: 90px;
+      text-align: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--dash-text);
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .fleet-edit-input:focus {
+      border-color: var(--dash-primary);
+      box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
+    }
+
+
+    /* Main Content Panels */
+    .content-panel {
+      background: var(--dash-surface);
+      border: 1px solid var(--dash-border);
+
+      border-radius: 14px;
+      padding: 26px;
+      display: none;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+    }
+
+    .content-panel.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .panel-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dash-text);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrapper { position: relative; }
+
+    .search-input-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--dash-muted);
+      font-size: 0.85rem;
+    }
+
+    .dash-search {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px 8px 34px;
+      color: var(--dash-text);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .dash-search:focus {
+      border-color: var(--dash-primary);
+      box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.12);
+    }
+
+    .dash-select {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--dash-text);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    /* Table Styles */
+    .table-responsive { overflow-x: auto; }
+
+    .dash-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .dash-table th {
+      background: #f1f5f9;
+      color: var(--dash-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--dash-border);
+    }
+
+    .dash-table td {
+      padding: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: var(--dash-text);
+    }
+
+    .dash-table tr:hover td { background: #f8fafc; }
+
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-status.NEW { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .badge-status.IN_REVIEW { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-status.CONTACTED { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    .badge-status.APPROVED { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-status.REJECTED { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    .action-btn-group { display: flex; gap: 6px; }
+
+    .btn-tbl-icon {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: var(--dash-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-tbl-icon:hover {
+      color: #ffffff;
+      background: var(--dash-primary);
+      border-color: var(--dash-primary);
+    }
+
+    /* Google 2FA Authenticator Setup Container */
+    .totp-setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .totp-setup-grid { grid-template-columns: 1fr; }
+    }
+
+    .totp-qr-card {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .totp-qr-img {
+      width: 180px;
+      height: 180px;
+      border: 4px solid #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      margin: 14px 0;
+    }
+
+    .totp-secret-badge {
+      display: inline-block;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dash-accent);
+      letter-spacing: 2px;
+      user-select: all;
+    }
+
+    .live-otp-display {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+
+    .live-otp-code {
+      font-family: 'Outfit', monospace;
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 6px;
+      margin: 4px 0;
+    }
+
+    .progress-bar-wrap {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #ffffff;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    /* Modal Overlay */
+    .dash-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(6px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dash-modal.active { display: flex !important; }
+
+
+    .dash-modal-content {
+      background: #ffffff;
+      border: 1px solid var(--dash-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 580px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+      position: relative;
+    }
+
+    .dash-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dash-modal-header h2 {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--dash-text);
+    }
+
+    .close-modal-btn {
+      background: none;
+      border: none;
+      color: var(--dash-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .close-modal-btn:hover { color: var(--dash-text); }
+
+    /* Audit Log Stream */
+    .log-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .log-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--dash-accent);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .log-item.CRITICAL { border-left-color: var(--dash-danger); }
+    .log-item.WARNING { border-left-color: var(--dash-warning); }
+    .log-item.SUCCESS { border-left-color: var(--dash-success); }
+
+    .log-evt {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--dash-text);
+      margin-bottom: 4px;
+    }
+
+    .log-desc {
+      font-size: 0.8rem;
+      color: var(--dash-muted);
+    }
+
+    .log-time {
+      font-size: 0.74rem;
+      color: var(--dash-muted);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="dash-navbar">
+    <div class="dash-brand">
+      <a href="index.html">
+        <img src="logo-final.png?v=6" alt="Sekar Construction Logo" class="dash-brand-logo">
+      </a>
+      <div class="dash-title-badge">
+        <h1>Executive Control Center</h1>
+        <span style="font-size: 0.75rem; color: var(--dash-muted);">Sekar Constructions Operations & Bid Management</span>
+      </div>
+    </div>
+
+    <div class="dash-actions">
+      <button type="button" id="securitySettingsBtn" class="btn-dash-action">
+        <i class="fa-solid fa-mobile-screen-button"></i> 2FA Authenticator
+      </button>
+
+
+      <button id="logoutBtn" class="btn-dash-action btn-logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="dash-container">
+    
+    <!-- Module Selector Navigation Bar -->
+    <div class="module-tab-bar">
+      <button class="module-tab-btn active" data-module="panel-inquiries">
+        <i class="fa-solid fa-table-list"></i> Bids &amp; Queries
+      </button>
+      <button class="module-tab-btn" data-module="panel-fleet">
+        <i class="fa-solid fa-truck-monster"></i> Fleet
+      </button>
+      <button class="module-tab-btn" data-module="panel-infrastructure">
+        <i class="fa-solid fa-building-shield"></i> Infrastructure
+      </button>
+      <button class="module-tab-btn" data-module="panel-ongoing">
+        <i class="fa-solid fa-helmet-safety"></i> Ongoing
+      </button>
+      <button class="module-tab-btn" data-module="panel-completed">
+        <i class="fa-solid fa-clipboard-check"></i> Completed
+      </button>
+      <button class="module-tab-btn" data-module="panel-project-gallery">
+        <i class="fa-solid fa-camera-retro"></i> Gallery
+      </button>
+      <button class="module-tab-btn" data-module="panel-plant-machinery">
+        <i class="fa-solid fa-gears"></i> Machinery
+      </button>
+      <button class="module-tab-btn" data-module="panel-founder-clients">
+        <i class="fa-solid fa-handshake"></i> Founder &amp; Clients
+      </button>
+      <button class="module-tab-btn" data-module="panel-certificates">
+        <i class="fa-solid fa-certificate"></i> Certificates
+      </button>
+      <button class="module-tab-btn" data-module="panel-financials">
+        <i class="fa-solid fa-coins"></i> Financials &amp; Quality
+      </button>
+      <button class="module-tab-btn" data-module="panel-gallery">
+        <i class="fa-solid fa-images"></i> Team Photos
+      </button>
+    </div>
+
+
+
+
+    <!-- MODULE 1: Project Bids & Client Queries Panel -->
+    <div id="panel-inquiries" class="content-panel active">
+
+
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-table-list" style="color: var(--dash-primary);"></i> Project Bids & Client Queries
+        </h2>
+        <div class="filter-controls">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="inquirySearch" class="dash-search" placeholder="Search client, subject...">
+          </div>
+          <select id="statusFilter" class="dash-select">
+            <option value="ALL">All Statuses</option>
+            <option value="NEW">New</option>
+            <option value="IN_REVIEW">In Review</option>
+            <option value="CONTACTED">Contacted</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+          <button id="exportCsvBtn" class="btn-dash-action">
+            <i class="fa-solid fa-file-csv"></i> Export CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>Inquiry ID</th>
+              <th>Client & Organization</th>
+              <th>Project Subject</th>
+              <th>Est. Value</th>
+              <th>Submission Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inquiriesTableBody">
+            <!-- Dynamically Rendered -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- MODULE 2: Asset & Fleet Inventory Manager Panel -->
+    <div id="panel-fleet" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-truck-monster" style="color: var(--dash-primary);"></i> Heavy Fleet & Supply Chain Asset Inventory
+        </h2>
+        <button id="saveFleetBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Counts to Website
+        </button>
+      </div>
+
+      <div id="fleetStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Asset inventory counts updated live on public website!
+      </div>
+
+      <div class="fleet-edit-grid" id="fleetEditGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+
+    <!-- MODULE 2b: Infrastructure Page CMS -->
+    <div id="panel-infrastructure" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-building-shield" style="color: var(--dash-primary);"></i> Infrastructure Page Manager
+        </h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" id="infraSyncAssetCountBtn" class="btn-dash-action" style="background:#fff; color:var(--dash-text); border:1px solid #cbd5e1; padding: 10px 16px;">
+            <i class="fa-solid fa-arrows-rotate"></i> Sync Asset Lines from Inventory
+          </button>
+          <button type="button" id="saveInfrastructureBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Infrastructure
+          </button>
+        </div>
+      </div>
+
+      <div id="infraStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Infrastructure page updated live on public website!
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:22px;">
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <h3 style="margin:0 0 14px; font-size:1rem; color:var(--dash-text);">Highlight Stats</h3>
+          <div id="infraHighlightsEdit" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;"></div>
+        </section>
+
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+            <h3 style="margin:0; font-size:1rem; color:var(--dash-text);">Full Inventory Table <span id="infraInventoryCount" style="font-weight:500; color:#64748b; font-size:0.85rem;"></span></h3>
+            <button type="button" id="infraAddRowBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+              <i class="fa-solid fa-plus"></i> Add Row
+            </button>
+          </div>
+          <div class="table-responsive" style="max-height:520px; overflow:auto;">
+            <table class="dash-table" id="infraInventoryEditTable">
+              <thead>
+                <tr>
+                  <th style="width:70px;">#</th>
+                  <th>Description</th>
+                  <th style="width:90px;">Qty</th>
+                  <th style="width:90px;">Unit</th>
+                  <th style="width:260px;">Category</th>
+                  <th style="width:90px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="infraInventoryEditBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+
+    <!-- MODULE 2c: Ongoing Projects Page CMS -->
+    <div id="panel-ongoing" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-helmet-safety" style="color: var(--dash-primary);"></i> Ongoing Projects Manager
+        </h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" id="ongoingSyncCountsBtn" class="btn-dash-action" style="background:#fff; color:var(--dash-text); border:1px solid #cbd5e1; padding: 10px 16px;">
+            <i class="fa-solid fa-arrows-rotate"></i> Sync Counts from Projects
+          </button>
+          <button type="button" id="saveOngoingProjectsBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Ongoing Projects
+          </button>
+        </div>
+      </div>
+
+      <div id="ongoingStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Ongoing Projects page updated live on public website!
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:22px;">
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <h3 style="margin:0 0 14px; font-size:1rem; color:var(--dash-text);">Highlight Stats</h3>
+          <div id="ongoingHighlightsEdit" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;"></div>
+        </section>
+
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+            <div style="min-width:200px;">
+              <h3 style="margin:0; font-size:1rem; color:var(--dash-text);">Projects Presently under Progress <span id="ongoingProjectsCount" style="font-weight:500; color:#64748b; font-size:0.85rem;"></span></h3>
+              <p style="margin:6px 0 0; font-size:0.8rem; color:#64748b; line-height:1.45; max-width:42rem;">
+                Pick any Indian state/UT below to add a project — its region table appears immediately. You can also change <strong>Region</strong> on an existing row to move it.
+              </p>
+            </div>
+            <div style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
+              <div>
+                <label for="ongoingAddRegionSelect" style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">REGION</label>
+                <select id="ongoingAddRegionSelect" class="dash-select" style="min-width:200px; padding:8px 10px;" aria-label="Region for new project"></select>
+              </div>
+              <button type="button" id="ongoingAddProjectBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+                <i class="fa-solid fa-plus"></i> Add Project
+              </button>
+            </div>
+          </div>
+          <div id="ongoingProjectsTables" style="display:flex; flex-direction:column; gap:22px;"></div>
+        </section>
+      </div>
+    </div>
+
+
+    <!-- MODULE 2d: Completed Projects Page CMS -->
+    <div id="panel-completed" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-clipboard-check" style="color: var(--dash-primary);"></i> Completed Projects Manager
+        </h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" id="completedSyncCountsBtn" class="btn-dash-action" style="background:#fff; color:var(--dash-text); border:1px solid #cbd5e1; padding: 10px 16px;">
+            <i class="fa-solid fa-arrows-rotate"></i> Sync Counts from Projects
+          </button>
+          <button type="button" id="saveCompletedProjectsBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Completed Projects
+          </button>
+        </div>
+      </div>
+
+      <div id="completedStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Completed Projects page updated live on public website!
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:22px;">
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <h3 style="margin:0 0 14px; font-size:1rem; color:var(--dash-text);">Highlight Stats</h3>
+          <div id="completedHighlightsEdit" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;"></div>
+        </section>
+
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+            <div style="min-width:200px;">
+              <h3 style="margin:0; font-size:1rem; color:var(--dash-text);">Completed Major Works <span id="completedProjectsCount" style="font-weight:500; color:#64748b; font-size:0.85rem;"></span></h3>
+              <p style="margin:6px 0 0; font-size:0.8rem; color:#64748b; line-height:1.45; max-width:42rem;">
+                Seeded from the audited completed-works list. Pick any Indian state/UT to add a project — its region table appears when that region has rows. Change <strong>Region</strong> on a row to move it.
+              </p>
+            </div>
+            <div style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
+              <div>
+                <label for="completedAddRegionSelect" style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">REGION</label>
+                <select id="completedAddRegionSelect" class="dash-select" style="min-width:200px; padding:8px 10px;" aria-label="Region for new completed project"></select>
+              </div>
+              <button type="button" id="completedAddProjectBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+                <i class="fa-solid fa-plus"></i> Add Project
+              </button>
+            </div>
+          </div>
+          <div id="completedProjectsTables" style="display:flex; flex-direction:column; gap:22px;"></div>
+        </section>
+      </div>
+    </div>
+
+
+    <!-- MODULE 2e: Project Gallery Page CMS -->
+    <div id="panel-project-gallery" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-camera-retro" style="color: var(--dash-primary);"></i> Project Gallery Manager
+        </h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" id="projectGallerySyncCountsBtn" class="btn-dash-action" style="background:#fff; color:var(--dash-text); border:1px solid #cbd5e1; padding: 10px 16px;">
+            <i class="fa-solid fa-arrows-rotate"></i> Sync Counts from Items
+          </button>
+          <button type="button" id="saveProjectGalleryBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Gallery
+          </button>
+        </div>
+      </div>
+
+      <div id="projectGalleryStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Project Gallery updated live on public website!
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:22px;">
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <h3 style="margin:0 0 14px; font-size:1rem; color:var(--dash-text);">Highlight Stats</h3>
+          <div id="projectGalleryHighlightsEdit" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;"></div>
+        </section>
+
+        <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+            <div style="min-width:200px;">
+              <h3 style="margin:0; font-size:1rem; color:var(--dash-text);">Case Study Cards <span id="projectGalleryItemsCount" style="font-weight:500; color:#64748b; font-size:0.85rem;"></span></h3>
+              <p style="margin:6px 0 0; font-size:0.8rem; color:#64748b; line-height:1.45; max-width:42rem;">
+                Seeded from the public gallery. Add multiple image URLs or uploads per case study (first image is the card cover), set category/captions, reorder with ↑ ↓, then <strong>Save &amp; Publish</strong>.
+              </p>
+            </div>
+            <button type="button" id="projectGalleryAddItemBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+              <i class="fa-solid fa-plus"></i> Add Case Study
+            </button>
+          </div>
+          <div id="projectGalleryItemsEdit" style="display:flex; flex-direction:column; gap:16px;"></div>
+        </section>
+      </div>
+    </div>
+
+
+    <!-- MODULE 2f: Plant & Machinery gallery CMS -->
+    <div id="panel-plant-machinery" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-gears" style="color: var(--dash-primary);"></i> Plant &amp; Machinery Gallery
+        </h2>
+        <button type="button" id="savePlantMachineryBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save &amp; Publish
+        </button>
+      </div>
+      <div id="plantMachineryStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;"></div>
+      <p style="margin:0 0 16px; font-size:0.85rem; color:#64748b; line-height:1.45; max-width:48rem;">
+        Edits the photo grid on <code>gallery-plant-machinery.html</code>. Add image URL or upload, caption fields, reorder with ↑ ↓, then Save &amp; Publish.
+      </p>
+      <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+        <button type="button" id="plantMachineryAddItemBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+          <i class="fa-solid fa-plus"></i> Add Image
+        </button>
+      </div>
+      <div id="plantMachineryItemsEdit" style="display:flex; flex-direction:column; gap:16px;"></div>
+    </div>
+
+    <!-- MODULE 2g: Founder & Clients gallery CMS -->
+    <div id="panel-founder-clients" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-handshake" style="color: var(--dash-primary);"></i> Founder &amp; Clients Gallery
+        </h2>
+        <button type="button" id="saveFounderClientsBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save &amp; Publish
+        </button>
+      </div>
+      <div id="founderClientsStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;"></div>
+      <p style="margin:0 0 16px; font-size:0.85rem; color:#64748b; line-height:1.45; max-width:48rem;">
+        Photo grid on <code>gallery-founder-clients.html</code>. The clients marquee on that page uses static HTML strips (not edited here).
+      </p>
+      <section style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px 22px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+          <h3 style="margin:0; font-size:1rem; color:var(--dash-text);">Photo Grid <span id="founderClientsItemsCount" style="font-weight:500; color:#64748b; font-size:0.85rem;"></span></h3>
+          <button type="button" id="founderClientsAddItemBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+            <i class="fa-solid fa-plus"></i> Add Photo
+          </button>
+        </div>
+        <div id="founderClientsItemsEdit" style="display:flex; flex-direction:column; gap:16px;"></div>
+      </section>
+    </div>
+
+    <!-- MODULE 2h: Certificates gallery CMS -->
+    <div id="panel-certificates" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-certificate" style="color: var(--dash-primary);"></i> Certificates &amp; Accreditations
+        </h2>
+        <button type="button" id="saveCertificatesBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save &amp; Publish
+        </button>
+      </div>
+      <div id="certificatesStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;"></div>
+      <p style="margin:0 0 16px; font-size:0.85rem; color:#64748b; line-height:1.45; max-width:48rem;">
+        Carousel slides on <code>gallery-certificates.html</code>. Use description <em>or</em> quote; meta lines are optional (icon + text).
+      </p>
+      <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+        <button type="button" id="certificatesAddItemBtn" class="btn-dash-action" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+          <i class="fa-solid fa-plus"></i> Add Certificate
+        </button>
+      </div>
+      <div id="certificatesItemsEdit" style="display:flex; flex-direction:column; gap:16px;"></div>
+    </div>
+
+
+    <!-- MODULE 3: Financial Capacity & Quality Standards Manager Panel -->
+    <div id="panel-financials" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-coins" style="color: var(--dash-primary);"></i> Financial Capacity & Quality Standards Manager
+        </h2>
+        <button id="saveFinancialsBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Financials to Website
+        </button>
+      </div>
+
+      <div id="financialsStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Financial Capacity & Quality Standards updated live on public website!
+      </div>
+
+      <div id="financialsEditContainer" style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+
+    <!-- MODULE 4: Dynamic Executive Team Photo Gallery Manager Panel -->
+    <div id="panel-gallery" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-images" style="color: var(--dash-primary);"></i> Dynamic Executive Team Photo Gallery
+        </h2>
+      </div>
+
+      <div id="galleryStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check"></i> Photo gallery updated live on public website!
+      </div>
+
+      <!-- Upload New Photo Form Card -->
+      <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 22px; margin-bottom: 28px;">
+        <h3 style="margin: 0 0 14px 0; font-size: 1.05rem; color: var(--dash-text);"><i class="fa-solid fa-cloud-arrow-up" style="color: #ea580c;"></i> Upload & Add New Executive Team Photo</h3>
+        
+        <form id="uploadGalleryForm" style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <!-- File Drag/Browse Box -->
+            <div style="flex: 1; min-width: 260px;">
+              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">Select Photo File (PNG, JPG, WEBP)</label>
+              <input type="file" id="galleryFileInput" accept="image/*" class="dash-search" style="width: 100%; padding: 8px 12px; cursor: pointer;">
+            </div>
+
+            <!-- Image URL Box (Alternative) -->
+            <div style="flex: 1; min-width: 260px;">
+              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">OR Enter Image File Name / URL</label>
+              <input type="text" id="galleryUrlInput" class="dash-search" placeholder="e.g. dynamic-team-4.jpg" style="width: 100%; padding: 10px 14px;">
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">Photo Description / Caption</label>
+            <input type="text" id="galleryCaptionInput" class="dash-search" placeholder="e.g. Sekar Constructions Civil Engineering Team on Site" style="width: 100%; padding: 10px 14px;" required>
+          </div>
+
+          <div>
+            <button type="submit" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 12px 24px;">
+              <i class="fa-solid fa-plus"></i> Upload & Publish Photo
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Current Photos List -->
+      <h3 style="margin: 0 0 16px 0; font-size: 1.05rem; color: var(--dash-text);"><i class="fa-solid fa-photo-film"></i> Live Executive Team Photos</h3>
+      <div id="galleryGridContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <!-- Rendered Dynamically -->
+      </div>
+    </div>
+
+
+
+
+    <!-- TAB 2: Audit Logs Panel -->
+    <div id="panel-audit" class="content-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-shield-cat" style="color: var(--dash-accent);"></i> Security Audit Stream
+        </h2>
+        <button id="exportAuditLogsBtn" class="btn-dash-action">
+          <i class="fa-solid fa-download"></i> Download Audit Trail
+        </button>
+      </div>
+      <div id="auditLogContainer" class="log-stream">
+        <!-- Dynamically Rendered -->
+      </div>
+    </div>
+
+  <!-- Security & 2FA Setup Modal -->
+  <div id="securityModal" class="dash-modal">
+    <div class="dash-modal-content" style="max-width: 850px; max-height: 90vh; overflow-y: auto;">
+      <div class="dash-modal-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-mobile-screen-button" style="color: #ea580c;"></i> Google Authenticator (2FA) & Security Keys
+        </h2>
+        <button class="close-modal-btn" onclick="closeSecurityModal()">&times;</button>
+      </div>
+
+      <div class="totp-setup-grid">
+        <!-- QR Code Setup Card -->
+        <div class="totp-qr-card">
+          <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: var(--dash-text);">1. Scan QR Code on Mobile Phone</h3>
+          <p style="font-size: 0.82rem; color: var(--dash-muted); margin: 0 0 12px 0;">QR and secret load from a live API session after login. First-time accounts must change the master password (step 2) before the QR appears. Open <strong>Google Authenticator</strong> or <strong>Authy</strong> and scan below.</p>
+
+          <div id="totpQrPlaceholder" style="display:none; width:180px; height:180px; margin: 0 auto 14px; border: 1px dashed #cbd5e1; border-radius: 10px; background:#f8fafc; color:var(--dash-muted); font-size:0.78rem; text-align:center; padding:16px; box-sizing:border-box; align-items:center; justify-content:center; line-height:1.4;">
+            Waiting for authenticated setup…
+          </div>
+          <img id="totpQrImage" src="" alt="Google Authenticator QR Code" class="totp-qr-img" style="display:none;">
+
+          <div style="font-size: 0.8rem; color: var(--dash-muted); margin-bottom: 6px;">Manual Setup Secret Key:</div>
+          <div id="totpSecretText" class="totp-secret-badge" style="font-size: 0.9rem; word-break: break-all;">Loading…</div>
+
+          <!-- Live Dynamic Code Simulator Widget -->
+          <div class="live-otp-display">
+            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; opacity: 0.9;">Live 30-Second Rolling 2FA Code</div>
+            <div id="liveOtpCode" class="live-otp-code">------</div>
+            <div style="font-size: 0.72rem; opacity: 0.8;">Refreshes in <span id="totpCountdown">30</span>s</div>
+            <div class="progress-bar-wrap">
+              <div id="totpProgressFill" class="progress-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credential Update Form -->
+        <div>
+          <h3 style="margin: 0 0 14px 0; font-size: 1.1rem; color: var(--dash-text);">2. Password &amp; 2FA Controls</h3>
+          <p style="font-size: 0.8rem; color: var(--dash-muted); margin: 0 0 12px 0;">Current Master Password is for <strong>Update Password</strong>, <strong>Disable 2FA</strong>, and <strong>Rotate Secret</strong> — it does not unlock the QR by itself.</p>
+          
+          <form id="updateCredentialsForm">
+            <div style="margin-bottom: 16px;">
+              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">Current Master Password *</label>
+              <input type="password" id="currentPwd" class="dash-search" style="width:100%; padding: 10px 14px;" required>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">New Master Password</label>
+              <input type="password" id="newPwd" class="dash-search" style="width:100%; padding: 10px 14px;" placeholder="Required on first login before QR unlocks">
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">Authenticator Code (6 digits)</label>
+              <input type="text" id="totpActionCode" class="dash-search" style="width:100%; padding: 10px 14px;" maxlength="8" placeholder="Required for enable / disable / rotate">
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom: 16px;">
+              <button type="button" id="enableTotpBtn" class="btn-dash-action" style="background: #16a34a; color: #fff; border:none; padding: 10px 16px;">
+                <i class="fa-solid fa-shield-halved"></i> Enable 2FA
+              </button>
+              <button type="button" id="disableTotpBtn" class="btn-dash-action" style="background: #dc2626; color: #fff; border:none; padding: 10px 16px;">
+                <i class="fa-solid fa-shield"></i> Disable 2FA
+              </button>
+              <button type="button" id="rotateTotpBtn" class="btn-dash-action" style="background: #ea580c; color: #fff; border:none; padding: 10px 16px;">
+                <i class="fa-solid fa-rotate"></i> Rotate Secret
+              </button>
+            </div>
+
+            <button type="submit" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 12px 24px;">
+              <i class="fa-solid fa-floppy-disk"></i> Update Password
+            </button>
+            <p id="totpStatusText" style="font-size:0.8rem; color:var(--dash-muted); margin-top:12px;">Loading 2FA status…</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  </main>
+
+  <!-- Inactivity Watchdog Warning Modal -->
+  <div id="timeoutModal" class="dash-modal">
+    <div class="dash-modal-content" style="text-align: center; max-width: 440px;">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: #d97706; margin-bottom: 16px;"></i>
+      <h2>Session Timeout Warning</h2>
+      <p style="color: var(--dash-muted); font-size: 0.9rem; margin-bottom: 20px;">
+        Your Super Admin session will expire in <strong id="timeoutCountdown" style="color: var(--dash-text);">2 minutes</strong> due to inactivity.
+      </p>
+      <button id="stayLoggedInBtn" class="btn-dash-action" style="width: 100%; justify-content: center; background: var(--dash-primary); color: #fff; border:none; padding: 14px;">
+        <i class="fa-solid fa-rotate-right"></i> Extend Active Session
+      </button>
+    </div>
+  </div>
+
+  <!-- Detail Inquiry Modal -->
+  <div id="inquiryDetailModal" class="dash-modal">
+    <div class="dash-modal-content">
+      <div class="dash-modal-header">
+        <h2 id="modalInquiryId">Inquiry Details</h2>
+        <button class="close-modal-btn" onclick="closeInquiryModal()">&times;</button>
+      </div>
+      <div id="modalInquiryBody" style="line-height: 1.6; font-size: 0.9rem;">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js?v=121"></script>
+  <script src="admin-auth.js?v=142"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const securityEngine = window.SekarAdminSecurity;
+
+      // 1. Verify Active Session
+      if (!securityEngine || !securityEngine.isSessionValid()) {
+        window.location.href = 'admin-login.html';
+        return;
+      }
+
+      // UI Element Refs
+      // Helper for HTML escaping
+      function escapeHtml(str) {
+        return (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function applySaveAlertStyles(alertBox, success) {
+        if (!alertBox) return;
+        if (success) {
+          alertBox.style.background = '#ecfdf5';
+          alertBox.style.border = '1px solid #a7f3d0';
+          alertBox.style.color = '#047857';
+        } else {
+          alertBox.style.background = '#fef2f2';
+          alertBox.style.border = '1px solid #fecaca';
+          alertBox.style.color = '#b91c1c';
+        }
+      }
+
+      function showSaveResultAlert(alertBox, result, fallbackSuccessMsg) {
+        if (!alertBox) return;
+        const success = !!(result && result.success);
+        const message = (result && result.message) || fallbackSuccessMsg || (success ? 'Saved.' : 'Save failed.');
+        const icon = success ? 'fa-circle-check' : 'fa-circle-exclamation';
+        applySaveAlertStyles(alertBox, success);
+        alertBox.innerHTML = `<i class="fa-solid ${icon}"></i> ${escapeHtml(message)}`;
+        alertBox.style.display = 'block';
+        setTimeout(() => { alertBox.style.display = 'none'; }, success ? 4000 : 6000);
+      }
+
+      const inquiriesTableBody = document.getElementById('inquiriesTableBody');
+      const auditLogContainer = document.getElementById('auditLogContainer');
+      const inquirySearch = document.getElementById('inquirySearch');
+      const statusFilter = document.getElementById('statusFilter');
+      const metricTotalInquiries = document.getElementById('metricTotalInquiries');
+      const inquiryCountBadge = document.getElementById('inquiryCountBadge');
+
+
+      // Watchdog Auto Logout Listeners
+      const timeoutModal = document.getElementById('timeoutModal');
+      const stayLoggedInBtn = document.getElementById('stayLoggedInBtn');
+
+      securityEngine.startInactivityWatchdog(
+        (warningMins) => {
+          if (timeoutModal) timeoutModal.classList.add('active');
+        },
+        () => {
+          alert('Session expired due to inactivity.');
+          window.location.href = 'admin-login.html';
+        }
+      );
+
+      if (stayLoggedInBtn) {
+        stayLoggedInBtn.addEventListener('click', () => {
+          securityEngine.extendSession();
+          if (timeoutModal) timeoutModal.classList.remove('active');
+        });
+      }
+
+      // Module Tab Switching
+      const moduleBtns = document.querySelectorAll('.module-tab-btn');
+      const contentPanels = document.querySelectorAll('.content-panel');
+
+      moduleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetModule = btn.getAttribute('data-module');
+          moduleBtns.forEach(b => b.classList.remove('active'));
+          contentPanels.forEach(p => p.classList.remove('active'));
+
+          btn.classList.add('active');
+          const targetEl = document.getElementById(targetModule);
+          if (targetEl) {
+            targetEl.classList.add('active');
+            if (targetModule === 'panel-fleet') {
+              renderFleetEditGrid();
+            } else if (targetModule === 'panel-infrastructure') {
+              renderInfrastructureEditor();
+            } else if (targetModule === 'panel-ongoing') {
+              renderOngoingProjectsEditor();
+            } else if (targetModule === 'panel-completed') {
+              renderCompletedProjectsEditor();
+            } else if (targetModule === 'panel-project-gallery') {
+              renderProjectGalleryEditor();
+            } else if (targetModule === 'panel-plant-machinery') {
+              renderPlantMachineryEditor();
+            } else if (targetModule === 'panel-founder-clients') {
+              renderFounderClientsEditor();
+            } else if (targetModule === 'panel-certificates') {
+              renderCertificatesEditor();
+            } else if (targetModule === 'panel-financials') {
+              renderFinancialsEditGrid();
+            } else if (targetModule === 'panel-gallery') {
+              renderGalleryGrid();
+            }
+          }
+        });
+      });
+
+
+      // Fleet / CMS editors below — 2FA button wired after openSecurityModal is defined
+
+
+
+      // Render Fleet Inventory Edit Manager Cards
+      function renderFleetEditGrid() {
+        const fleetGrid = document.getElementById('fleetEditGrid');
+        if (!fleetGrid) return;
+        let fleetData = securityEngine.getFleetInventory();
+        
+        if (!fleetData || !Array.isArray(fleetData) || fleetData.length === 0) {
+          fleetData = [
+            { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry' },
+            { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck' },
+            { key: 'pumps', name: 'Mobile Concrete Pumps', count: '8', icon: 'fa-droplet' },
+            { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving' },
+            { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor' },
+            { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears' },
+            { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain' },
+            { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench' },
+            { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors' },
+            { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group' }
+          ];
+        }
+
+        fleetGrid.innerHTML = fleetData.map(item => `
+          <div class="fleet-edit-item">
+            <div class="fleet-edit-left">
+              <span class="fleet-edit-icon"><i class="fa-solid ${item.icon}"></i></span>
+              <span class="fleet-edit-label">${escapeHtml(item.name)}</span>
+            </div>
+            <input type="text" class="fleet-edit-input" data-key="${item.key}" value="${escapeHtml(item.count)}">
+          </div>
+        `).join('');
+
+      }
+
+      renderFleetEditGrid();
+
+      // Financials edit state (series kept in memory until Save & Publish)
+      let financialsEditState = null;
+
+      function formatFyDisplay(year) {
+        return String(year || '').replace('-', '–');
+      }
+
+      function buildPeakTurnoverCopy(series, currencyId) {
+        const meta = securityEngine.getTurnoverCurrencyMeta(currencyId);
+        if (!Array.isArray(series) || series.length === 0) return '';
+        let peak = series[0];
+        series.forEach((row) => {
+          if (Number(row.amount) >= Number(peak.amount)) peak = row;
+        });
+        const amountLabel = Number(peak.amount).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+        return `Our financial progress reached a whopping annual turnover to the tune of ${meta.short}${amountLabel} ${meta.unit} during the Financial Year ${formatFyDisplay(peak.year)}.`;
+      }
+
+      function renderTurnoverSeriesList(series) {
+        if (!Array.isArray(series)) return '';
+        return series.map((row) => {
+          const isVisible = row.visible !== false;
+          return `
+            <tr style="${!isVisible ? 'opacity: 0.55; background: #f8fafc;' : ''}">
+              <td style="font-weight: 700; color: var(--dash-text);">
+                <i class="fa-regular fa-calendar-check" style="color: #ea580c; margin-right: 8px;"></i> FY ${escapeHtml(row.year)}
+              </td>
+              <td>
+                <input type="number" class="dash-search turnover-table-amount-input" data-year="${escapeHtml(row.year)}" value="${escapeHtml(String(row.amount))}" style="max-width: 200px; padding: 8px 12px; font-weight: 700; color: #ea580c; font-family: 'Outfit', sans-serif;" min="0" step="any">
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                  <button type="button" class="turnover-visibility-toggle btn-dash-action" data-year="${escapeHtml(row.year)}" style="padding: 7px 12px; font-size: 0.78rem; background: ${isVisible ? '#ecfdf5' : '#fef2f2'}; border: 1px solid ${isVisible ? '#a7f3d0' : '#fecaca'}; color: ${isVisible ? '#047857' : '#dc2626'}; cursor: pointer;">
+                    <i class="fa-solid ${isVisible ? 'fa-eye' : 'fa-eye-slash'}"></i> ${isVisible ? 'Visible in Graph' : 'Hidden from Graph'}
+                  </button>
+                  <button type="button" class="turnover-series-row btn-dash-action" data-year="${escapeHtml(row.year)}" style="padding: 7px 12px; font-size: 0.78rem; background: #fff; border: 1px solid #cbd5e1; color: var(--dash-text);">
+                    <i class="fa-solid fa-pen-to-square"></i> Select
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+
+      function renderTurnoverGraphEditor(item) {
+        const currencyOptions = securityEngine.getTurnoverCurrencyOptions();
+        const currencySelect = currencyOptions.map((opt) =>
+          `<option value="${opt.id}" ${opt.id === item.currency ? 'selected' : ''}>${escapeHtml(opt.selectLabel)}</option>`
+        ).join('');
+        const yearOptions = (item.series || []).map((row) =>
+          `<option value="${escapeHtml(row.year)}">${escapeHtml(row.year)}</option>`
+        ).join('');
+
+        return `
+          <div class="turnover-graph-editor" style="margin-top:16px; padding-top:16px; border-top:1px dashed #cbd5e1;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <i class="fa-solid fa-chart-column" style="color:#ea580c;"></i>
+              <strong style="font-size:0.95rem; color:var(--dash-text);">Turnover graph</strong>
+              <span style="font-size:0.78rem; color:var(--dash-muted);">FY series shown on the About flip-card chart</span>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin-bottom:12px;">
+              <div>
+                <label style="display:block; font-size:0.78rem; font-weight:700; margin-bottom:5px; color:var(--dash-muted);">Year (FY)</label>
+                <select id="turnoverYearSelect" class="dash-search" style="width:100%; padding:9px 12px;">${yearOptions}</select>
+              </div>
+              <div>
+                <label style="display:block; font-size:0.78rem; font-weight:700; margin-bottom:5px; color:var(--dash-muted);">Amount</label>
+                <input type="number" id="turnoverAmountInput" class="dash-search" min="0" step="any" placeholder="e.g. 1420" style="width:100%; padding:9px 12px;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.78rem; font-weight:700; margin-bottom:5px; color:var(--dash-muted);">Currency / unit</label>
+                <select id="turnoverCurrencySelect" class="dash-search" style="width:100%; padding:9px 12px;">${currencySelect}</select>
+              </div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+              <button type="button" id="turnoverSeriesUpdateBtn" class="btn-dash-action" style="background:var(--dash-primary); color:#fff; border:none; padding:9px 16px;">
+                <i class="fa-solid fa-plus"></i> Add / Update Year
+              </button>
+              <button type="button" id="turnoverSyncCopyBtn" class="btn-dash-action" style="background:#fff; color:var(--dash-text); border:1px solid #cbd5e1; padding:9px 16px;">
+                <i class="fa-solid fa-file-pen"></i> Sync Front Copy from Peak
+              </button>
+            </div>
+            <div class="table-responsive" style="border: 1px solid var(--dash-border); border-radius: 12px; overflow: hidden; margin-top: 12px;">
+              <table class="dash-table">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Financial Year (FY)</th>
+                    <th style="width: 35%;">Turnover Amount (Rs. Millions / Unit)</th>
+                    <th style="width: 40%; text-align: right;">Graph Visibility & Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="turnoverSeriesList">
+                  ${renderTurnoverSeriesList(item.series)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+
+      function bindTurnoverGraphEditor() {
+        const yearSelect = document.getElementById('turnoverYearSelect');
+        const amountInput = document.getElementById('turnoverAmountInput');
+        const currencySelect = document.getElementById('turnoverCurrencySelect');
+        const updateBtn = document.getElementById('turnoverSeriesUpdateBtn');
+        const syncCopyBtn = document.getElementById('turnoverSyncCopyBtn');
+        const seriesList = document.getElementById('turnoverSeriesList');
+        if (!yearSelect || !amountInput || !financialsEditState) return;
+
+        const turnoverItem = financialsEditState.find((item) => item.key === 'turnover');
+        if (!turnoverItem) return;
+
+        const fillAmountForYear = () => {
+          const row = (turnoverItem.series || []).find((r) => r.year === yearSelect.value);
+          amountInput.value = row ? row.amount : '';
+        };
+        fillAmountForYear();
+        yearSelect.addEventListener('change', fillAmountForYear);
+
+        if (currencySelect) {
+          currencySelect.addEventListener('change', () => {
+            turnoverItem.currency = currencySelect.value;
+          });
+        }
+
+        if (seriesList) {
+          seriesList.addEventListener('input', (event) => {
+            const input = event.target.closest('.turnover-table-amount-input');
+            if (!input) return;
+            const year = input.getAttribute('data-year');
+            const val = Number(input.value);
+            if (!year || !Number.isFinite(val) || val < 0) return;
+            const row = turnoverItem.series.find(r => r.year === year);
+            if (row) {
+              row.amount = val;
+              row.source = 'admin';
+              if (yearSelect.value === year) amountInput.value = val;
+            }
+          });
+
+          seriesList.addEventListener('click', (event) => {
+            const toggleBtn = event.target.closest('.turnover-visibility-toggle');
+            if (toggleBtn) {
+              const year = toggleBtn.getAttribute('data-year');
+              const row = turnoverItem.series.find(r => r.year === year);
+              if (row) {
+                row.visible = row.visible === false ? true : false;
+                row.source = 'admin';
+                seriesList.innerHTML = renderTurnoverSeriesList(turnoverItem.series);
+              }
+              return;
+            }
+
+            const rowBtn = event.target.closest('.turnover-series-row');
+            if (!rowBtn) return;
+            const year = rowBtn.getAttribute('data-year');
+            if (!year) return;
+            yearSelect.value = year;
+            fillAmountForYear();
+            amountInput.focus();
+          });
+        }
+
+
+
+        if (updateBtn) {
+          updateBtn.addEventListener('click', () => {
+            const year = yearSelect.value;
+            const amount = Number(amountInput.value);
+            if (!year || !Number.isFinite(amount) || amount < 0) {
+              alert('Enter a valid non-negative amount for the selected FY year.');
+              return;
+            }
+            const row = turnoverItem.series.find((r) => r.year === year);
+            if (!row) return;
+            row.amount = amount;
+            row.source = 'admin';
+            if (currencySelect) turnoverItem.currency = currencySelect.value;
+            if (seriesList) seriesList.innerHTML = renderTurnoverSeriesList(turnoverItem.series);
+          });
+        }
+
+        if (syncCopyBtn) {
+          syncCopyBtn.addEventListener('click', () => {
+            const textEl = document.querySelector('.fin-edit-text[data-key="turnover"]');
+            if (!textEl) return;
+            if (currencySelect) turnoverItem.currency = currencySelect.value;
+            textEl.value = buildPeakTurnoverCopy(turnoverItem.series, turnoverItem.currency);
+          });
+        }
+      }
+
+      // Render Financial Capacity & Quality Standards Edit Manager Cards
+      function renderFinancialsEditGrid() {
+        const container = document.getElementById('financialsEditContainer');
+        if (!container) return;
+        if (!Array.isArray(financialsEditState) || financialsEditState.length === 0) {
+          financialsEditState = securityEngine.getFinancialsData();
+        }
+
+        container.innerHTML = financialsEditState.map(item => `
+          <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <span style="font-size: 1.3rem; color: #ea580c;"><i class="fa-solid ${item.icon}"></i></span>
+              <input type="text" class="fin-edit-title" data-key="${item.key}" value="${escapeHtml(item.title)}" style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--dash-text); border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 12px; width: 100%; max-width: 350px;">
+            </div>
+            <textarea class="fin-edit-text" data-key="${item.key}" style="width: 100%; min-height: 90px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; line-height: 1.65; color: var(--dash-text); border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; outline: none; resize: vertical;">${escapeHtml(item.text)}</textarea>
+            ${item.key === 'turnover' ? renderTurnoverGraphEditor(item) : ''}
+            ${item.key === 'resources' ? `<p style="margin:10px 0 0; font-size:0.8rem; line-height:1.45; color:#64748b;">Back-face chart uses hardcoded limits from published copy (Cash Credit ₹10 Cr · Bank Guarantee ₹25 Cr). Edit <code style="font-size:0.78rem;">about.html</code> to update those metrics.</p>` : ''}
+          </div>
+        `).join('');
+
+        bindTurnoverGraphEditor();
+      }
+
+      renderFinancialsEditGrid();
+
+      // Save Financials Button Handler
+      const saveFinancialsBtn = document.getElementById('saveFinancialsBtn');
+      if (saveFinancialsBtn) {
+        saveFinancialsBtn.addEventListener('click', async () => {
+          const currentData = financialsEditState || securityEngine.getFinancialsData();
+
+          currentData.forEach(item => {
+            const titleEl = document.querySelector(`.fin-edit-title[data-key="${item.key}"]`);
+            const textEl = document.querySelector(`.fin-edit-text[data-key="${item.key}"]`);
+            if (titleEl) item.title = titleEl.value.trim();
+            if (textEl) item.text = textEl.value.trim();
+          });
+
+          const turnoverItem = currentData.find((item) => item.key === 'turnover');
+          if (turnoverItem) {
+            const currencySelect = document.getElementById('turnoverCurrencySelect');
+            if (currencySelect) turnoverItem.currency = currencySelect.value;
+          }
+
+          const result = await securityEngine.updateFinancialsData(currentData);
+          if (result.success) financialsEditState = securityEngine.getFinancialsData();
+          showSaveResultAlert(
+            document.getElementById('financialsStatusAlert'),
+            result,
+            'Financials & Quality Standards updated live on website!'
+          );
+        });
+      }
+
+
+
+      // Save Fleet Counts Button Handler
+      const saveFleetBtn = document.getElementById('saveFleetBtn');
+      if (saveFleetBtn) {
+        saveFleetBtn.addEventListener('click', async () => {
+          const fleetInputs = document.querySelectorAll('.fleet-edit-input');
+          const currentData = securityEngine.getFleetInventory();
+
+          fleetInputs.forEach(input => {
+            const key = input.getAttribute('data-key');
+            const target = currentData.find(f => f.key === key);
+            if (target) {
+              target.count = input.value.trim();
+            }
+          });
+
+          const result = await securityEngine.updateFleetInventory(currentData);
+          showSaveResultAlert(
+            document.getElementById('fleetStatusAlert'),
+            result,
+            'Fleet asset counts updated and published live to website!'
+          );
+        });
+      }
+
+      // —— Infrastructure Page CMS ——
+      let infraEditState = null;
+
+      function showInfraAlert(message, success = true) {
+        showSaveResultAlert(
+          document.getElementById('infraStatusAlert'),
+          { success, message },
+          message
+        );
+      }
+
+      function collectInfraFormIntoState() {
+        if (!infraEditState) return null;
+        // Hero stays fixed on the public page (not admin-editable); preserve stored/default hero.
+
+        const highlightCards = document.querySelectorAll('#infraHighlightsEdit .infra-hl-card');
+        infraEditState.highlights = Array.from(highlightCards).map((card, i) => ({
+          key: card.getAttribute('data-key') || `hl-${i}`,
+          label: card.querySelector('.infra-hl-label')?.value.trim() || '',
+          value: card.querySelector('.infra-hl-value')?.value.trim() || '',
+          note: card.querySelector('.infra-hl-note')?.value.trim() || ''
+        }));
+
+        const rows = document.querySelectorAll('#infraInventoryEditBody tr');
+        const catOpts = securityEngine.getInfrastructureCategoryOptions();
+        const catMap = Object.fromEntries(catOpts.map((c) => [c.value, c]));
+        infraEditState.inventory = Array.from(rows).map((tr, index) => {
+          const selectVal = tr.querySelector('.infra-row-category')?.value || 'machinery';
+          const customInput = tr.querySelector('.infra-row-category-custom');
+          let category;
+          let categoryLabel;
+
+          if (selectVal === '__custom__') {
+            categoryLabel = (customInput?.value || '').trim() || 'Custom';
+            category = securityEngine.slugifyInfrastructureCategory(categoryLabel);
+            if (catMap[category] || category === 'all' || category === 'other' || category === 'custom') {
+              category = `custom-${category}`;
+            }
+          } else {
+            category = selectVal;
+            categoryLabel = (catMap[category] && catMap[category].label) || selectVal;
+          }
+
+          return {
+            id: tr.getAttribute('data-id') || `infra-${index + 1}`,
+            category,
+            description: tr.querySelector('.infra-row-desc')?.value.trim() || '',
+            qty: tr.querySelector('.infra-row-qty')?.value.trim() || '',
+            unit: tr.querySelector('.infra-row-unit')?.value.trim() || 'Nos',
+            categoryLabel
+          };
+        }).filter((row) => row.description);
+
+        return infraEditState;
+      }
+
+      function wireInfraCategoryRow(tr) {
+        const select = tr.querySelector('.infra-row-category');
+        const customWrap = tr.querySelector('.infra-row-custom-wrap');
+        const customInput = tr.querySelector('.infra-row-category-custom');
+        if (!select || !customWrap) return;
+
+        const syncCustomVisibility = () => {
+          const isCustom = select.value === '__custom__';
+          customWrap.style.display = isCustom ? 'block' : 'none';
+          if (isCustom && customInput && !customInput.value.trim()) {
+            customInput.focus();
+          }
+        };
+
+        select.addEventListener('change', syncCustomVisibility);
+        syncCustomVisibility();
+      }
+
+      function renderInfrastructureEditor() {
+        infraEditState = securityEngine.getInfrastructureContent();
+
+        const hlWrap = document.getElementById('infraHighlightsEdit');
+        if (hlWrap) {
+          hlWrap.innerHTML = infraEditState.highlights.map((h) => `
+            <div class="infra-hl-card" data-key="${escapeHtml(h.key)}" style="border:1px solid #e2e8f0; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+              <input type="text" class="dash-search infra-hl-label" value="${escapeHtml(h.label)}" placeholder="Label" style="width:100%; padding:8px 10px; font-weight:600;">
+              <input type="text" class="dash-search infra-hl-value" value="${escapeHtml(h.value)}" placeholder="Value" style="width:100%; padding:8px 10px; font-size:1.25rem; font-weight:700;">
+              <textarea class="dash-search infra-hl-note" placeholder="Description" style="width:100%; min-height:64px; padding:8px 10px; resize:vertical;">${escapeHtml(h.note)}</textarea>
+            </div>
+          `).join('');
+        }
+
+        renderInfraInventoryRows();
+      }
+
+      function renderInfraInventoryRows() {
+        const tbody = document.getElementById('infraInventoryEditBody');
+        const countEl = document.getElementById('infraInventoryCount');
+        if (!tbody || !infraEditState) return;
+        const cats = securityEngine.getInfrastructureCategoryOptions();
+        const presetValues = new Set(cats.map((c) => c.value));
+
+        tbody.innerHTML = infraEditState.inventory.map((row, index) => {
+          const isCustom = !presetValues.has(row.category);
+          const options = cats.map((c) =>
+            `<option value="${c.value}" ${!isCustom && c.value === row.category ? 'selected' : ''}>${escapeHtml(c.label)}</option>`
+          ).join('') + `<option value="__custom__" ${isCustom ? 'selected' : ''}>Other / Custom…</option>`;
+          const customVal = isCustom ? escapeHtml(row.categoryLabel || '') : '';
+          return `
+            <tr data-id="${escapeHtml(row.id)}">
+              <td style="text-align:center; color:#64748b;">${index + 1}</td>
+              <td><input type="text" class="dash-search infra-row-desc" value="${escapeHtml(row.description)}" style="width:100%; padding:8px 10px;"></td>
+              <td><input type="text" class="dash-search infra-row-qty" value="${escapeHtml(row.qty)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+              <td><input type="text" class="dash-search infra-row-unit" value="${escapeHtml(row.unit)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+              <td>
+                <div style="display:flex; flex-direction:column; gap:6px; min-width:200px;">
+                  <select class="dash-select infra-row-category" style="width:100%; padding:8px 10px; min-width:0;">${options}</select>
+                  <div class="infra-row-custom-wrap" style="display:${isCustom ? 'block' : 'none'};">
+                    <input type="text" class="dash-search infra-row-category-custom" value="${customVal}" placeholder="Type custom category name" style="width:100%; padding:8px 10px;" aria-label="Custom category name">
+                  </div>
+                </div>
+              </td>
+              <td style="text-align:center;">
+                <button type="button" class="btn-dash-action infra-row-delete" title="Delete row" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:6px 10px;">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        if (countEl) countEl.textContent = `(${infraEditState.inventory.length} items)`;
+
+        tbody.querySelectorAll('tr').forEach((tr) => wireInfraCategoryRow(tr));
+
+        tbody.querySelectorAll('.infra-row-delete').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const tr = btn.closest('tr');
+            const id = tr?.getAttribute('data-id');
+            if (!id || !confirm('Delete this inventory row?')) return;
+            collectInfraFormIntoState();
+            infraEditState.inventory = infraEditState.inventory.filter((r) => r.id !== id);
+            renderInfraInventoryRows();
+          });
+        });
+      }
+
+      const infraAddRowBtn = document.getElementById('infraAddRowBtn');
+      if (infraAddRowBtn) {
+        infraAddRowBtn.addEventListener('click', () => {
+          if (!infraEditState) renderInfrastructureEditor();
+          collectInfraFormIntoState();
+          infraEditState.inventory.push({
+            id: `infra-${Date.now()}`,
+            category: 'machinery',
+            description: 'New equipment item',
+            qty: '1',
+            unit: 'Nos',
+            categoryLabel: 'Concrete Machinery'
+          });
+          renderInfraInventoryRows();
+          const tbody = document.getElementById('infraInventoryEditBody');
+          if (tbody) tbody.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      }
+
+      const infraSyncAssetCountBtn = document.getElementById('infraSyncAssetCountBtn');
+      if (infraSyncAssetCountBtn) {
+        infraSyncAssetCountBtn.addEventListener('click', () => {
+          if (!infraEditState) renderInfrastructureEditor();
+          collectInfraFormIntoState();
+          const assetsHl = infraEditState.highlights.find((h) => h.key === 'assets') || infraEditState.highlights[2];
+          if (assetsHl) {
+            assetsHl.value = String(infraEditState.inventory.length);
+            const card = document.querySelector('#infraHighlightsEdit .infra-hl-card[data-key="assets"] .infra-hl-value')
+              || document.querySelectorAll('#infraHighlightsEdit .infra-hl-value')[2];
+            if (card) card.value = assetsHl.value;
+          }
+          showInfraAlert(`Asset Lines highlight set to ${infraEditState.inventory.length}. Click Save & Publish to apply.`);
+        });
+      }
+
+      const saveInfrastructureBtn = document.getElementById('saveInfrastructureBtn');
+      if (saveInfrastructureBtn) {
+        saveInfrastructureBtn.addEventListener('click', async () => {
+          if (!infraEditState) renderInfrastructureEditor();
+          const payload = collectInfraFormIntoState();
+          const result = await securityEngine.updateInfrastructureContent(payload);
+          if (result.success) {
+            infraEditState = securityEngine.getInfrastructureContent();
+            renderInfrastructureEditor();
+          }
+          showInfraAlert(result.message || 'Infrastructure page updated live on public website!', result.success);
+        });
+      }
+
+
+      // —— Ongoing Projects Page CMS ——
+      let ongoingEditState = null;
+
+      function showOngoingAlert(message, success = true) {
+        showSaveResultAlert(
+          document.getElementById('ongoingStatusAlert'),
+          { success, message },
+          message
+        );
+      }
+
+      function collectOngoingFormIntoState() {
+        if (!ongoingEditState) return null;
+
+        const highlightCards = document.querySelectorAll('#ongoingHighlightsEdit .ongoing-hl-card');
+        ongoingEditState.highlights = Array.from(highlightCards).map((card, i) => ({
+          key: card.getAttribute('data-key') || `hl-${i}`,
+          label: card.querySelector('.ongoing-hl-label')?.value.trim() || '',
+          value: card.querySelector('.ongoing-hl-value')?.value.trim() || '',
+          note: card.querySelector('.ongoing-hl-note')?.value.trim() || ''
+        }));
+
+        const rows = document.querySelectorAll('#ongoingProjectsTables .ongoing-region-tbody tr[data-id]');
+        const regionOpts = securityEngine.getOngoingRegionOptions(ongoingEditState.projects);
+        const regionMap = Object.fromEntries(regionOpts.map((r) => [r.value, r]));
+        ongoingEditState.projects = Array.from(rows).map((tr, index) => {
+          const region = tr.querySelector('.ongoing-row-region')?.value
+            || tr.closest('[data-region]')?.getAttribute('data-region')
+            || 'tn';
+          const regionMeta = regionMap[region] || { value: region, label: region };
+          return {
+            id: tr.getAttribute('data-id') || `ongoing-${region}-${index + 1}`,
+            region,
+            regionLabel: regionMeta.label,
+            slNo: tr.querySelector('.ongoing-row-sl')?.value.trim() || String(index + 1),
+            name: tr.querySelector('.ongoing-row-name')?.value.trim() || '',
+            patron: tr.querySelector('.ongoing-row-patron')?.value.trim() || '',
+            valueLakhs: tr.querySelector('.ongoing-row-value')?.value.trim() || '',
+            progress: tr.querySelector('.ongoing-row-progress')?.value.trim() || '0'
+          };
+        }).filter((row) => row.name);
+
+        return ongoingEditState;
+      }
+
+      function nextOngoingSlNoForRegion(region) {
+        if (!ongoingEditState || !Array.isArray(ongoingEditState.projects)) return '1';
+        let max = 0;
+        ongoingEditState.projects.forEach((p) => {
+          if (p.region !== region) return;
+          const n = parseInt(String(p.slNo).replace(/\D/g, ''), 10);
+          if (!Number.isNaN(n) && n > max) max = n;
+        });
+        return String(max + 1);
+      }
+
+      /** Keep Highlight Stats (Active / TN / AP) equal to live project row counts. */
+      function syncOngoingHighlightCounts() {
+        if (!ongoingEditState || !Array.isArray(ongoingEditState.projects)) return null;
+        if (!Array.isArray(ongoingEditState.highlights)) ongoingEditState.highlights = [];
+
+        const tnCount = ongoingEditState.projects.filter((p) => p.region === 'tn').length;
+        const apCount = ongoingEditState.projects.filter((p) => p.region === 'ap').length;
+        const total = ongoingEditState.projects.length;
+
+        const setHl = (key, index, value) => {
+          let hl = ongoingEditState.highlights.find((h) => h.key === key);
+          if (!hl && ongoingEditState.highlights[index]) hl = ongoingEditState.highlights[index];
+          if (!hl) return;
+          hl.value = String(value);
+          const card = document.querySelector(`#ongoingHighlightsEdit .ongoing-hl-card[data-key="${key}"] .ongoing-hl-value`)
+            || document.querySelectorAll('#ongoingHighlightsEdit .ongoing-hl-value')[index];
+          if (card) card.value = hl.value;
+        };
+
+        setHl('active', 0, total);
+        setHl('tn', 1, tnCount);
+        setHl('ap', 2, apCount);
+        return { total, tnCount, apCount };
+      }
+
+      function populateOngoingAddRegionSelect(preferredRegion) {
+        const select = document.getElementById('ongoingAddRegionSelect');
+        if (!select) return;
+        const prev = preferredRegion || select.value || 'tn';
+        const opts = securityEngine.getOngoingRegionDisplayOrder(
+          securityEngine.getOngoingRegionOptions(ongoingEditState ? ongoingEditState.projects : [])
+        );
+        select.innerHTML = opts.map((r) =>
+          `<option value="${escapeHtml(r.value)}" ${r.value === prev ? 'selected' : ''}>${escapeHtml(r.label)}</option>`
+        ).join('');
+        if (![...select.options].some((o) => o.value === prev) && select.options.length) {
+          select.selectedIndex = 0;
+        }
+      }
+
+      function addOngoingProjectForRegion(region) {
+        if (!ongoingEditState) renderOngoingProjectsEditor();
+        collectOngoingFormIntoState();
+        const regionKey = region || document.getElementById('ongoingAddRegionSelect')?.value || 'tn';
+        const regionMeta = securityEngine.getOngoingRegionOptions(ongoingEditState.projects)
+          .find((r) => r.value === regionKey)
+          || { value: regionKey, label: regionKey };
+        ongoingEditState.projects.push({
+          id: `ongoing-${regionKey}-${Date.now()}`,
+          region: regionKey,
+          regionLabel: regionMeta.label,
+          slNo: nextOngoingSlNoForRegion(regionKey),
+          name: 'New ongoing project',
+          patron: '',
+          valueLakhs: '',
+          progress: '0'
+        });
+        renderOngoingProjectRows();
+        const wrap = document.getElementById('ongoingProjectsTables');
+        const block = wrap?.querySelector(`.ongoing-region-block[data-region="${regionKey}"]`);
+        block?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const lastRow = block?.querySelector('.ongoing-region-tbody tr[data-id]:last-child');
+        lastRow?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const nameField = lastRow?.querySelector('.ongoing-row-name');
+        if (nameField) {
+          nameField.focus();
+          nameField.select();
+        }
+      }
+
+      function getOngoingActiveRegions() {
+        const allOpts = securityEngine.getOngoingRegionOptions(
+          ongoingEditState ? ongoingEditState.projects : []
+        );
+        const used = new Set(
+          (ongoingEditState && Array.isArray(ongoingEditState.projects)
+            ? ongoingEditState.projects
+            : []
+          ).map((p) => p.region)
+        );
+        // Always show Tamil Nadu + Andhra Pradesh; also any region that has projects
+        const always = new Set(['tn', 'ap']);
+        const active = allOpts.filter((r) => always.has(r.value) || used.has(r.value));
+        return securityEngine.getOngoingRegionDisplayOrder(active);
+      }
+
+      function renderOngoingProjectsEditor() {
+        ongoingEditState = securityEngine.getOngoingProjectsContent();
+
+        const hlWrap = document.getElementById('ongoingHighlightsEdit');
+        if (hlWrap) {
+          hlWrap.innerHTML = ongoingEditState.highlights.map((h) => `
+            <div class="ongoing-hl-card" data-key="${escapeHtml(h.key)}" style="border:1px solid #e2e8f0; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+              <input type="text" class="dash-search ongoing-hl-label" value="${escapeHtml(h.label)}" placeholder="Label" style="width:100%; padding:8px 10px; font-weight:600;">
+              <input type="text" class="dash-search ongoing-hl-value" value="${escapeHtml(h.value)}" placeholder="Value" style="width:100%; padding:8px 10px; font-size:1.25rem; font-weight:700;">
+              <textarea class="dash-search ongoing-hl-note" placeholder="Description" style="width:100%; min-height:64px; padding:8px 10px; resize:vertical;">${escapeHtml(h.note)}</textarea>
+            </div>
+          `).join('');
+        }
+
+        renderOngoingProjectRows();
+      }
+
+      function renderOngoingProjectRows() {
+        const wrap = document.getElementById('ongoingProjectsTables');
+        const countEl = document.getElementById('ongoingProjectsCount');
+        if (!wrap || !ongoingEditState) return;
+
+        const regionOpts = securityEngine.getOngoingRegionOptions(ongoingEditState.projects);
+        const regionMap = Object.fromEntries(regionOpts.map((r) => [r.value, r]));
+        const activeRegions = getOngoingActiveRegions();
+
+        const byRegion = {};
+        activeRegions.forEach((r) => { byRegion[r.value] = []; });
+        ongoingEditState.projects.forEach((p) => {
+          const key = p.region || 'tn';
+          if (!byRegion[key]) byRegion[key] = [];
+          byRegion[key].push(p);
+        });
+
+        Object.keys(byRegion).forEach((key) => {
+          byRegion[key].sort((a, b) => {
+            const sa = parseInt(String(a.slNo).replace(/\D/g, ''), 10) || 0;
+            const sb = parseInt(String(b.slNo).replace(/\D/g, ''), 10) || 0;
+            return sa - sb;
+          });
+        });
+
+        // Ensure every populated region has a table block (even if not in presets)
+        Object.keys(byRegion).forEach((key) => {
+          if (!byRegion[key].length) return;
+          if (activeRegions.some((r) => r.value === key)) return;
+          const meta = regionMap[key] || {
+            value: key,
+            label: byRegion[key][0].regionLabel || key,
+            badge: key.toUpperCase().slice(0, 4)
+          };
+          activeRegions.push(meta);
+        });
+        const orderedRegions = securityEngine.getOngoingRegionDisplayOrder(activeRegions);
+
+        // Keep state sorted for subsequent ops
+        ongoingEditState.projects = orderedRegions.flatMap((r) => byRegion[r.value] || []);
+
+        wrap.innerHTML = orderedRegions.map((regionMeta) => {
+          const rows = byRegion[regionMeta.value] || [];
+          const rowsHtml = rows.map((row) => {
+            const options = regionOpts
+              .slice()
+              .sort((a, b) => String(a.label).localeCompare(String(b.label), 'en'))
+              .map((r) =>
+                `<option value="${escapeHtml(r.value)}" ${r.value === row.region ? 'selected' : ''}>${escapeHtml(r.label)}</option>`
+              ).join('');
+            return `
+              <tr data-id="${escapeHtml(row.id)}">
+                <td><input type="text" class="dash-search ongoing-row-sl" value="${escapeHtml(row.slNo)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+                <td><textarea class="dash-search ongoing-row-name" style="width:100%; min-height:72px; padding:8px 10px; resize:vertical;">${escapeHtml(row.name)}</textarea></td>
+                <td><input type="text" class="dash-search ongoing-row-patron" value="${escapeHtml(row.patron)}" style="width:100%; padding:8px 10px;"></td>
+                <td><input type="text" class="dash-search ongoing-row-value" value="${escapeHtml(row.valueLakhs)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+                <td><input type="text" class="dash-search ongoing-row-progress" value="${escapeHtml(row.progress)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+                <td>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">REGION</label>
+                  <select class="dash-select ongoing-row-region" style="width:100%; padding:8px 10px; min-width:0;" aria-label="Region">${options}</select>
+                </td>
+                <td style="text-align:center;">
+                  <button type="button" class="btn-dash-action ongoing-row-delete" title="Delete project" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:6px 10px;">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+
+          return `
+            <div class="ongoing-region-block" data-region="${escapeHtml(regionMeta.value)}" style="border:1px solid #e2e8f0; border-radius:10px; padding:16px 16px 12px; background:#f8fafc;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                <h4 style="margin:0; font-size:0.95rem; color:var(--dash-text);">
+                  ${escapeHtml(regionMeta.label)}
+                  <span style="display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; background:#e2e8f0; font-size:0.7rem; font-weight:700; letter-spacing:0.04em; color:#334155;">${escapeHtml(regionMeta.badge || regionMeta.value.toUpperCase())}</span>
+                  <span class="ongoing-region-count" style="font-weight:500; color:#64748b; font-size:0.8rem; margin-left:6px;">(${rows.length})</span>
+                </h4>
+                <button type="button" class="btn-dash-action ongoing-add-region-btn" data-region="${escapeHtml(regionMeta.value)}" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+                  <i class="fa-solid fa-plus"></i> Add Project
+                </button>
+              </div>
+              <div class="table-responsive" style="max-height:420px; overflow:auto; background:#fff; border-radius:8px; border:1px solid #e2e8f0;">
+                <table class="dash-table ongoing-region-table">
+                  <thead>
+                    <tr>
+                      <th style="width:70px;">Sl. No.</th>
+                      <th>Name of Work</th>
+                      <th style="width:180px;">Patron</th>
+                      <th style="width:110px;">Value (₹ Lakh)</th>
+                      <th style="width:90px;">Progress %</th>
+                      <th style="width:180px;">Region</th>
+                      <th style="width:80px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="ongoing-region-tbody">${rowsHtml || `
+                    <tr class="ongoing-empty-row">
+                      <td colspan="7" style="text-align:center; color:#94a3b8; padding:18px;">No projects in this region yet. Use Add Project above (any state) or this section’s Add Project.</td>
+                    </tr>
+                  `}</tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (countEl) countEl.textContent = `(${ongoingEditState.projects.length} projects)`;
+        // Region header (N) uses rows.length above; keep highlight cards in sync too.
+        syncOngoingHighlightCounts();
+        populateOngoingAddRegionSelect(document.getElementById('ongoingAddRegionSelect')?.value || 'tn');
+
+        wrap.querySelectorAll('.ongoing-row-delete').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const tr = btn.closest('tr');
+            const id = tr?.getAttribute('data-id');
+            if (!id || !confirm('Delete this ongoing project?')) return;
+            collectOngoingFormIntoState();
+            ongoingEditState.projects = ongoingEditState.projects.filter((r) => r.id !== id);
+            renderOngoingProjectRows();
+          });
+        });
+
+        wrap.querySelectorAll('.ongoing-row-region').forEach((select) => {
+          select.addEventListener('change', () => {
+            collectOngoingFormIntoState();
+            renderOngoingProjectRows();
+          });
+        });
+
+        wrap.querySelectorAll('.ongoing-add-region-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            addOngoingProjectForRegion(btn.getAttribute('data-region') || 'tn');
+          });
+        });
+      }
+
+      const ongoingAddProjectBtn = document.getElementById('ongoingAddProjectBtn');
+      if (ongoingAddProjectBtn) {
+        ongoingAddProjectBtn.addEventListener('click', () => {
+          const region = document.getElementById('ongoingAddRegionSelect')?.value || 'tn';
+          addOngoingProjectForRegion(region);
+        });
+      }
+
+      const ongoingSyncCountsBtn = document.getElementById('ongoingSyncCountsBtn');
+      if (ongoingSyncCountsBtn) {
+        ongoingSyncCountsBtn.addEventListener('click', () => {
+          if (!ongoingEditState) renderOngoingProjectsEditor();
+          collectOngoingFormIntoState();
+          const counts = syncOngoingHighlightCounts();
+          if (!counts) return;
+          showOngoingAlert(`Highlights set to ${counts.total} active (${counts.tnCount} TN / ${counts.apCount} AP). Click Save & Publish to apply.`);
+        });
+      }
+
+      const saveOngoingProjectsBtn = document.getElementById('saveOngoingProjectsBtn');
+      if (saveOngoingProjectsBtn) {
+        saveOngoingProjectsBtn.addEventListener('click', async () => {
+          if (!ongoingEditState) renderOngoingProjectsEditor();
+          collectOngoingFormIntoState();
+          syncOngoingHighlightCounts();
+          const result = await securityEngine.updateOngoingProjectsContent(ongoingEditState);
+          if (result.success) {
+            ongoingEditState = securityEngine.getOngoingProjectsContent();
+            renderOngoingProjectsEditor();
+          }
+          showOngoingAlert(result.message || 'Ongoing Projects page updated live on public website!', result.success);
+        });
+      }
+
+
+      // —— Completed Projects Page CMS ——
+      let completedEditState = null;
+
+      function showCompletedAlert(message, success = true) {
+        showSaveResultAlert(
+          document.getElementById('completedStatusAlert'),
+          { success, message },
+          message
+        );
+      }
+
+      function collectCompletedFormIntoState() {
+        if (!completedEditState) return null;
+
+        const highlightCards = document.querySelectorAll('#completedHighlightsEdit .completed-hl-card');
+        completedEditState.highlights = Array.from(highlightCards).map((card, i) => ({
+          key: card.getAttribute('data-key') || `hl-${i}`,
+          label: card.querySelector('.completed-hl-label')?.value.trim() || '',
+          value: card.querySelector('.completed-hl-value')?.value.trim() || '',
+          note: card.querySelector('.completed-hl-note')?.value.trim() || ''
+        }));
+
+        const rows = document.querySelectorAll('#completedProjectsTables .completed-region-tbody tr[data-id]');
+        const regionOpts = securityEngine.getCompletedRegionOptions(completedEditState.projects);
+        const regionMap = Object.fromEntries(regionOpts.map((r) => [r.value, r]));
+        completedEditState.projects = Array.from(rows).map((tr, index) => {
+          const region = tr.querySelector('.completed-row-region')?.value
+            || tr.closest('[data-region]')?.getAttribute('data-region')
+            || 'tn';
+          const regionMeta = regionMap[region] || { value: region, label: region };
+          return {
+            id: tr.getAttribute('data-id') || `completed-${region}-${index + 1}`,
+            region,
+            regionLabel: regionMeta.label,
+            slNo: tr.querySelector('.completed-row-sl')?.value.trim() || String(index + 1),
+            name: tr.querySelector('.completed-row-name')?.value.trim() || '',
+            valueLakhs: tr.querySelector('.completed-row-value')?.value.trim() || ''
+          };
+        }).filter((row) => row.name);
+
+        return completedEditState;
+      }
+
+      function nextCompletedSlNoForRegion(region) {
+        if (!completedEditState || !Array.isArray(completedEditState.projects)) return '1';
+        let max = 0;
+        completedEditState.projects.forEach((p) => {
+          if (p.region !== region) return;
+          const n = parseInt(String(p.slNo).replace(/\D/g, ''), 10);
+          if (!Number.isNaN(n) && n > max) max = n;
+        });
+        return String(max + 1);
+      }
+
+      function syncCompletedHighlightCounts() {
+        if (!completedEditState || !Array.isArray(completedEditState.projects)) return null;
+        if (!Array.isArray(completedEditState.highlights)) completedEditState.highlights = [];
+
+        const total = completedEditState.projects.length;
+        let sumLakhs = 0;
+        completedEditState.projects.forEach((p) => {
+          const n = parseFloat(String(p.valueLakhs || '').replace(/,/g, ''));
+          if (!Number.isNaN(n)) sumLakhs += n;
+        });
+        const crRounded = Math.round(sumLakhs / 100);
+
+        const setHl = (key, index, value) => {
+          let hl = completedEditState.highlights.find((h) => h.key === key);
+          if (!hl && completedEditState.highlights[index]) hl = completedEditState.highlights[index];
+          if (!hl) return;
+          hl.value = String(value);
+          const card = document.querySelector(`#completedHighlightsEdit .completed-hl-card[data-key="${key}"] .completed-hl-value`)
+            || document.querySelectorAll('#completedHighlightsEdit .completed-hl-value')[index];
+          if (card) card.value = hl.value;
+        };
+
+        setHl('completed', 0, total);
+        setHl('value', 1, crRounded);
+        return { total, crRounded, sumLakhs };
+      }
+
+      function populateCompletedAddRegionSelect(preferredRegion) {
+        const select = document.getElementById('completedAddRegionSelect');
+        if (!select) return;
+        const prev = preferredRegion || select.value || 'tn';
+        const opts = securityEngine.getCompletedRegionDisplayOrder(
+          securityEngine.getCompletedRegionOptions(completedEditState ? completedEditState.projects : [])
+        );
+        select.innerHTML = opts.map((r) =>
+          `<option value="${escapeHtml(r.value)}" ${r.value === prev ? 'selected' : ''}>${escapeHtml(r.label)}</option>`
+        ).join('');
+        if (![...select.options].some((o) => o.value === prev) && select.options.length) {
+          select.selectedIndex = 0;
+        }
+      }
+
+      function addCompletedProjectForRegion(region) {
+        if (!completedEditState) renderCompletedProjectsEditor();
+        collectCompletedFormIntoState();
+        const regionKey = region || document.getElementById('completedAddRegionSelect')?.value || 'tn';
+        const regionMeta = securityEngine.getCompletedRegionOptions(completedEditState.projects)
+          .find((r) => r.value === regionKey)
+          || { value: regionKey, label: regionKey };
+        completedEditState.projects.push({
+          id: `completed-${regionKey}-${Date.now()}`,
+          region: regionKey,
+          regionLabel: regionMeta.label,
+          slNo: nextCompletedSlNoForRegion(regionKey),
+          name: 'New completed project',
+          valueLakhs: ''
+        });
+        renderCompletedProjectRows();
+        const wrap = document.getElementById('completedProjectsTables');
+        const block = wrap?.querySelector(`.completed-region-block[data-region="${regionKey}"]`);
+        block?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const lastRow = block?.querySelector('.completed-region-tbody tr[data-id]:last-child');
+        lastRow?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const nameField = lastRow?.querySelector('.completed-row-name');
+        if (nameField) {
+          nameField.focus();
+          nameField.select();
+        }
+      }
+
+      function getCompletedActiveRegions() {
+        const allOpts = securityEngine.getCompletedRegionOptions(
+          completedEditState ? completedEditState.projects : []
+        );
+        const used = new Set(
+          (completedEditState && Array.isArray(completedEditState.projects)
+            ? completedEditState.projects
+            : []
+          ).map((p) => p.region)
+        );
+        // Always show Tamil Nadu (seed region); also any region that has projects
+        const always = new Set(['tn']);
+        const active = allOpts.filter((r) => always.has(r.value) || used.has(r.value));
+        return securityEngine.getCompletedRegionDisplayOrder(active);
+      }
+
+      function renderCompletedProjectsEditor() {
+        completedEditState = securityEngine.getCompletedProjectsContent();
+
+        const hlWrap = document.getElementById('completedHighlightsEdit');
+        if (hlWrap) {
+          hlWrap.innerHTML = completedEditState.highlights.map((h) => `
+            <div class="completed-hl-card" data-key="${escapeHtml(h.key)}" style="border:1px solid #e2e8f0; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+              <input type="text" class="dash-search completed-hl-label" value="${escapeHtml(h.label)}" placeholder="Label" style="width:100%; padding:8px 10px; font-weight:600;">
+              <input type="text" class="dash-search completed-hl-value" value="${escapeHtml(h.value)}" placeholder="Value" style="width:100%; padding:8px 10px; font-size:1.25rem; font-weight:700;">
+              <textarea class="dash-search completed-hl-note" placeholder="Description" style="width:100%; min-height:64px; padding:8px 10px; resize:vertical;">${escapeHtml(h.note)}</textarea>
+            </div>
+          `).join('');
+        }
+
+        renderCompletedProjectRows();
+      }
+
+      function renderCompletedProjectRows() {
+        const wrap = document.getElementById('completedProjectsTables');
+        const countEl = document.getElementById('completedProjectsCount');
+        if (!wrap || !completedEditState) return;
+
+        const regionOpts = securityEngine.getCompletedRegionOptions(completedEditState.projects);
+        const regionMap = Object.fromEntries(regionOpts.map((r) => [r.value, r]));
+        const activeRegions = getCompletedActiveRegions();
+
+        const byRegion = {};
+        activeRegions.forEach((r) => { byRegion[r.value] = []; });
+        completedEditState.projects.forEach((p) => {
+          const key = p.region || 'tn';
+          if (!byRegion[key]) byRegion[key] = [];
+          byRegion[key].push(p);
+        });
+
+        Object.keys(byRegion).forEach((key) => {
+          byRegion[key].sort((a, b) => {
+            const sa = parseInt(String(a.slNo).replace(/\D/g, ''), 10) || 0;
+            const sb = parseInt(String(b.slNo).replace(/\D/g, ''), 10) || 0;
+            return sa - sb;
+          });
+        });
+
+        Object.keys(byRegion).forEach((key) => {
+          if (!byRegion[key].length) return;
+          if (activeRegions.some((r) => r.value === key)) return;
+          const meta = regionMap[key] || {
+            value: key,
+            label: byRegion[key][0].regionLabel || key,
+            badge: key.toUpperCase().slice(0, 4)
+          };
+          activeRegions.push(meta);
+        });
+        const orderedRegions = securityEngine.getCompletedRegionDisplayOrder(activeRegions);
+
+        completedEditState.projects = orderedRegions.flatMap((r) => byRegion[r.value] || []);
+
+        wrap.innerHTML = orderedRegions.map((regionMeta) => {
+          const rows = byRegion[regionMeta.value] || [];
+          const rowsHtml = rows.map((row) => {
+            const options = regionOpts
+              .slice()
+              .sort((a, b) => String(a.label).localeCompare(String(b.label), 'en'))
+              .map((r) =>
+                `<option value="${escapeHtml(r.value)}" ${r.value === row.region ? 'selected' : ''}>${escapeHtml(r.label)}</option>`
+              ).join('');
+            return `
+              <tr data-id="${escapeHtml(row.id)}">
+                <td><input type="text" class="dash-search completed-row-sl" value="${escapeHtml(row.slNo)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+                <td><textarea class="dash-search completed-row-name" style="width:100%; min-height:72px; padding:8px 10px; resize:vertical;">${escapeHtml(row.name)}</textarea></td>
+                <td><input type="text" class="dash-search completed-row-value" value="${escapeHtml(row.valueLakhs)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
+                <td>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">REGION</label>
+                  <select class="dash-select completed-row-region" style="width:100%; padding:8px 10px; min-width:0;" aria-label="Region">${options}</select>
+                </td>
+                <td style="text-align:center;">
+                  <button type="button" class="btn-dash-action completed-row-delete" title="Delete project" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:6px 10px;">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+
+          return `
+            <div class="completed-region-block" data-region="${escapeHtml(regionMeta.value)}" style="border:1px solid #e2e8f0; border-radius:10px; padding:16px 16px 12px; background:#f8fafc;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                <h4 style="margin:0; font-size:0.95rem; color:var(--dash-text);">
+                  ${escapeHtml(regionMeta.label)}
+                  <span style="display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; background:#e2e8f0; font-size:0.7rem; font-weight:700; letter-spacing:0.04em; color:#334155;">${escapeHtml(regionMeta.badge || regionMeta.value.toUpperCase())}</span>
+                  <span class="completed-region-count" style="font-weight:500; color:#64748b; font-size:0.8rem; margin-left:6px;">(${rows.length})</span>
+                </h4>
+                <button type="button" class="btn-dash-action completed-add-region-btn" data-region="${escapeHtml(regionMeta.value)}" style="background:#0f172a; color:#fff; border:none; padding:8px 14px;">
+                  <i class="fa-solid fa-plus"></i> Add Project
+                </button>
+              </div>
+              <div class="table-responsive" style="max-height:420px; overflow:auto; background:#fff; border-radius:8px; border:1px solid #e2e8f0;">
+                <table class="dash-table completed-region-table">
+                  <thead>
+                    <tr>
+                      <th style="width:70px;">Sl. No.</th>
+                      <th>Description of Works</th>
+                      <th style="width:130px;">Value (₹ Lakh)</th>
+                      <th style="width:180px;">Region</th>
+                      <th style="width:80px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="completed-region-tbody">${rowsHtml || `
+                    <tr class="completed-empty-row">
+                      <td colspan="5" style="text-align:center; color:#94a3b8; padding:18px;">No projects in this region yet. Use Add Project above (any state) or this section’s Add Project.</td>
+                    </tr>
+                  `}</tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (countEl) countEl.textContent = `(${completedEditState.projects.length} projects)`;
+        syncCompletedHighlightCounts();
+        populateCompletedAddRegionSelect(document.getElementById('completedAddRegionSelect')?.value || 'tn');
+
+        wrap.querySelectorAll('.completed-row-delete').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const tr = btn.closest('tr');
+            const id = tr?.getAttribute('data-id');
+            if (!id || !confirm('Delete this completed project?')) return;
+            collectCompletedFormIntoState();
+            completedEditState.projects = completedEditState.projects.filter((r) => r.id !== id);
+            renderCompletedProjectRows();
+          });
+        });
+
+        wrap.querySelectorAll('.completed-row-region').forEach((select) => {
+          select.addEventListener('change', () => {
+            collectCompletedFormIntoState();
+            renderCompletedProjectRows();
+          });
+        });
+
+        wrap.querySelectorAll('.completed-add-region-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            addCompletedProjectForRegion(btn.getAttribute('data-region') || 'tn');
+          });
+        });
+      }
+
+      const completedAddProjectBtn = document.getElementById('completedAddProjectBtn');
+      if (completedAddProjectBtn) {
+        completedAddProjectBtn.addEventListener('click', () => {
+          const region = document.getElementById('completedAddRegionSelect')?.value || 'tn';
+          addCompletedProjectForRegion(region);
+        });
+      }
+
+      const completedSyncCountsBtn = document.getElementById('completedSyncCountsBtn');
+      if (completedSyncCountsBtn) {
+        completedSyncCountsBtn.addEventListener('click', () => {
+          if (!completedEditState) renderCompletedProjectsEditor();
+          collectCompletedFormIntoState();
+          const counts = syncCompletedHighlightCounts();
+          if (!counts) return;
+          showCompletedAlert(`Highlights set to ${counts.total} works / ~₹${counts.crRounded} Cr combined. Click Save & Publish to apply.`);
+        });
+      }
+
+      const saveCompletedProjectsBtn = document.getElementById('saveCompletedProjectsBtn');
+      if (saveCompletedProjectsBtn) {
+        saveCompletedProjectsBtn.addEventListener('click', async () => {
+          if (!completedEditState) renderCompletedProjectsEditor();
+          collectCompletedFormIntoState();
+          syncCompletedHighlightCounts();
+          const result = await securityEngine.updateCompletedProjectsContent(completedEditState);
+          if (result.success) {
+            completedEditState = securityEngine.getCompletedProjectsContent();
+            renderCompletedProjectsEditor();
+          }
+          showCompletedAlert(result.message || 'Completed Projects page updated live on public website!', result.success);
+        });
+      }
+
+
+      // —— Project Gallery Page CMS ——
+      let projectGalleryEditState = null;
+
+      function showProjectGalleryAlert(message, success = true) {
+        showSaveResultAlert(
+          document.getElementById('projectGalleryStatusAlert'),
+          { success, message },
+          message
+        );
+      }
+
+      function collectProjectGalleryFormIntoState() {
+        if (!projectGalleryEditState) return null;
+
+        const highlightCards = document.querySelectorAll('#projectGalleryHighlightsEdit .pg-hl-card');
+        projectGalleryEditState.highlights = Array.from(highlightCards).map((card, i) => ({
+          key: card.getAttribute('data-key') || `hl-${i}`,
+          label: card.querySelector('.pg-hl-label')?.value.trim() || '',
+          value: card.querySelector('.pg-hl-value')?.value.trim() || '',
+          note: card.querySelector('.pg-hl-note')?.value.trim() || ''
+        }));
+
+        const cards = document.querySelectorAll('#projectGalleryItemsEdit .pg-item-card');
+        const catOpts = securityEngine.getProjectGalleryCategoryOptions(projectGalleryEditState.items || []);
+        const catMap = Object.fromEntries(catOpts.map((c) => [c.value, c]));
+        projectGalleryEditState.items = Array.from(cards).map((card, index) => {
+          const category = card.querySelector('.pg-item-category')?.value || 'industrial';
+          const catMeta = catMap[category] || { value: category, label: category };
+          const images = Array.from(card.querySelectorAll('.pg-item-image-url'))
+            .map((input) => input.value.trim())
+            .filter(Boolean);
+          return {
+            id: card.getAttribute('data-id') || `gallery-${category}-${index + 1}`,
+            category,
+            categoryFilterLabel: catMeta.label,
+            categoryLabel: card.querySelector('.pg-item-cat-label')?.value.trim() || catMeta.label,
+            title: card.querySelector('.pg-item-title')?.value.trim() || '',
+            fullTitle: card.querySelector('.pg-item-full-title')?.value.trim() || '',
+            client: card.querySelector('.pg-item-client')?.value.trim() || '',
+            value: card.querySelector('.pg-item-value')?.value.trim() || '',
+            valueBadge: card.querySelector('.pg-item-badge')?.value.trim() || '',
+            location: card.querySelector('.pg-item-location')?.value.trim() || '',
+            scope: card.querySelector('.pg-item-scope')?.value.trim() || '',
+            image: images[0] || '',
+            images,
+            shortDesc: card.querySelector('.pg-item-short')?.value.trim() || '',
+            description: card.querySelector('.pg-item-desc')?.value.trim() || ''
+          };
+        }).filter((row) => row.title && row.images.length);
+
+        return projectGalleryEditState;
+      }
+
+      function syncProjectGalleryHighlightCounts() {
+        if (!projectGalleryEditState || !Array.isArray(projectGalleryEditState.items)) return null;
+        if (!Array.isArray(projectGalleryEditState.highlights)) projectGalleryEditState.highlights = [];
+        const total = projectGalleryEditState.items.length;
+        const sectors = new Set(projectGalleryEditState.items.map((i) => i.category)).size;
+        const setHl = (key, index, value) => {
+          let hl = projectGalleryEditState.highlights.find((h) => h.key === key);
+          if (!hl && projectGalleryEditState.highlights[index]) hl = projectGalleryEditState.highlights[index];
+          if (!hl) return;
+          hl.value = String(value);
+          const input = document.querySelector(`#projectGalleryHighlightsEdit .pg-hl-card[data-key="${key}"] .pg-hl-value`)
+            || document.querySelectorAll('#projectGalleryHighlightsEdit .pg-hl-value')[index];
+          if (input) input.value = hl.value;
+        };
+        setHl('studies', 0, total);
+        setHl('sectors', 1, sectors);
+        return { total, sectors };
+      }
+
+      function renderProjectGalleryEditor() {
+        projectGalleryEditState = securityEngine.getProjectGalleryContent();
+        const hlWrap = document.getElementById('projectGalleryHighlightsEdit');
+        if (hlWrap) {
+          hlWrap.innerHTML = projectGalleryEditState.highlights.map((h) => `
+            <div class="pg-hl-card" data-key="${escapeHtml(h.key)}" style="border:1px solid #e2e8f0; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+              <input type="text" class="dash-search pg-hl-label" value="${escapeHtml(h.label)}" placeholder="Label" style="width:100%; padding:8px 10px; font-weight:600;">
+              <input type="text" class="dash-search pg-hl-value" value="${escapeHtml(h.value)}" placeholder="Value" style="width:100%; padding:8px 10px; font-size:1.25rem; font-weight:700;">
+              <textarea class="dash-search pg-hl-note" placeholder="Description" style="width:100%; min-height:64px; padding:8px 10px; resize:vertical;">${escapeHtml(h.note)}</textarea>
+            </div>
+          `).join('');
+        }
+        renderProjectGalleryItemCards();
+      }
+
+      function renderProjectGalleryItemCards() {
+        const wrap = document.getElementById('projectGalleryItemsEdit');
+        const countEl = document.getElementById('projectGalleryItemsCount');
+        if (!wrap || !projectGalleryEditState) return;
+        const catOpts = securityEngine.getProjectGalleryCategoryOptions(projectGalleryEditState.items);
+
+        wrap.innerHTML = projectGalleryEditState.items.map((item, index) => {
+          const options = catOpts.map((c) =>
+            `<option value="${escapeHtml(c.value)}" ${c.value === item.category ? 'selected' : ''}>${escapeHtml(c.label)}</option>`
+          ).join('');
+          const images = Array.isArray(item.images) && item.images.length
+            ? item.images
+            : (item.image ? [item.image] : ['']);
+          const cover = images[0] || '';
+          const imageRows = images.map((url, imgIdx) => `
+            <div class="pg-image-row" style="display:grid; grid-template-columns:48px 1fr auto; gap:8px; align-items:center; margin-bottom:8px;">
+              <div style="height:48px; width:48px; background:#0f172a; border-radius:6px; overflow:hidden; flex-shrink:0;">
+                <img src="${escapeHtml(url)}" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'">
+              </div>
+              <input type="text" class="dash-search pg-item-image-url" value="${escapeHtml(url)}" placeholder="Image URL / filename" style="width:100%; padding:8px 10px;">
+              <button type="button" class="btn-dash-action pg-image-remove" title="Remove image" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:8px 10px;"><i class="fa-solid fa-xmark"></i></button>
+              ${imgIdx === 0 ? '<span style="grid-column:1 / -1; font-size:0.65rem; color:#94a3b8; margin-top:-4px;">Cover image (shown on card)</span>' : ''}
+            </div>
+          `).join('');
+          return `
+            <div class="pg-item-card" data-id="${escapeHtml(item.id)}" style="border:1px solid #e2e8f0; border-radius:12px; padding:16px; background:#f8fafc; display:grid; grid-template-columns:140px 1fr; gap:16px;">
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="height:110px; background:#0f172a; border-radius:8px; overflow:hidden;">
+                  <img class="pg-item-cover-preview" src="${escapeHtml(cover)}" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'">
+                </div>
+                <div style="display:flex; gap:6px; justify-content:center;">
+                  <button type="button" class="btn-dash-action pg-move-up" title="Move up" style="background:#fff; border:1px solid #cbd5e1; padding:6px 10px;"><i class="fa-solid fa-arrow-up"></i></button>
+                  <button type="button" class="btn-dash-action pg-move-down" title="Move down" style="background:#fff; border:1px solid #cbd5e1; padding:6px 10px;"><i class="fa-solid fa-arrow-down"></i></button>
+                  <button type="button" class="btn-dash-action pg-item-delete" title="Delete" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:6px 10px;"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                <div style="font-size:0.7rem; color:#94a3b8; text-align:center;">#${index + 1} · ${images.filter(Boolean).length || 0} img</div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">CARD TITLE</label>
+                  <input type="text" class="dash-search pg-item-title" value="${escapeHtml(item.title)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">FULL / MODAL TITLE</label>
+                  <input type="text" class="dash-search pg-item-full-title" value="${escapeHtml(item.fullTitle)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">FILTER CATEGORY</label>
+                  <select class="dash-select pg-item-category" style="width:100%; padding:8px 10px;">${options}</select>
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">DISPLAY CATEGORY LABEL</label>
+                  <input type="text" class="dash-search pg-item-cat-label" value="${escapeHtml(item.categoryLabel)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div style="grid-column:1 / -1;">
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">IMAGES (MULTIPLE) — FIRST IS COVER</label>
+                  <div class="pg-images-list">${imageRows}</div>
+                  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; align-items:center;">
+                    <button type="button" class="btn-dash-action pg-image-add" style="background:#0f172a; color:#fff; border:none; padding:8px 12px;">
+                      <i class="fa-solid fa-plus"></i> Add Image URL
+                    </button>
+                    <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.75rem; color:#64748b; cursor:pointer; border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; background:#fff;">
+                      <i class="fa-solid fa-upload"></i> Upload image
+                      <input type="file" accept="image/*" class="pg-item-file" style="display:none;">
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">CLIENT</label>
+                  <input type="text" class="dash-search pg-item-client" value="${escapeHtml(item.client)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">LOCATION</label>
+                  <input type="text" class="dash-search pg-item-location" value="${escapeHtml(item.location)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">VALUE</label>
+                  <input type="text" class="dash-search pg-item-value" value="${escapeHtml(item.value)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">VALUE BADGE</label>
+                  <input type="text" class="dash-search pg-item-badge" value="${escapeHtml(item.valueBadge)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div style="grid-column:1 / -1;">
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">SCOPE</label>
+                  <input type="text" class="dash-search pg-item-scope" value="${escapeHtml(item.scope)}" style="width:100%; padding:8px 10px;">
+                </div>
+                <div style="grid-column:1 / -1;">
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">SHORT DESCRIPTION</label>
+                  <textarea class="dash-search pg-item-short" style="width:100%; min-height:56px; padding:8px 10px; resize:vertical;">${escapeHtml(item.shortDesc)}</textarea>
+                </div>
+                <div style="grid-column:1 / -1;">
+                  <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">FULL DESCRIPTION (LIGHTBOX)</label>
+                  <textarea class="dash-search pg-item-desc" style="width:100%; min-height:80px; padding:8px 10px; resize:vertical;">${escapeHtml(item.description)}</textarea>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('') || '<p style="color:#94a3b8; margin:0;">No case studies yet. Click Add Case Study.</p>';
+
+        if (countEl) countEl.textContent = `(${projectGalleryEditState.items.length} items)`;
+        syncProjectGalleryHighlightCounts();
+
+        wrap.querySelectorAll('.pg-item-delete').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const card = btn.closest('.pg-item-card');
+            const id = card?.getAttribute('data-id');
+            if (!id || !confirm('Delete this case study?')) return;
+            collectProjectGalleryFormIntoState();
+            projectGalleryEditState.items = projectGalleryEditState.items.filter((r) => r.id !== id);
+            renderProjectGalleryItemCards();
+          });
+        });
+
+        wrap.querySelectorAll('.pg-move-up').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            collectProjectGalleryFormIntoState();
+            const card = btn.closest('.pg-item-card');
+            const id = card?.getAttribute('data-id');
+            const idx = projectGalleryEditState.items.findIndex((r) => r.id === id);
+            if (idx <= 0) return;
+            const tmp = projectGalleryEditState.items[idx - 1];
+            projectGalleryEditState.items[idx - 1] = projectGalleryEditState.items[idx];
+            projectGalleryEditState.items[idx] = tmp;
+            renderProjectGalleryItemCards();
+          });
+        });
+
+        wrap.querySelectorAll('.pg-move-down').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            collectProjectGalleryFormIntoState();
+            const card = btn.closest('.pg-item-card');
+            const id = card?.getAttribute('data-id');
+            const idx = projectGalleryEditState.items.findIndex((r) => r.id === id);
+            if (idx < 0 || idx >= projectGalleryEditState.items.length - 1) return;
+            const tmp = projectGalleryEditState.items[idx + 1];
+            projectGalleryEditState.items[idx + 1] = projectGalleryEditState.items[idx];
+            projectGalleryEditState.items[idx] = tmp;
+            renderProjectGalleryItemCards();
+          });
+        });
+
+        const syncCoverPreview = (card) => {
+          const firstUrl = card?.querySelector('.pg-item-image-url')?.value.trim() || '';
+          const preview = card?.querySelector('.pg-item-cover-preview');
+          if (preview) {
+            preview.src = firstUrl;
+            preview.style.display = firstUrl ? '' : 'none';
+          }
+        };
+
+        wrap.querySelectorAll('.pg-image-add').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const card = btn.closest('.pg-item-card');
+            const list = card?.querySelector('.pg-images-list');
+            if (!list) return;
+            const row = document.createElement('div');
+            row.className = 'pg-image-row';
+            row.style.cssText = 'display:grid; grid-template-columns:48px 1fr auto; gap:8px; align-items:center; margin-bottom:8px;';
+            row.innerHTML = `
+              <div style="height:48px; width:48px; background:#0f172a; border-radius:6px; overflow:hidden; flex-shrink:0;">
+                <img src="" alt="" style="width:100%; height:100%; object-fit:cover; display:none;">
+              </div>
+              <input type="text" class="dash-search pg-item-image-url" value="" placeholder="Image URL / filename" style="width:100%; padding:8px 10px;">
+              <button type="button" class="btn-dash-action pg-image-remove" title="Remove image" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:8px 10px;"><i class="fa-solid fa-xmark"></i></button>
+            `;
+            list.appendChild(row);
+            bindImageRowEvents(row, card);
+            row.querySelector('.pg-item-image-url')?.focus();
+          });
+        });
+
+        const bindImageRowEvents = (row, card) => {
+          const urlInput = row.querySelector('.pg-item-image-url');
+          const thumb = row.querySelector('img');
+          const removeBtn = row.querySelector('.pg-image-remove');
+          if (urlInput) {
+            urlInput.addEventListener('input', () => {
+              const val = urlInput.value.trim();
+              if (thumb) {
+                thumb.src = val;
+                thumb.style.display = val ? '' : 'none';
+              }
+              syncCoverPreview(card);
+            });
+          }
+          if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+              const list = card.querySelector('.pg-images-list');
+              const rows = list ? list.querySelectorAll('.pg-image-row') : [];
+              if (rows.length <= 1) {
+                if (urlInput) urlInput.value = '';
+                if (thumb) {
+                  thumb.src = '';
+                  thumb.style.display = 'none';
+                }
+                syncCoverPreview(card);
+                return;
+              }
+              row.remove();
+              syncCoverPreview(card);
+            });
+          }
+        };
+
+        wrap.querySelectorAll('.pg-item-card').forEach((card) => {
+          card.querySelectorAll('.pg-image-row').forEach((row) => bindImageRowEvents(row, card));
+        });
+
+        wrap.querySelectorAll('.pg-item-file').forEach((input) => {
+          input.addEventListener('change', () => {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+              const card = input.closest('.pg-item-card');
+              const list = card?.querySelector('.pg-images-list');
+              if (!list) return;
+              const dataUrl = String(reader.result || '');
+              const emptyInput = Array.from(list.querySelectorAll('.pg-item-image-url')).find((el) => !el.value.trim());
+              if (emptyInput) {
+                emptyInput.value = dataUrl;
+                emptyInput.dispatchEvent(new Event('input'));
+              } else {
+                const row = document.createElement('div');
+                row.className = 'pg-image-row';
+                row.style.cssText = 'display:grid; grid-template-columns:48px 1fr auto; gap:8px; align-items:center; margin-bottom:8px;';
+                row.innerHTML = `
+                  <div style="height:48px; width:48px; background:#0f172a; border-radius:6px; overflow:hidden; flex-shrink:0;">
+                    <img src="${dataUrl.replace(/"/g, '&quot;')}" alt="" style="width:100%; height:100%; object-fit:cover;">
+                  </div>
+                  <input type="text" class="dash-search pg-item-image-url" value="" placeholder="Image URL / filename" style="width:100%; padding:8px 10px;">
+                  <button type="button" class="btn-dash-action pg-image-remove" title="Remove image" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:8px 10px;"><i class="fa-solid fa-xmark"></i></button>
+                `;
+                list.appendChild(row);
+                const urlInput = row.querySelector('.pg-item-image-url');
+                if (urlInput) urlInput.value = dataUrl;
+                bindImageRowEvents(row, card);
+                syncCoverPreview(card);
+              }
+              input.value = '';
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+      }
+
+      const projectGalleryAddItemBtn = document.getElementById('projectGalleryAddItemBtn');
+      if (projectGalleryAddItemBtn) {
+        projectGalleryAddItemBtn.addEventListener('click', () => {
+          if (!projectGalleryEditState) renderProjectGalleryEditor();
+          collectProjectGalleryFormIntoState();
+          projectGalleryEditState.items.push({
+            id: `gallery-industrial-${Date.now()}`,
+            category: 'industrial',
+            categoryFilterLabel: 'Industrial',
+            categoryLabel: 'Industrial Facility',
+            title: 'New case study',
+            fullTitle: 'New case study',
+            client: '',
+            value: '',
+            valueBadge: '',
+            location: '',
+            scope: '',
+            image: 'bhel-power-plant.jpg',
+            images: ['bhel-power-plant.jpg'],
+            shortDesc: '',
+            description: ''
+          });
+          renderProjectGalleryItemCards();
+        });
+      }
+
+      const projectGallerySyncCountsBtn = document.getElementById('projectGallerySyncCountsBtn');
+      if (projectGallerySyncCountsBtn) {
+        projectGallerySyncCountsBtn.addEventListener('click', () => {
+          if (!projectGalleryEditState) renderProjectGalleryEditor();
+          collectProjectGalleryFormIntoState();
+          const counts = syncProjectGalleryHighlightCounts();
+          if (!counts) return;
+          showProjectGalleryAlert(`Highlights set to ${counts.total} studies / ${counts.sectors} sectors. Click Save & Publish to apply.`);
+        });
+      }
+
+      const saveProjectGalleryBtn = document.getElementById('saveProjectGalleryBtn');
+      if (saveProjectGalleryBtn) {
+        saveProjectGalleryBtn.addEventListener('click', async () => {
+          if (!projectGalleryEditState) renderProjectGalleryEditor();
+          collectProjectGalleryFormIntoState();
+          syncProjectGalleryHighlightCounts();
+          const result = await securityEngine.updateProjectGalleryContent(projectGalleryEditState);
+          if (result.success) {
+            projectGalleryEditState = securityEngine.getProjectGalleryContent();
+            renderProjectGalleryEditor();
+          }
+          showProjectGalleryAlert(result.message || 'Project Gallery updated live on public website!', result.success);
+        });
+      }
+
+      // ---- Gallery submenu media editors (Plant / Founder / Certificates) ----
+      const galleryMediaEditState = {
+        plant_machinery: null,
+        founder_clients: null,
+        certificates: null
+      };
+
+      function showGalleryMediaAlert(alertId, msg, success) {
+        showSaveResultAlert(document.getElementById(alertId), { success, message: msg }, msg);
+      }
+
+      function escapeAttr(value) {
+        return escapeHtml(String(value == null ? '' : value));
+      }
+
+      function renderGalleryMediaCardFields(item, index, opts) {
+        const mode = opts.mode || 'grid';
+        const meta0 = (item.meta && item.meta[0]) || { icon: '', text: '' };
+        const meta1 = (item.meta && item.meta[1]) || { icon: '', text: '' };
+        let extra = '';
+        if (mode === 'certificate') {
+          extra = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Badge Icon (FA)</label>
+                <input type="text" class="dash-search gm-badge-icon" value="${escapeAttr(item.badgeIcon || '')}" placeholder="fa-certificate" style="width:100%; padding:8px 10px;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Badge</label>
+                <input type="text" class="dash-search gm-badge" value="${escapeAttr(item.badge || '')}" style="width:100%; padding:8px 10px;">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Title</label>
+              <input type="text" class="dash-search gm-title" value="${escapeAttr(item.title || '')}" style="width:100%; padding:8px 10px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Author / Issuer (HTML allowed)</label>
+              <input type="text" class="dash-search gm-author" value="${escapeAttr(item.author || '')}" style="width:100%; padding:8px 10px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Description (HTML allowed)</label>
+              <textarea class="dash-search gm-description" rows="3" style="width:100%; padding:8px 10px; resize:vertical;">${escapeAttr(item.description || '')}</textarea>
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Quote (optional, instead of / with description)</label>
+              <textarea class="dash-search gm-quote" rows="2" style="width:100%; padding:8px 10px; resize:vertical;">${escapeAttr(item.quote || '')}</textarea>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Meta 1 Icon</label>
+                <input type="text" class="dash-search gm-meta0-icon" value="${escapeAttr(meta0.icon || '')}" placeholder="fa-circle-check" style="width:100%; padding:8px 10px;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Meta 1 Text</label>
+                <input type="text" class="dash-search gm-meta0-text" value="${escapeAttr(meta0.text || '')}" style="width:100%; padding:8px 10px;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Meta 2 Icon</label>
+                <input type="text" class="dash-search gm-meta1-icon" value="${escapeAttr(meta1.icon || '')}" placeholder="fa-star" style="width:100%; padding:8px 10px;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Meta 2 Text</label>
+                <input type="text" class="dash-search gm-meta1-text" value="${escapeAttr(meta1.text || '')}" style="width:100%; padding:8px 10px;">
+              </div>
+            </div>`;
+        } else if (mode === 'logo') {
+          extra = `
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Title / Alt (optional)</label>
+              <input type="text" class="dash-search gm-title" value="${escapeAttr(item.title || '')}" style="width:100%; padding:8px 10px;">
+            </div>`;
+        } else {
+          extra = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Badge</label>
+                <input type="text" class="dash-search gm-badge" value="${escapeAttr(item.badge || '')}" style="width:100%; padding:8px 10px;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Location Icon (FA)</label>
+                <input type="text" class="dash-search gm-location-icon" value="${escapeAttr(item.locationIcon || 'fa-location-dot')}" placeholder="fa-location-dot" style="width:100%; padding:8px 10px;">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Title</label>
+              <input type="text" class="dash-search gm-title" value="${escapeAttr(item.title || '')}" style="width:100%; padding:8px 10px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Location / Subtitle</label>
+              <input type="text" class="dash-search gm-location" value="${escapeAttr(item.location || '')}" style="width:100%; padding:8px 10px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Description</label>
+              <textarea class="dash-search gm-description" rows="2" style="width:100%; padding:8px 10px; resize:vertical;">${escapeAttr(item.description || '')}</textarea>
+            </div>`;
+        }
+
+        return `
+          <div class="gm-item-card" data-id="${escapeAttr(item.id)}" style="background:#fff; border:1.5px solid #e2e8f0; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center;">
+              <strong style="font-size:0.9rem; color:var(--dash-text);">#${index + 1}</strong>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn-dash-action gm-move-up" style="padding:6px 10px; background:#fff; border:1px solid #cbd5e1;" title="Move up">↑</button>
+                <button type="button" class="btn-dash-action gm-move-down" style="padding:6px 10px; background:#fff; border:1px solid #cbd5e1;" title="Move down">↓</button>
+                <button type="button" class="btn-dash-action gm-delete" style="padding:6px 10px; background:#fef2f2; border:1px solid #fecaca; color:#dc2626;" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:140px 1fr; gap:14px; align-items:start;">
+              <div style="height:110px; border-radius:8px; overflow:hidden; background:#0f172a;">
+                <img src="${escapeAttr(item.url)}" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.opacity=0.3">
+              </div>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
+                  <div style="flex:1; min-width:220px;">
+                    <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Image URL</label>
+                    <input type="text" class="dash-search gm-url" value="${escapeAttr(item.url || '')}" style="width:100%; padding:8px 10px;">
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Upload</label>
+                    <input type="file" accept="image/*" class="gm-file" style="max-width:180px;">
+                  </div>
+                </div>
+                ${extra}
+              </div>
+            </div>
+          </div>`;
+      }
+
+      function collectGalleryMediaCards(container, mode) {
+        if (!container) return [];
+        return Array.from(container.querySelectorAll('.gm-item-card')).map((card, index) => {
+          const meta = [];
+          if (mode === 'certificate') {
+            const m0t = (card.querySelector('.gm-meta0-text') || {}).value || '';
+            const m1t = (card.querySelector('.gm-meta1-text') || {}).value || '';
+            if (m0t.trim()) meta.push({ icon: ((card.querySelector('.gm-meta0-icon') || {}).value || '').trim(), text: m0t.trim() });
+            if (m1t.trim()) meta.push({ icon: ((card.querySelector('.gm-meta1-icon') || {}).value || '').trim(), text: m1t.trim() });
+          }
+          return {
+            id: card.getAttribute('data-id') || ('item-' + (index + 1)),
+            url: ((card.querySelector('.gm-url') || {}).value || '').trim(),
+            title: ((card.querySelector('.gm-title') || {}).value || '').trim(),
+            badge: ((card.querySelector('.gm-badge') || {}).value || '').trim(),
+            badgeIcon: ((card.querySelector('.gm-badge-icon') || {}).value || '').trim(),
+            location: ((card.querySelector('.gm-location') || {}).value || '').trim(),
+            locationIcon: ((card.querySelector('.gm-location-icon') || {}).value || '').trim(),
+            description: ((card.querySelector('.gm-description') || {}).value || '').trim(),
+            author: ((card.querySelector('.gm-author') || {}).value || '').trim(),
+            quote: ((card.querySelector('.gm-quote') || {}).value || '').trim(),
+            meta: meta
+          };
+        }).filter((item) => item.url);
+      }
+
+      function wireGalleryMediaList(container, sectionKey, mode, rerender) {
+        if (!container) return;
+        container.querySelectorAll('.gm-delete').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.closest('.gm-item-card').getAttribute('data-id');
+            galleryMediaEditState[sectionKey] = collectGalleryMediaCards(container, mode).filter((r) => r.id !== id);
+            rerender();
+          });
+        });
+        container.querySelectorAll('.gm-move-up').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const list = collectGalleryMediaCards(container, mode);
+            const id = btn.closest('.gm-item-card').getAttribute('data-id');
+            const idx = list.findIndex((r) => r.id === id);
+            if (idx > 0) {
+              const tmp = list[idx - 1];
+              list[idx - 1] = list[idx];
+              list[idx] = tmp;
+              galleryMediaEditState[sectionKey] = list;
+              rerender();
+            }
+          });
+        });
+        container.querySelectorAll('.gm-move-down').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const list = collectGalleryMediaCards(container, mode);
+            const id = btn.closest('.gm-item-card').getAttribute('data-id');
+            const idx = list.findIndex((r) => r.id === id);
+            if (idx >= 0 && idx < list.length - 1) {
+              const tmp = list[idx + 1];
+              list[idx + 1] = list[idx];
+              list[idx] = tmp;
+              galleryMediaEditState[sectionKey] = list;
+              rerender();
+            }
+          });
+        });
+        container.querySelectorAll('.gm-file').forEach((input) => {
+          input.addEventListener('change', () => {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              const card = input.closest('.gm-item-card');
+              const urlInput = card.querySelector('.gm-url');
+              if (urlInput) urlInput.value = evt.target.result;
+              const img = card.querySelector('img');
+              if (img) img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+      }
+
+      function renderPlantMachineryEditor() {
+        const wrap = document.getElementById('plantMachineryItemsEdit');
+        if (!wrap) return;
+        if (!Array.isArray(galleryMediaEditState.plant_machinery) || galleryMediaEditState.plant_machinery.length === 0) {
+          galleryMediaEditState.plant_machinery = securityEngine.getGalleryMediaContent('plant_machinery');
+        }
+        wrap.innerHTML = galleryMediaEditState.plant_machinery.map((item, i) =>
+          renderGalleryMediaCardFields(item, i, { mode: 'grid' })
+        ).join('') || '<p style="color:#64748b; font-size:0.9rem;">No images yet. Click Add Image.</p>';
+        wireGalleryMediaList(wrap, 'plant_machinery', 'grid', renderPlantMachineryEditor);
+      }
+
+      function renderFounderClientsEditor() {
+        const photosWrap = document.getElementById('founderClientsItemsEdit');
+        if (!photosWrap) return;
+        if (!Array.isArray(galleryMediaEditState.founder_clients) || galleryMediaEditState.founder_clients.length === 0) {
+          galleryMediaEditState.founder_clients = securityEngine.getGalleryMediaContent('founder_clients');
+        }
+        photosWrap.innerHTML = galleryMediaEditState.founder_clients.map((item, i) =>
+          renderGalleryMediaCardFields(item, i, { mode: 'grid' })
+        ).join('') || '<p style="color:#64748b; font-size:0.9rem;">No photos yet.</p>';
+        wireGalleryMediaList(photosWrap, 'founder_clients', 'grid', renderFounderClientsEditor);
+        const pc = document.getElementById('founderClientsItemsCount');
+        if (pc) pc.textContent = '(' + galleryMediaEditState.founder_clients.length + ')';
+      }
+
+      function renderCertificatesEditor() {
+        const wrap = document.getElementById('certificatesItemsEdit');
+        if (!wrap) return;
+        if (!Array.isArray(galleryMediaEditState.certificates) || galleryMediaEditState.certificates.length === 0) {
+          galleryMediaEditState.certificates = securityEngine.getGalleryMediaContent('certificates');
+        }
+        wrap.innerHTML = galleryMediaEditState.certificates.map((item, i) =>
+          renderGalleryMediaCardFields(item, i, { mode: 'certificate' })
+        ).join('') || '<p style="color:#64748b; font-size:0.9rem;">No certificates yet.</p>';
+        wireGalleryMediaList(wrap, 'certificates', 'certificate', renderCertificatesEditor);
+      }
+
+      const plantMachineryAddItemBtn = document.getElementById('plantMachineryAddItemBtn');
+      if (plantMachineryAddItemBtn) {
+        plantMachineryAddItemBtn.addEventListener('click', () => {
+          const wrap = document.getElementById('plantMachineryItemsEdit');
+          galleryMediaEditState.plant_machinery = collectGalleryMediaCards(wrap, 'grid');
+          galleryMediaEditState.plant_machinery.push({
+            id: 'plant-' + Date.now(),
+            url: '',
+            title: 'New Plant Asset',
+            badge: 'Plant',
+            location: '',
+            locationIcon: 'fa-location-dot',
+            description: ''
+          });
+          renderPlantMachineryEditor();
+        });
+      }
+
+      const founderClientsAddItemBtn = document.getElementById('founderClientsAddItemBtn');
+      if (founderClientsAddItemBtn) {
+        founderClientsAddItemBtn.addEventListener('click', () => {
+          const wrap = document.getElementById('founderClientsItemsEdit');
+          galleryMediaEditState.founder_clients = collectGalleryMediaCards(wrap, 'grid');
+          galleryMediaEditState.founder_clients.push({
+            id: 'founder-' + Date.now(),
+            url: '',
+            title: 'New Photo',
+            badge: 'Event',
+            location: '',
+            locationIcon: 'fa-location-dot',
+            description: ''
+          });
+          renderFounderClientsEditor();
+        });
+      }
+
+      const certificatesAddItemBtn = document.getElementById('certificatesAddItemBtn');
+      if (certificatesAddItemBtn) {
+        certificatesAddItemBtn.addEventListener('click', () => {
+          const wrap = document.getElementById('certificatesItemsEdit');
+          galleryMediaEditState.certificates = collectGalleryMediaCards(wrap, 'certificate');
+          galleryMediaEditState.certificates.push({
+            id: 'cert-' + Date.now(),
+            url: '',
+            title: 'New Certificate',
+            badge: 'Certificate',
+            badgeIcon: 'fa-certificate',
+            author: '',
+            description: '',
+            quote: '',
+            meta: []
+          });
+          renderCertificatesEditor();
+        });
+      }
+
+      const savePlantMachineryBtn = document.getElementById('savePlantMachineryBtn');
+      if (savePlantMachineryBtn) {
+        savePlantMachineryBtn.addEventListener('click', async () => {
+          const wrap = document.getElementById('plantMachineryItemsEdit');
+          const list = collectGalleryMediaCards(wrap, 'grid');
+          const result = await securityEngine.updateGalleryMediaContent('plant_machinery', list);
+          if (result.success) {
+            galleryMediaEditState.plant_machinery = securityEngine.getGalleryMediaContent('plant_machinery');
+            renderPlantMachineryEditor();
+          }
+          showGalleryMediaAlert('plantMachineryStatusAlert', result.message, result.success);
+        });
+      }
+
+      const saveFounderClientsBtn = document.getElementById('saveFounderClientsBtn');
+      if (saveFounderClientsBtn) {
+        saveFounderClientsBtn.addEventListener('click', async () => {
+          const photosWrap = document.getElementById('founderClientsItemsEdit');
+          const photos = collectGalleryMediaCards(photosWrap, 'grid');
+          const result = await securityEngine.updateGalleryMediaContent('founder_clients', photos);
+          if (result.success) {
+            galleryMediaEditState.founder_clients = securityEngine.getGalleryMediaContent('founder_clients');
+            renderFounderClientsEditor();
+          }
+          showGalleryMediaAlert(
+            'founderClientsStatusAlert',
+            result.success ? 'Founder & Clients photos published live.' : (result.message || 'Save failed.'),
+            result.success
+          );
+        });
+      }
+
+      const saveCertificatesBtn = document.getElementById('saveCertificatesBtn');
+      if (saveCertificatesBtn) {
+        saveCertificatesBtn.addEventListener('click', async () => {
+          const wrap = document.getElementById('certificatesItemsEdit');
+          const list = collectGalleryMediaCards(wrap, 'certificate');
+          const result = await securityEngine.updateGalleryMediaContent('certificates', list);
+          if (result.success) {
+            galleryMediaEditState.certificates = securityEngine.getGalleryMediaContent('certificates');
+            renderCertificatesEditor();
+          }
+          showGalleryMediaAlert('certificatesStatusAlert', result.message, result.success);
+        });
+      }
+
+
+      // Render Dynamic Executive Team Photo Gallery
+      function renderGalleryGrid() {
+        const container = document.getElementById('galleryGridContainer');
+        if (!container) return;
+        const photos = securityEngine.getGalleryPhotos();
+
+        container.innerHTML = photos.map(photo => `
+          <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="height: 200px; overflow: hidden; background: #0f172a; position: relative;">
+              <img src="${escapeHtml(photo.url)}" alt="${escapeHtml(photo.caption)}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="padding: 14px; display: flex; flex-direction: column; gap: 12px; flex: 1;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: var(--dash-text); line-height: 1.4;">${escapeHtml(photo.caption)}</div>
+              <button onclick="deletePhotoItem('${photo.id}')" class="btn-dash-action" style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; justify-content: center; width: 100%; margin-top: auto; padding: 9px; cursor: pointer;">
+                <i class="fa-solid fa-trash-can"></i> Delete Photo
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      renderGalleryGrid();
+
+      // Window helper for deleting photo from gallery
+      window.deletePhotoItem = async (id) => {
+        if (confirm('Are you sure you want to delete this photo from the website gallery?')) {
+          const result = await securityEngine.deleteGalleryPhoto(id);
+          if (result.success) renderGalleryGrid();
+          showGalleryAlert(result.message || 'Photo removed successfully from website gallery!', result.success);
+        }
+      };
+
+      function showGalleryAlert(msg, success = true) {
+        showSaveResultAlert(
+          document.getElementById('galleryStatusAlert'),
+          { success, message: msg },
+          msg
+        );
+      }
+
+      // Handle Upload New Photo Form Submit
+      const uploadGalleryForm = document.getElementById('uploadGalleryForm');
+      if (uploadGalleryForm) {
+        uploadGalleryForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const fileInput = document.getElementById('galleryFileInput');
+          const urlInput = document.getElementById('galleryUrlInput');
+          const captionInput = document.getElementById('galleryCaptionInput');
+
+          const caption = captionInput.value.trim();
+          let photoUrl = urlInput.value.trim();
+
+          const file = fileInput.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = async function(evt) {
+              const base64Url = evt.target.result;
+              const result = await securityEngine.addGalleryPhoto({ url: base64Url, caption: caption });
+              if (result.success) {
+                uploadGalleryForm.reset();
+                renderGalleryGrid();
+              }
+              showGalleryAlert(result.message || 'New team photo uploaded and published live!', result.success);
+            };
+            reader.readAsDataURL(file);
+          } else if (photoUrl) {
+            const result = await securityEngine.addGalleryPhoto({ url: photoUrl, caption: caption });
+            if (result.success) {
+              uploadGalleryForm.reset();
+              renderGalleryGrid();
+            }
+            showGalleryAlert(result.message || 'New team photo added and published live!', result.success);
+          } else {
+            alert('Please select an image file or enter an image URL.');
+          }
+        });
+      }
+
+
+
+
+
+      // TOTP setup UI (server-side secret — fetched when security modal opens)
+      let totpInfo = securityEngine.getTOTPSetupInfo();
+      const totpQrImage = document.getElementById('totpQrImage');
+      const totpQrPlaceholder = document.getElementById('totpQrPlaceholder');
+      const totpSecretText = document.getElementById('totpSecretText');
+      const totpStatusText = document.getElementById('totpStatusText');
+
+      function renderTotpSetup(info) {
+        totpInfo = info || totpInfo;
+        const hasSecret = !!(totpInfo && totpInfo.secret && !totpInfo.blocked);
+        if (totpSecretText) {
+          if (hasSecret) {
+            totpSecretText.textContent = totpInfo.secret;
+            totpSecretText.style.color = '';
+          } else {
+            totpSecretText.textContent = (totpInfo && totpInfo.message) || 'QR not loaded yet.';
+            totpSecretText.style.color = '#b45309';
+          }
+        }
+        if (totpQrImage && totpQrPlaceholder) {
+          if (totpInfo && totpInfo.qrImageUrl) {
+            totpQrImage.src = totpInfo.qrImageUrl;
+            totpQrImage.style.display = '';
+            totpQrPlaceholder.style.display = 'none';
+          } else {
+            totpQrImage.removeAttribute('src');
+            totpQrImage.style.display = 'none';
+            totpQrPlaceholder.style.display = 'flex';
+            totpQrPlaceholder.textContent = (totpInfo && totpInfo.message) || 'Waiting for authenticated setup…';
+          }
+        }
+        if (totpStatusText) {
+          totpStatusText.textContent = totpInfo.totpEnabled
+            ? '2FA is ON — login requires password + authenticator code.'
+            : (totpInfo.message || '2FA is OFF — scan QR and click Enable 2FA with a live code.');
+        }
+      }
+
+      async function loadTotpSetup(forceRefresh) {
+        const info = await securityEngine.fetchTOTPSetupInfo(forceRefresh);
+        renderTotpSetup(info);
+        return info;
+      }
+
+      renderTotpSetup(totpInfo);
+
+      async function updateLiveTOTP() {
+        const liveOtpCode = document.getElementById('liveOtpCode');
+        const totpCountdown = document.getElementById('totpCountdown');
+        const totpProgressFill = document.getElementById('totpProgressFill');
+        if (!totpInfo || !totpInfo.secret || totpInfo.blocked) {
+          if (liveOtpCode) liveOtpCode.textContent = 'N/A';
+          return;
+        }
+
+        const code = await securityEngine.generateTOTPCode(totpInfo.secret);
+        const epoch = Math.floor(Date.now() / 1000);
+        const secondsRemaining = 30 - (epoch % 30);
+
+        if (liveOtpCode) liveOtpCode.textContent = code ? `${code.slice(0, 3)} ${code.slice(3)}` : '------';
+        if (totpCountdown) totpCountdown.textContent = secondsRemaining;
+        if (totpProgressFill) totpProgressFill.style.width = `${(secondsRemaining / 30) * 100}%`;
+      }
+
+      updateLiveTOTP();
+      setInterval(updateLiveTOTP, 1000);
+
+      // Render Inquiries Table
+      function renderInquiries() {
+        const inquiries = securityEngine.getInquiries();
+        const searchVal = inquirySearch ? inquirySearch.value.toLowerCase().trim() : '';
+        const selectedStatus = statusFilter ? statusFilter.value : 'ALL';
+
+        const filtered = inquiries.filter(item => {
+          const matchSearch = !searchVal || 
+            item.name.toLowerCase().includes(searchVal) ||
+            item.company.toLowerCase().includes(searchVal) ||
+            item.subject.toLowerCase().includes(searchVal) ||
+            item.id.toLowerCase().includes(searchVal);
+          
+          const matchStatus = selectedStatus === 'ALL' || item.status === selectedStatus;
+          return matchSearch && matchStatus;
+        });
+
+        if (metricTotalInquiries) metricTotalInquiries.textContent = inquiries.length;
+        if (inquiryCountBadge) inquiryCountBadge.textContent = inquiries.length;
+
+        if (filtered.length === 0) {
+          inquiriesTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--dash-muted); padding: 30px;">
+                <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 8px; display:block;"></i>
+                No matching bid inquiries found.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        inquiriesTableBody.innerHTML = filtered.map(item => `
+          <tr>
+            <td><strong style="color: var(--dash-accent);">${item.id}</strong></td>
+            <td>
+              <div style="font-weight: 600;">${escapeHtml(item.name)}</div>
+              <div style="font-size: 0.78rem; color: var(--dash-muted);">${escapeHtml(item.company)}</div>
+            </td>
+            <td style="max-width: 260px;">${escapeHtml(item.subject)}</td>
+            <td><strong style="color: #ea580c;">${escapeHtml(item.value)}</strong></td>
+            <td style="font-size: 0.8rem; color: var(--dash-muted);">${item.date}</td>
+            <td><span class="badge-status ${item.status}">${item.status}</span></td>
+            <td>
+              <div class="action-btn-group">
+                <button class="btn-tbl-icon" title="View Full Details" onclick="viewInquiry('${item.id}')">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="btn-tbl-icon" title="Update Status" onclick="cycleStatus('${item.id}')">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn-tbl-icon" title="Delete" onclick="deleteInquiryItem('${item.id}')" style="color: #b91c1c;">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Render Security Audit Logs
+      function renderAuditLogs() {
+        const logs = securityEngine.getAuditLogs();
+        if (logs.length === 0) {
+          auditLogContainer.innerHTML = `<p style="color: var(--dash-muted);">No audit events recorded.</p>`;
+          return;
+        }
+
+        auditLogContainer.innerHTML = logs.map(log => `
+          <div class="log-item ${log.level}">
+            <div>
+              <div class="log-evt">${log.event}</div>
+              <div class="log-desc">${escapeHtml(log.details)}</div>
+            </div>
+            <div class="log-time">${new Date(log.timestamp).toLocaleTimeString()}</div>
+          </div>
+        `).join('');
+      }
+
+      // Initial Render
+      renderInquiries();
+      renderAuditLogs();
+
+      // Filters
+      if (inquirySearch) inquirySearch.addEventListener('input', renderInquiries);
+      if (statusFilter) statusFilter.addEventListener('change', renderInquiries);
+
+      // Export CSV
+      const exportCsvBtn = document.getElementById('exportCsvBtn');
+      if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', () => {
+          const inquiries = securityEngine.getInquiries();
+          let csv = 'ID,Name,Company,Email,Phone,Subject,Status,Value,Date\n';
+          inquiries.forEach(i => {
+            csv += `"${i.id}","${i.name}","${i.company}","${i.email}","${i.phone}","${i.subject}","${i.status}","${i.value}","${i.date}"\n`;
+          });
+          const blob = new Blob([csv], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Sekar_Construction_Bid_Inquiries_${Date.now()}.csv`;
+          a.click();
+        });
+      }
+
+      // Sign Out Handler
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          securityEngine.terminateSession('LOGOUT', 'Super Admin logged out manually.');
+          window.location.href = 'admin-login.html';
+        });
+      }
+
+      // Credential Update Form
+      const updateCredentialsForm = document.getElementById('updateCredentialsForm');
+      const enableTotpBtn = document.getElementById('enableTotpBtn');
+      const disableTotpBtn = document.getElementById('disableTotpBtn');
+      const rotateTotpBtn = document.getElementById('rotateTotpBtn');
+
+      if (updateCredentialsForm) {
+        updateCredentialsForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const currentPwd = document.getElementById('currentPwd').value;
+          const newPwd = document.getElementById('newPwd').value;
+          if (!newPwd) {
+            alert('Enter a new password or use the 2FA buttons above.');
+            return;
+          }
+          const res = await securityEngine.updateCredentials(currentPwd, newPwd);
+          alert(res.message);
+          if (res.success) {
+            document.getElementById('newPwd').value = '';
+            document.getElementById('currentPwd').value = '';
+            renderAuditLogs();
+            await loadTotpSetup(true);
+          }
+        });
+      }
+
+      if (enableTotpBtn) {
+        enableTotpBtn.addEventListener('click', async () => {
+          const info = await loadTotpSetup(true);
+          const code = document.getElementById('totpActionCode').value;
+          if (!info.secret || info.blocked) {
+            alert(info.message || 'Could not load TOTP setup.');
+            return;
+          }
+          const res = await securityEngine.enableTotp(info.secret, code);
+          alert(res.message);
+          if (res.success) await loadTotpSetup(true);
+        });
+      }
+
+      if (disableTotpBtn) {
+        disableTotpBtn.addEventListener('click', async () => {
+          const currentPwd = document.getElementById('currentPwd').value;
+          const code = document.getElementById('totpActionCode').value;
+          const res = await securityEngine.disableTotp(currentPwd, code);
+          alert(res.message);
+          if (res.success) await loadTotpSetup(true);
+        });
+      }
+
+      if (rotateTotpBtn) {
+        rotateTotpBtn.addEventListener('click', async () => {
+          const currentPwd = document.getElementById('currentPwd').value;
+          const code = document.getElementById('totpActionCode').value;
+          const res = await securityEngine.rotateTotp(currentPwd, code);
+          alert(res.message);
+          if (res.success) {
+            renderTotpSetup(res.setup || await loadTotpSetup(true));
+          }
+        });
+      }
+
+      // Helper
+      function escapeHtml(str) {
+        return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      // Global window hooks for inline onclicks
+      window.viewInquiry = (id) => {
+        const item = securityEngine.getInquiries().find(i => i.id === id);
+        if (!item) return;
+        document.getElementById('modalInquiryId').textContent = `Inquiry ${item.id}`;
+        document.getElementById('modalInquiryBody').innerHTML = `
+          <p><strong>Client Name:</strong> ${escapeHtml(item.name)}</p>
+          <p><strong>Company:</strong> ${escapeHtml(item.company)}</p>
+          <p><strong>Email:</strong> <a href="mailto:${item.email}" style="color: var(--dash-accent);">${escapeHtml(item.email)}</a></p>
+          <p><strong>Phone:</strong> ${escapeHtml(item.phone)}</p>
+          <p><strong>Est. Value:</strong> <strong style="color:#ea580c;">${escapeHtml(item.value)}</strong></p>
+          <p><strong>Subject:</strong> ${escapeHtml(item.subject)}</p>
+          <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin-top: 12px; border: 1px solid var(--dash-border);">
+            <strong>Message Details:</strong><br>
+            ${escapeHtml(item.message)}
+          </div>
+        `;
+        document.getElementById('inquiryDetailModal').classList.add('active');
+      };
+
+      window.closeInquiryModal = () => {
+        document.getElementById('inquiryDetailModal').classList.remove('active');
+      };
+
+      window.openSecurityModal = async () => {
+        const modal = document.getElementById('securityModal');
+        if (modal) {
+          modal.classList.add('active');
+          await loadTotpSetup(true);
+        }
+      };
+
+      window.closeSecurityModal = () => {
+        const modal = document.getElementById('securityModal');
+        if (modal) modal.classList.remove('active');
+      };
+
+      const securitySettingsBtn = document.getElementById('securitySettingsBtn');
+      if (securitySettingsBtn) {
+        securitySettingsBtn.addEventListener('click', () => {
+          window.openSecurityModal();
+        });
+      }
+
+
+
+      window.cycleStatus = async (id) => {
+        const item = securityEngine.getInquiries().find(i => i.id === id);
+        if (!item) return;
+        const statuses = ['NEW', 'IN_REVIEW', 'CONTACTED', 'APPROVED', 'REJECTED'];
+        const nextIdx = (statuses.indexOf(item.status) + 1) % statuses.length;
+        const result = await securityEngine.updateInquiryStatus(id, statuses[nextIdx]);
+        if (result.success) {
+          renderInquiries();
+          renderAuditLogs();
+        } else {
+          alert(result.message || 'Failed to update inquiry status.');
+        }
+      };
+
+      window.deleteInquiryItem = (id) => {
+        if (confirm(`Are you sure you want to delete inquiry ${id}?`)) {
+          securityEngine.deleteInquiry(id);
+          renderInquiries();
+          renderAuditLogs();
+        }
+      };
+    });
+  </script>
+</body>
+</html>

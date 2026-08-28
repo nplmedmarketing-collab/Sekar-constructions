@@ -1,0 +1,30 @@
+# Local-dev PostgreSQL only — NOT for production.
+# Credentials below are intentionally simple for local machines.
+# Path: api/docker-compose.yml (run from api/: npm run db:up)
+#
+# Requires: Docker Desktop (or Docker Engine + Compose plugin)
+# Docs: api/README.md
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sekar-cms-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      # LOCAL-DEV ONLY — do not reuse in production
+      POSTGRES_USER: sekar_local
+      POSTGRES_PASSWORD: sekar_local_dev_only
+      POSTGRES_DB: sekar_cms
+    volumes:
+      - sekar_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sekar_local -d sekar_cms"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sekar_pgdata:
+    name: sekar_cms_pgdata
