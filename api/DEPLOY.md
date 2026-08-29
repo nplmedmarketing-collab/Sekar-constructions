@@ -2,6 +2,8 @@
 
 This guide is for the client’s IT / hosting team. It does **not** invent hosting credentials — use your own Postgres, VPS, or PaaS accounts.
 
+**GitHub Pages + remote API (admin from github.io):** see [`DEPLOY-GITHUB-PAGES.md`](./DEPLOY-GITHUB-PAGES.md). Pages cannot host this Node API; use Render/Railway and set `REMOTE_API_BASE` in `config.site.js`.
+
 ## Architecture (recommended)
 
 ```
