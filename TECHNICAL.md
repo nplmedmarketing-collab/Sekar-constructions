@@ -37,7 +37,7 @@ flowchart LR
 
 - Public pages call `GET /api/public/*` (and `POST /api/inquiries` from contact).
 - Admin SPA prefers `Authorization: Bearer <token>`; API also sets an HttpOnly session cookie.
-- `config.js` sets `window.SekarConfig.apiBaseUrl` (local $\rightarrow$ `http://127.0.0.1:3001`; production same-origin proxy $\rightarrow$ `window.location.origin`).
+- `config.js` sets `window.SekarConfig.apiBaseUrl` (local $\rightarrow$ `http://127.0.0.1:3001`; production same-origin proxy $\rightarrow$ `window.location.origin`) and `jobsSiteUrl` (default `https://jobs.sekarconstructions.com`).
 
 ---
 
@@ -61,7 +61,8 @@ flowchart LR
 ├── index.html, about.html, infrastructure.html, ongoing-projects.html,
 │   portfolio.html, gallery.html, careers.html, contact.html
 ├── admin-login.html, admin-dashboard.html
-├── config.js              # apiBaseUrl
+├── config.js              # apiBaseUrl + jobsSiteUrl
+│   … careers public host: jobs.sekarconstructions.com (see api/DEPLOY.md §4b)
 ├── cms-public.js          # public CMS hydrate (no admin secrets)
 ├── admin-auth.js          # admin login, sessions UI, CMS writes, security
 ├── layout.js, script.js, styles.css
@@ -103,7 +104,7 @@ flowchart LR
 | Script | Used On | Role |
 | :--- | :--- | :--- |
 | `layout.js` | Public pages | Dynamically sets active link styles, handles mobile nav toggle and keyboard dropdown menu navigation on static HTML header/footer |
-| `config.js` | Public + admin | `apiBaseUrl` |
+| `config.js` | Public + admin | `apiBaseUrl`, `jobsSiteUrl` |
 | `cms-public.js` | Public marketing pages | Hydrate from `/api/public/*` only |
 | `script.js` | Public pages | UI behavior; reads CMS via `window.SekarAdminSecurity`-compatible helpers from `cms-public.js` |
 | `admin-auth.js` | Admin only | Auth + CMS writes — must not load on public pages |
@@ -282,7 +283,8 @@ Override before load for a separate API host, e.g. `https://api.sekarconstructio
 | `COOKIE_SECURE` | `true` behind HTTPS |
 | `COOKIE_SAMESITE` | `lax` (same-site) or `none` (cross-site + Secure) |
 | `SESSION_HOURS` | Absolute session lifetime (default 8) |
-| `CORS_ORIGINS` | Comma-separated static site origins |
+| `CORS_ORIGINS` | Comma-separated static site origins (include `https://jobs.sekarconstructions.com` in production) |
+| `JOBS_SITE_URL` | Public careers host (default `https://jobs.sekarconstructions.com`) |
 | `MAX_FAILED_ATTEMPTS` / `LOCKOUT_MINUTES` | Password lockout |
 | `MAX_TOTP_FAILED_ATTEMPTS` / `TOTP_LOCKOUT_MINUTES` | TOTP lockout (optional) |
 | `SEED_ADMIN_USERNAME` / `SEED_ADMIN_PASSWORD` | Seed credentials |

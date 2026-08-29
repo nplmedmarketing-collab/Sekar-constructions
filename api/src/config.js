@@ -54,6 +54,16 @@ if (isProd && !/^postgres(ql)?:\/\//.test(DATABASE_URL)) {
 
 const CORS_ORIGINS = parseCorsOrigins(process.env.CORS_ORIGINS);
 
+const HRPOPS_API_KEY = process.env.HRPOPS_API_KEY || '';
+const HRPOPS_COMPANY_ID = process.env.HRPOPS_COMPANY_ID || '215';
+const HRPOPS_API_BASE = String(process.env.HRPOPS_API_BASE || 'https://api.hrpops.com').replace(/\/$/, '');
+const HRPOPS_AUTH_MODE = process.env.HRPOPS_AUTH_MODE || 'bearer';
+const HRPOPS_CANDIDATE_PORTAL_URL = process.env.HRPOPS_CANDIDATE_PORTAL_URL || '';
+// Empty default = inline apply modal on careers page (no hrpops.com redirect).
+const HRPOPS_APPLY_URL_TEMPLATE = process.env.HRPOPS_APPLY_URL_TEMPLATE || '';
+// Public Sekar-owned careers host (not HRPops). Used in docs / absolute links; keep api.hrpops.com for API.
+const JOBS_SITE_URL = String(process.env.JOBS_SITE_URL || 'https://jobs.sekarconstructions.com').replace(/\/$/, '');
+
 module.exports = {
   NODE_ENV,
   isProd,
@@ -69,4 +79,11 @@ module.exports = {
   MAX_TOTP_FAILED_ATTEMPTS: Number(process.env.MAX_TOTP_FAILED_ATTEMPTS || 10),
   TOTP_LOCKOUT_MINUTES: Number(process.env.TOTP_LOCKOUT_MINUTES || 15),
   COOKIE_NAME: 'sc_admin_session',
+  HRPOPS_API_KEY,
+  HRPOPS_COMPANY_ID,
+  HRPOPS_API_BASE,
+  HRPOPS_AUTH_MODE,
+  HRPOPS_CANDIDATE_PORTAL_URL,
+  HRPOPS_APPLY_URL_TEMPLATE,
+  JOBS_SITE_URL,
 };
