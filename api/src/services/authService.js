@@ -248,12 +248,16 @@ async function verifyPassword(username, password, req) {
       err.locked = true;
       throw err;
     }
+    const attemptsLeft = config.MAX_FAILED_ATTEMPTS - fail.attempts;
+    const totpHint = user.totp_enabled
+      ? ' After the password step, you must also enter the 6-digit code from Google Authenticator.'
+      : '';
     const err = new Error(
-      `Invalid username or password. ${config.MAX_FAILED_ATTEMPTS - fail.attempts} attempt(s) remaining.`
+      `Invalid username or password.${totpHint} ${attemptsLeft} attempt(s) remaining.`
     );
     err.status = 401;
     err.code = 'INVALID_CREDENTIALS';
-    err.attemptsLeft = config.MAX_FAILED_ATTEMPTS - fail.attempts;
+    err.attemptsLeft = attemptsLeft;
     throw err;
   }
 

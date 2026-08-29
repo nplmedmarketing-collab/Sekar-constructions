@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const publicRoutes = require('./routes/public');
 const adminRoutes = require('./routes/admin');
 const inquiryRoutes = require('./routes/inquiries');
+const careersRoutes = require('./routes/careers');
 const db = require('./db');
 
 function createApp() {
@@ -65,6 +66,7 @@ function createApp() {
 
   app.use('/api/auth', authRoutes);
   app.use('/api/public', publicRoutes);
+  app.use('/api/public/careers', careersRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api/inquiries', inquiryRoutes);
 

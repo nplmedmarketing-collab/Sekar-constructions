@@ -112,14 +112,27 @@ See `.env.example`. Critical:
 |----------|---------|
 | `DATABASE_URL` | Local verified: `file:./dev.sqlite` · Optional Docker: `postgres://sekar_local:…@127.0.0.1:5433/sekar_cms` · Production: your managed Postgres URL (often `:5432`) |
 | `SESSION_SECRET` | Long random string (≥32 chars). Signs CSRF tokens, encrypts TOTP secrets at rest, and signs 2FA login challenges. Required strong in production. |
-| `CORS_ORIGINS` | Comma-separated allowlist of static site origins (no `null`, no `*`) |
+| `CORS_ORIGINS` | Comma-separated allowlist of static site origins (no `null`, no `*`). Production should include `https://jobs.sekarconstructions.com` when careers is served there. |
+| `JOBS_SITE_URL` | Public Sekar careers host (default `https://jobs.sekarconstructions.com`). Web origin only — not SMTP. |
 | `COOKIE_SECURE` | `true` behind HTTPS in production |
 | `SESSION_HOURS` | Absolute server session lifetime (default 8) |
 | `SEED_ADMIN_PASSWORD` | Admin password at seed time (bcrypt-hashed) |
 | `PG_SSL_CA` | Optional CA PEM path/inline for Postgres SSL with `rejectUnauthorized: true` |
 | `PORT` | Default `3001` |
+| `HRPOPS_API_KEY` | Optional HRPops API key (server-side only; job list and inline apply work without it) |
+| `HRPOPS_COMPANY_ID` | Your HRPops company ID (Sekar: `215`) — required for careers integration |
+| `HRPOPS_CANDIDATE_PORTAL_URL` | Optional **HRPops-hosted** portal link (`hrpops.com`) — do not set to `jobs.sekarconstructions.com` |
+| `HRPOPS_APPLY_URL_TEMPLATE` | Optional per-job external Apply URL; leave unset for inline modal apply (default) |
+| `HRPOPS_SMOKE_APPLY` | Set to `1` to include a live HRPops apply in `npm run smoke` (default off — avoids creating applicants) |
+| `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` | Required for any outbound mail (inquiry alerts, careers thank-you, HR application alerts) |
+| `SMTP_PORT` / `SMTP_SECURE` | Optional (default port `587`; set `SMTP_SECURE=true` for 465) |
+| `NOTIFICATION_EMAIL` | Inbox for new contact/inquiry alerts and new careers applications (example: `careers@sekarconstructions.com`; use `ho@` if preferred) |
 
 `.env`, `dev.sqlite`, and `_env` are gitignored. Never commit secrets.
+
+When SMTP is unset, contact inquiries still persist and careers apply still returns success after HRPops accepts the application; thank-you / alert emails are skipped with a clear server warning.
+
+**Live apply tests:** Any smoke test, probe, or script that POSTs to HRPops apply must use a clearly labeled **test email** such as `sekar.test+{unix}@mailinator.com` (or `test.sekar.careers+{unix}@mailinator.com`) and a name like `Sekar Test Applicant`. **Do not use real candidate emails.** Default `npm run smoke` only hits careers GETs; set `HRPOPS_SMOKE_APPLY=1` when you intentionally want a live apply.
 
 ### Postgres SSL (production)
 
@@ -177,6 +190,14 @@ Shapes match the existing Super Admin JSON used by `admin-auth.js` / `script.js`
 - `GET /api/public/fleet`
 - `GET /api/public/financials`
 - `GET /api/public/team-photos`
+- `GET /api/public/careers/jobs` — HRPops job listings (filtered by `HRPOPS_COMPANY_ID`)
+- `GET /api/public/careers/jobs/:jobPostId` — single job detail from HRPops (includes `skillSets`)
+- `GET /api/public/careers/countries` — geo dropdown (countries)
+- `GET /api/public/careers/states/:countryId` — geo dropdown (states)
+- `GET /api/public/careers/cities/:stateId` — geo dropdown via HRPops `GetCity` (no separate district API; India lists mix cities and localities — UI label is “City / Locality”)
+- `POST /api/public/careers/apply` — multipart apply proxy to HRPops (`JobPostID`, `Email`, `Resume`, skills, languages, address fields; rate-limited). After HRPops success, non-blocking emails: candidate thank-you + optional HR alert to `NOTIFICATION_EMAIL` (never fails the apply if SMTP is unset or send errors). Resume/ProfilePic multipart filenames are sanitized to basename only before forwarding.
+
+**Known HRPops resume URL bug:** Applications still save successfully, but opening a resume in the HRPops UI can 404 when their API embeds an absolute Windows path in the public URL, e.g. `https://api.hrpops.com/Resources/Resume/C:/Inetpub/vhosts/.../Resources/Resume/{id}{filename}.pdf` instead of `/Resources/Resume/{id}{filename}.pdf`. That path is their IIS `httpdocs` store, not something our apply proxy sends. Workaround: ask HRPops support to serve resumes by relative filename only (or fix DB/URL builder). Our side still strips directory segments from upload filenames to reduce risk.
 
 ### Public inquiries
 
@@ -213,7 +234,9 @@ window.SekarConfig = {
 
 3. When `apiBaseUrl` is set, the site reads CMS data from the API and admin login uses the API (works from any device). Production must set `apiBaseUrl`. Auth secrets live only on the server (`SEED_ADMIN_PASSWORD` / bcrypt) — not in frontend JS.
 
-4. Ensure `CORS_ORIGINS` includes the static site origin (e.g. `https://www.clientdomain.com`).
+4. Ensure `CORS_ORIGINS` includes every browser origin that calls the API (e.g. `https://www.sekarconstructions.com`, `https://jobs.sekarconstructions.com`).
+
+**Careers / jobs subdomain:** Prefer reverse-proxying `/api` on `https://jobs.sekarconstructions.com` so `config.js` can use same-origin `apiBaseUrl`. See `DEPLOY.md` §4b. Frontend `jobsSiteUrl` defaults to that host; `HRPOPS_*` portal URLs stay on hrpops.com.
 
 ## npm scripts
 
@@ -227,7 +250,7 @@ window.SekarConfig = {
 | `npm run setup` | migrate + seed |
 | `npm start` | Start server |
 | `npm run start:prod` | Start with `NODE_ENV=production` |
-| `npm run smoke` | Health + public GET smoke test |
+| `npm run smoke` | Health + public GET smoke test (careers apply only if `HRPOPS_SMOKE_APPLY=1`, using test emails) |
 | `npm run dev` | Start with `--watch` |
 
 ## Enabling 2FA (admin)

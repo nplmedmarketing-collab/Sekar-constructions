@@ -1,0 +1,16 @@
+# Sekar Construction website
+.env
+.env.*
+!.env.example
+_env
+api/node_modules/
+api/.env
+api/_env
+api/*.sqlite
+api/*.sqlite3
+api/dev.sqlite*
+api/.pgdata-local/
+api/.pg-pw.txt
+node_modules/
+.DS_Store
+*.log

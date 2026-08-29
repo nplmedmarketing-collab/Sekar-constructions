@@ -142,10 +142,74 @@ With `apiBaseUrl` set, login is **API-only** (server bcrypt). Client-side passwo
 In API `.env`:
 
 ```
-CORS_ORIGINS=https://www.example.com,https://example.com
+CORS_ORIGINS=https://www.sekarconstructions.com,https://sekarconstructions.com,https://jobs.sekarconstructions.com
 ```
 
 Only list real production origins. Do **not** use `*` or literal `null`. The API refuses to start in production if either appears; `null` is always rejected.
+
+Include `https://jobs.sekarconstructions.com` whenever the careers UI is served from that subdomain (required if the browser calls a **different** API origin; harmless if `/api` is same-origin proxied on jobs).
+
+## 4b. Jobs subdomain (`jobs.sekarconstructions.com`)
+
+Public careers (job listings + inline apply) is intended at **https://jobs.sekarconstructions.com**. This is a **web host**, not an SMTP mailbox. Outbound mail uses `SMTP_*` with From/`NOTIFICATION_EMAIL` typically `careers@sekarconstructions.com` (see `.env.example`).
+
+Frontend: `config.js` sets `jobsSiteUrl` (default `https://jobs.sekarconstructions.com`). Nav/footer Careers links on the main site rewrite to that URL. On the jobs host, `apiBaseUrl` defaults to `window.location.origin`.
+
+API: set `JOBS_SITE_URL=https://jobs.sekarconstructions.com` (optional documentation / absolute-link helper; default matches). Do **not** point `HRPOPS_CANDIDATE_PORTAL_URL` at jobs — that stays on `hrpops.com` if used; HRPops API remains `https://api.hrpops.com`.
+
+### DNS (you configure — no credentials in this repo)
+
+1. In your DNS provider for `sekarconstructions.com`, add an **A** or **CNAME** for `jobs` pointing at the same web server / CDN as the main site (or a dedicated vhost).
+2. Issue TLS for `jobs.sekarconstructions.com` (Let’s Encrypt in Plesk, Certbot, etc.).
+
+### Recommended hosting: same static files + `/api` proxy on jobs
+
+Point the jobs subdomain document root at the same static site (or at least `careers.html`, `careers.js`, `config.js`, `layout.js`, `styles.css`, assets). Reverse-proxy `/api` to the Node process so the careers page stays same-origin.
+
+**Nginx example (jobs vhost):**
+
+```nginx
+server {
+    server_name jobs.sekarconstructions.com;
+    # root /path/to/static/site;   # same files as www, or a careers-focused copy
+    # ssl_certificate …;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:3001/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location = / {
+        return 302 /careers.html;
+    }
+}
+```
+
+**Plesk (outline):** Domains → Add Subdomain `jobs` → document root = main site `httpdocs` (or a folder with careers assets) → SSL → Apache & nginx Settings → add an nginx additional directive for `location /api/` as above (proxy to `127.0.0.1:3001`).
+
+With this setup, leave `config.js` defaults; use `COOKIE_SAMESITE=lax` if admin also shares that host (careers apply itself is public, no admin cookie required).
+
+### Alternative: jobs static only, API on www
+
+If `/api` is only on `https://www.sekarconstructions.com`:
+
+1. Override before `config.js`:
+
+```html
+<script>
+  window.SekarConfig = { apiBaseUrl: 'https://www.sekarconstructions.com' };
+</script>
+<script src="config.js"></script>
+```
+
+2. Ensure production `CORS_ORIGINS` includes `https://jobs.sekarconstructions.com`.
+3. Prefer `COOKIE_SAMESITE=none` + `COOKIE_SECURE=true` only if you need cross-site **admin** cookies from jobs (usually unnecessary for public apply).
+
+Optional: on www, 301 `careers.html` → `https://jobs.sekarconstructions.com/careers.html` once jobs is live.
 
 ## 5. Security checklist (must pass before go-live)
 
@@ -157,9 +221,10 @@ Only list real production origins. Do **not** use `*` or literal `null`. The API
 - [ ] `must_change_password` is false after first password change
 - [ ] **2FA enabled** for production admin (`Security settings` → Enable 2FA) — recommended before go-live
 - [ ] Admin SPA sends `X-CSRF-Token` on mutations (built into `admin-auth.js`); cookie-only clients must too
-- [ ] `CORS_ORIGINS` locked to production domains only — **no `null`, no `*`**
+- [ ] `CORS_ORIGINS` locked to production domains only — **no `null`, no `*`** (include `https://jobs.sekarconstructions.com` when careers runs there)
 - [ ] `COOKIE_SECURE=true` with HTTPS
-- [ ] `config.js` has production `apiBaseUrl` (or uses window.location.origin)
+- [ ] `config.js` has production `apiBaseUrl` (or uses window.location.origin); jobs host either proxies `/api` or sets `apiBaseUrl` to www/api
+- [ ] Jobs subdomain DNS + TLS live; smoke `GET https://jobs.sekarconstructions.com/careers.html` and `GET …/api/public/careers/jobs`
 - [ ] Public marketing pages load `cms-public.js` only (not `admin-auth.js`); no client-side password hashes in the repo
 - [ ] Local-auth legacy fallback block removed from front-end JS (`admin-auth.js` does not ship secrets or local auth bypass)
 - [ ] Gallery / team photos are real client photography for named projects (no invented stand-ins)

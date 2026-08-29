@@ -4,24 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sekar Constructions | Class-I Civil Engineering Contractors</title>
+  <meta name="description" content="Sekar Constructions — Class-I civil engineering contractors in Chennai & Mamallapuram since 1995. Desalination plants, atomic energy, industrial & heavy civil works across Tamil Nadu.">
+  <link rel="canonical" href="https://www.sekarconstructions.com/">
+  <meta property="og:title" content="Sekar Constructions | Class-I Civil Engineering Contractors">
+  <meta property="og:description" content="Class-I civil engineering contractors in Chennai & Mamallapuram since 1995. Desalination, atomic energy, and industrial infrastructure.">
+  <meta property="og:image" content="https://www.sekarconstructions.com/hero-bg.jpg">
+  <meta property="og:url" content="https://www.sekarconstructions.com/">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="logo-final.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Sekar Constructions",
+    "image": "https://www.sekarconstructions.com/hero-bg.jpg",
+    "url": "https://www.sekarconstructions.com/",
+    "telephone": "+91-94432-21644",
+    "email": "ho@sekarconstructions.com",
+    "foundingDate": "1995",
+    "description": "Class-I civil engineering contractors specializing in desalination plants, atomic energy facilities, and industrial infrastructure across Tamil Nadu since 1995.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "No. 22, 1st Cross Street, Vedachalam Nagar",
+      "addressLocality": "Mamallapuram",
+      "addressRegion": "Tamil Nadu",
+      "postalCode": "603104",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 12.5750685,
+      "longitude": 80.1397424
+    },
+    "areaServed": ["Chennai", "Mamallapuram", "Kalpakkam", "Tamil Nadu"]
+  }
+  </script>
   
   <!-- FontAwesome for Understated Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="styles.css?v=47">
-
-  <!-- Desktop Hover Dropdown Style Override -->
-  <style>
-    @media (min-width: 1025px) {
-      .nav-menu li:hover .dropdown-menu {
-        display: block !important;
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css?v=150">
 </head>
 <body>
 
@@ -31,42 +54,55 @@
   </button>
 
   <!-- Navigation Header -->
-  <header>
-    <div class="container nav-container">
-      <a href="#" class="logo">
-        <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
-      </a>
+  <div id="site-header">
+    <header>
+      <div class="container nav-container">
+        <a href="index.html" class="logo">
+          <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
+        </a>
+        <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html#home" class="nav-link active">Home</a></li>
+          <li><a href="index.html#services" class="nav-link">Services</a></li>
+          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+          <li class="dropdown">
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="portfolioDropdownBtn">
+              Portfolio <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu" id="portfolioDropdownMenu" role="menu" aria-label="Portfolio">
+              <li role="none"><a role="menuitem" href="ongoing-projects.html">Ongoing Projects</a></li>
+              <li role="none"><a role="menuitem" href="portfolio.html">Completed Projects</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="galleryDropdownBtn">
+              Gallery <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu--gallery" id="galleryDropdownMenu" role="menu" aria-label="Gallery">
+              <li role="none"><a role="menuitem" href="gallery.html">Projects</a></li>
+              <li role="none"><a role="menuitem" href="gallery-plant-machinery.html">Plant &amp; Machinery</a></li>
+              <li role="none"><a role="menuitem" href="gallery-founder-clients.html">Founder &amp; Clients</a></li>
+              <li role="none"><a role="menuitem" href="gallery-certificates.html" aria-label="Certificates &amp; Accreditations">
+                <span class="nav-label-long">Certificates &amp; Accreditations</span>
+                <span class="nav-label-short">Certificates</span>
+              </a></li>
+            </ul>
+          </li>
+          <li><a href="careers.html" class="nav-link">Careers</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </div>
+    </header>
+  </div>
 
-      <!-- Hamburger Menu for Mobile -->
-      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="#home" class="nav-link active">Home</a></li>
-        <li><a href="#services" class="nav-link">Services</a></li>
-        <li><a href="about.html" class="nav-link">About Us</a></li>
-        <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
-        <li class="dropdown">
-          <a href="#" class="nav-link dropdown-toggle">Portfolio <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
-          <ul class="dropdown-menu" style="display: none; top: 100% !important; list-style: none !important; list-style-type: none !important; padding: 10px 0; margin: 0; position: absolute; background: #ffffff; border-top: 3px solid #112244; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 240px; z-index: 1000;">
-            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="ongoing-projects.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Ongoing Projects</a></li>
-            <li style="list-style: none !important; list-style-type: none !important; margin: 0; padding: 0;"><a href="portfolio.html" style="display: block; padding: 12px 24px; color: #1e293b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;">Completed Projects</a></li>
-          </ul>
-        </li>
-        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-        <li><a href="careers.html" class="nav-link">Careers</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
-
-
-    </div>
-  </header>
-
+  <div class="page-curtain">
+  <!-- Curtain chain: hero &rarr; stats &rarr; content -->
+  <div class="sc-curtain-stack">
   <!-- Hero Section -->
-  <section id="home" class="hero">
+  <section id="home" class="hero sc-curtain-banner">
     <video
       class="hero-video"
       autoplay
@@ -86,43 +122,93 @@
         <h1>Sekar Constructions</h1>
         <p>Class-I civil engineering contractors executing high-precision atomic reactor aux works, massive seawater desalination systems, and public infrastructure with absolute technical control since 1995.</p>
         <div class="hero-actions">
-          <a href="#contact" class="btn btn-primary">Get A Quote</a>
+          <a href="contact.html" class="btn btn-primary">Get A Quote</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Stats Counter Bar -->
-  <section class="stats-bar">
-    <div class="container stats-grid">
-      <div class="stat-item">
-        <div class="stat-number" data-target="30" data-suffix="+">0</div>
-        <div class="stat-label">Years Experience</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" data-target="200" data-suffix="+">0</div>
-        <div class="stat-label">Completed Projects</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" data-target="9" data-suffix="+">0</div>
-        <div class="stat-label">Ongoing Projects</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" data-target="140" data-suffix="+ Cr.">0</div>
-        <div class="stat-label">Annual Capacity</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" data-target="130" data-suffix="+">0</div>
-        <div class="stat-label">Engineers & Operators</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">Class-I</div>
-        <div class="stat-label">Government Grade</div>
+  <section class="stats-bar sc-curtain-banner">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-icon" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></span>
+          <div class="stat-number" data-target="30" data-suffix="+">0</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon" aria-hidden="true"><i class="fa-solid fa-building"></i></span>
+          <div class="stat-number" data-target="200" data-suffix="+">0</div>
+          <div class="stat-label">Completed Projects</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon" aria-hidden="true"><i class="fa-solid fa-helmet-safety"></i></span>
+          <div class="stat-number" data-target="9" data-suffix="+">0</div>
+          <div class="stat-label">Ongoing Projects</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
+          <div class="stat-number" data-target="140" data-suffix="+ Cr.">0</div>
+          <div class="stat-label">Annual Capacity</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon" aria-hidden="true"><i class="fa-solid fa-users-gear"></i></span>
+          <div class="stat-number" data-target="130" data-suffix="+">0</div>
+          <div class="stat-label">Engineers & Operators</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon" aria-hidden="true"><i class="fa-solid fa-certificate"></i></span>
+          <div class="stat-number">Class-I</div>
+          <div class="stat-label">Government Grade</div>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- Client Trust Wall (Wall of Trust) -->
+  <section class="section-padding bg-light clients-section" style="padding: 40px 0; border-bottom: 1px solid var(--border-color); background: #ffffff;">
+    <div class="container text-center" style="margin-bottom: 16px;">
+      <span class="section-subtitle" style="font-size: 0.76rem; letter-spacing: 0.14em; font-weight: 700; color: var(--accent); text-transform: uppercase;">Trusted By Government &amp; Corporate Leaders</span>
+    </div>
+    <div class="clients-marquee" role="region" aria-label="Client organization seals including NPCIL, IGCAR, DAE, BARC, CMWSSB, ISRO, BHEL, WABAG, Polyhose">
+      <div class="clients-marquee-viewport">
+        <div class="clients-marquee-track">
+          <div class="clients-marquee-group">
+            <span class="client-logo-item" style="--logo-x:36;--logo-w:174;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="NPCIL" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:226;--logo-w:247;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="IGCAR" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:427;--logo-w:276;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="BHAVINI" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:647;--logo-w:140;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="DAE" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:0;--logo-w:230;--logo-strip-w:806;--logo-strip-h:229"><img src="images/clients-logos-strip-2.png?v=155" alt="BARC" width="806" height="229" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:193;--logo-w:235;--logo-strip-w:806;--logo-strip-h:229"><img src="images/clients-logos-strip-2.png?v=155" alt="Chennai Metro Water" width="806" height="229" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:395;--logo-w:238;--logo-strip-w:806;--logo-strip-h:229"><img src="images/clients-logos-strip-2.png?v=155" alt="Tamil Nadu Electricity Board" width="806" height="229" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:37;--logo-w:219;--logo-strip-w:820;--logo-strip-h:227"><img src="images/clients-logos-strip-3.png?v=155" alt="Kochar Homes" width="820" height="227" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:272;--logo-w:273;--logo-strip-w:820;--logo-strip-h:227"><img src="images/clients-logos-strip-3.png?v=155" alt="ISRO" width="820" height="227" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:10;--logo-w:376;--logo-strip-w:814;--logo-strip-h:143"><img src="images/clients-logos-strip-4.png?v=155" alt="cobra TECTON" width="814" height="143" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:447;--logo-w:308;--logo-strip-w:814;--logo-strip-h:143"><img src="images/clients-logos-strip-4.png?v=155" alt="Great Lakes Institute of Management" width="814" height="143" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:250;--logo-w:278;--logo-strip-w:789;--logo-strip-h:141"><img src="images/clients-logos-strip-5.png?v=155" alt="Polyhose" width="789" height="141" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:502;--logo-w:246;--logo-strip-w:789;--logo-strip-h:141"><img src="images/clients-logos-strip-5.png?v=155" alt="BHEL" width="789" height="141" decoding="async"></span>
+          </div>
+          <div class="clients-marquee-group" aria-hidden="true">
+            <span class="client-logo-item" style="--logo-x:36;--logo-w:174;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:226;--logo-w:247;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:427;--logo-w:276;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:647;--logo-w:140;--logo-strip-w:881;--logo-strip-h:241"><img src="images/clients-logos-strip-1.png?v=155" alt="" width="881" height="241" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:0;--logo-w:230;--logo-strip-w:806;--logo-strip-h:229"><img src="images/clients-logos-strip-2.png?v=155" alt="" width="806" height="229" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:193;--logo-w:235;--logo-strip-w:806;--logo-strip-h:229"><img src="images/clients-logos-strip-2.png?v=155" alt="" width="806" height="229" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:395;--logo-w:238;--logo-strip-w:806;--logo-strip-h:229"><img src="images/clients-logos-strip-2.png?v=155" alt="" width="806" height="229" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:37;--logo-w:219;--logo-strip-w:820;--logo-strip-h:227"><img src="images/clients-logos-strip-3.png?v=155" alt="" width="820" height="227" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:272;--logo-w:273;--logo-strip-w:820;--logo-strip-h:227"><img src="images/clients-logos-strip-3.png?v=155" alt="" width="820" height="227" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:10;--logo-w:376;--logo-strip-w:814;--logo-strip-h:143"><img src="images/clients-logos-strip-4.png?v=155" alt="" width="814" height="143" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:447;--logo-w:308;--logo-strip-w:814;--logo-strip-h:143"><img src="images/clients-logos-strip-4.png?v=155" alt="" width="814" height="143" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:250;--logo-w:278;--logo-strip-w:789;--logo-strip-h:141"><img src="images/clients-logos-strip-5.png?v=155" alt="" width="789" height="141" decoding="async"></span>
+            <span class="client-logo-item" style="--logo-x:502;--logo-w:246;--logo-strip-w:789;--logo-strip-h:141"><img src="images/clients-logos-strip-5.png?v=155" alt="" width="789" height="141" decoding="async"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <div class="sc-curtain-panel">
   <!-- Services Section -->
   <section id="services" class="section-padding fade-in-section">
     <div class="container">
@@ -135,7 +221,7 @@
         <!-- Card 1: Industrial & Energy -->
         <div class="service-card">
           <div class="service-img">
-            <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=600&auto=format&fit=crop" alt="Industrial and energy civil construction site">
+            <img src="nemmeli-desalination.jpg" alt="Industrial desalination and energy facility">
             <div class="service-icon-badge">
               <i class="fa-solid fa-industry"></i>
             </div>
@@ -155,7 +241,7 @@
         <!-- Card 2: Public Infrastructure -->
         <div class="service-card">
           <div class="service-img">
-            <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?q=80&w=600&auto=format&fit=crop" alt="Modern public and institutional building exterior">
+            <img src="great-lakes-campus.jpg" alt="Public and civil institutional campus building">
             <div class="service-icon-badge">
               <i class="fa-solid fa-building-shield"></i>
             </div>
@@ -207,137 +293,78 @@
 
       <div class="fleet-grid">
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-industry"></i></span>
           <div class="fleet-count">5</div>
           <div class="fleet-name">RMC Batching Plants</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-truck"></i></span>
           <div class="fleet-count">12</div>
           <div class="fleet-name">Transit Mixers</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-droplet"></i></span>
           <div class="fleet-count">8</div>
           <div class="fleet-name">Mobile Concrete Pumps</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-truck-moving"></i></span>
           <div class="fleet-count">15</div>
           <div class="fleet-name">Tipper Trucks</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-tractor"></i></span>
           <div class="fleet-count">4</div>
           <div class="fleet-name">Excavators & JCBS</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-gears"></i></span>
           <div class="fleet-count">3</div>
           <div class="fleet-name">Crusher Units</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-mountain"></i></span>
           <div class="fleet-count">3</div>
           <div class="fleet-name">Blue Metal Quarries</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-screwdriver-wrench"></i></span>
           <div class="fleet-count">2</div>
           <div class="fleet-name">Bar Bending Machines</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-scissors"></i></span>
           <div class="fleet-count">2</div>
           <div class="fleet-name">Bar Shearing Machines</div>
         </div>
         <div class="fleet-card">
+          <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
           <div class="fleet-count">30k</div>
           <div class="fleet-name">Scaffolding Pipes</div>
-      </div>
-      <div style="text-align: center; margin-top: 25px;">
-        <a href="infrastructure.html" class="nav-cta-btn" style="display: inline-block; padding: 14px 30px;">View Complete Asset Inventory &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-
-
-  <!-- Contact Section -->
-  <section id="contact" class="fade-in-section" style="padding: 0px 0 80px 0;">
-    <div class="container">
-      <div class="contact-form-container">
-        <div style="text-align: center; margin-bottom: 40px;">
-          <span class="section-subtitle">Get A Quote</span>
-          <h2 class="section-title" style="font-size: 2.2rem; margin-top: 5px; margin-bottom: 12px;">Submit Bid Request</h2>
-          <p style="color: var(--text-color); font-size: 0.95rem; line-height: 1.6; max-width: 550px; margin: 0 auto;">Describe your upcoming project details, civil engineering scope, or request for tender below. Our management team reviews incoming queries daily.</p>
         </div>
-        
-        <form id="contactForm">
-          <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-              <label for="name" style="font-weight: 500; font-size: 0.9rem; color: var(--primary);">Your Name *</label>
-              <input type="text" id="name" class="form-control" placeholder="Name" required>
-            </div>
-            <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-              <label for="phone" style="font-weight: 500; font-size: 0.9rem; color: var(--primary);">Phone Number</label>
-              <input type="tel" id="phone" class="form-control" placeholder="e.g. +91 99999 99999">
-            </div>
-            <div class="form-group full-width" style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
-              <label for="email" style="font-weight: 500; font-size: 0.9rem; color: var(--primary);">Email Address *</label>
-              <input type="email" id="email" class="form-control" placeholder="contact@email.com" required>
-            </div>
-            <div class="form-group full-width" style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
-              <label for="subject" style="font-weight: 500; font-size: 0.9rem; color: var(--primary);">Subject / Project Interest</label>
-              <input type="text" id="subject" class="form-control" placeholder="e.g. Request to build a skyscraper">
-            </div>
-            <div class="form-group full-width" style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
-              <label for="message" style="font-weight: 500; font-size: 0.9rem; color: var(--primary);">Project details / Message *</label>
-              <textarea id="message" class="form-control" placeholder="e.g. Looking to erect a massive structure with a strong concrete foundation..." required style="min-height: 140px; resize: vertical;"></textarea>
-            </div>
-          </div>
-          
-          <div class="submit-btn-wrapper" style="margin-top: 30px;">
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Submit Inquiry</button>
-          </div>
-          
-          <div id="formStatus" class="form-status"></div>
-        </form>
+      </div>
+      <div class="fleet-cta">
+        <a href="infrastructure.html" class="nav-cta-btn">View Complete Asset Inventory &rarr;</a>
       </div>
     </div>
   </section>
+
+  <!-- CTA inside panel: one continuous cream with content above (no panel→curtain seam) -->
+  <div class="container footer-cta-wrap">
+    <div class="footer-cta">
+      <div class="footer-cta-copy">
+        <span class="footer-cta-eyebrow">Let's Work Together</span>
+        <h2 class="footer-cta-headline">Schedule an appointment with us to discuss your project goals and needs.</h2>
+      </div>
+      <a href="contact.html" class="footer-cta-btn">Let's Get In Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+  </div><!-- /.sc-curtain-panel -->
+  </div><!-- /.sc-curtain-stack -->
+  </div><!-- /.page-curtain -->
 
   <!-- Footer -->
-  <footer>
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
-        </div>
-        <p>A Class-I civil engineering construction firm executing high-value public utilities, atomic energy plant structures, commercial quarters, and water desalination facilities since 1995.</p>
-        <p style="font-size: 0.85rem; color: var(--secondary);"><i class="fa-solid fa-award"></i> Class-I Civil Engineers & DAE Contractors</p>
-      </div>
-
-      <div class="footer-links">
-        <h4>Quick Navigation</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="index.html#services">Our Services</a></li>
-          <li><a href="infrastructure.html">Infrastructure</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="careers.html">Careers</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-contact">
-        <h4>Head Office Details</h4>
-        <div class="footer-contact-items">
-          <p><i class="fa-solid fa-location-dot"></i> No. 22, First Cross Street, Vedachalam Nagar, Mamallapuram – 603 104.</p>
-          <p><i class="fa-solid fa-envelope"></i> ho@sekarconstructions.com</p>
-          <p><i class="fa-solid fa-phone"></i> +91 94432 21644, +91 63825 97029</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="container footer-bottom">
-      <p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>
-      <p>Redesigned & Modernized | Powered by Antigravity</p>
-    </div>
-  </footer>
+  <div id="site-footer"></div>
 
   <!-- Case Study Modal Overlay -->
   <div id="case-study-modal" class="modal-overlay">
@@ -345,7 +372,17 @@
       <button class="modal-close" id="modalCloseBtn" aria-label="Close Case Study">&times;</button>
       <div class="modal-grid">
         <div class="modal-img">
-          <img id="modalProjectImg" src="" alt="Project Image">
+          <div class="modal-carousel">
+            <button type="button" class="modal-carousel-nav modal-carousel-prev" id="modalImgPrev" aria-label="Previous image" hidden>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <img id="modalProjectImg" src="" alt="Selected project case study photograph">
+            <button type="button" class="modal-carousel-nav modal-carousel-next" id="modalImgNext" aria-label="Next image" hidden>
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+            <span class="modal-carousel-counter" id="modalImgCounter" hidden></span>
+          </div>
+          <div class="modal-thumbs" id="modalProjectThumbs" hidden role="tablist" aria-label="Case study images"></div>
         </div>
         <div class="modal-details">
           <div>
@@ -364,7 +401,11 @@
     </div>
   </div>
 
-  <!-- Custom JS -->
-  <script src="script.js?v=22"></script>
+  <!-- Security Core & Custom JS -->
+  <script src="layout.js?v=141"></script>
+  <script src="config.js?v=122"></script>
+  <script src="cms-public.js?v=121"></script>
+  <script src="script.js?v=150"></script>
+
 </body>
 </html>

@@ -1,6 +1,7 @@
 const config = require('./config');
 const { createApp } = require('./app');
 const db = require('./db');
+const { getSmtpStartupStatus } = require('./services/emailService');
 
 const app = createApp();
 
@@ -8,6 +9,8 @@ const server = app.listen(config.PORT, () => {
   console.log(`[sekar-api] listening on http://localhost:${config.PORT}`);
   console.log(`[sekar-api] env=${config.NODE_ENV} db=${config.DATABASE_URL.startsWith('postgres') ? 'postgres' : 'sqlite'}`);
   console.log(`[sekar-api] CORS origins: ${config.CORS_ORIGINS.join(', ')}`);
+  console.log(`[sekar-api] jobs site: ${config.JOBS_SITE_URL}`);
+  console.log(`[sekar-api] SMTP: ${getSmtpStartupStatus()}`);
 });
 
 async function shutdown(signal) {
