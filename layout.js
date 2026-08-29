@@ -29,13 +29,24 @@
   var jobsSiteUrl = String(
     (window.SekarConfig && window.SekarConfig.jobsSiteUrl) || 'https://jobs.sekarconstructions.com'
   ).replace(/\/$/, '');
-  var onJobsHost =
-    typeof window !== 'undefined' &&
-    window.location.hostname === 'jobs.sekarconstructions.com';
+  var host = (typeof window !== 'undefined' && window.location.hostname
+    ? String(window.location.hostname)
+    : ''
+  ).toLowerCase();
+  var onJobsHost = host === 'jobs.sekarconstructions.com';
+  // jobs.sekarconstructions.com has no DNS yet. Keep same-origin careers.html on
+  // GitHub Pages / local / production until SekarConfig.useJobsSite is opted in.
+  var useJobsSite =
+    !onJobsHost &&
+    !!(window.SekarConfig && window.SekarConfig.useJobsSite === true) &&
+    !/\.github\.io$/i.test(host) &&
+    host !== 'localhost' &&
+    host !== '127.0.0.1' &&
+    (typeof window === 'undefined' || window.location.protocol !== 'file:');
 
   function careersHref() {
-    if (onJobsHost) return baseDir + 'careers.html';
-    return jobsSiteUrl + '/careers.html';
+    if (useJobsSite) return jobsSiteUrl + '/careers.html';
+    return baseDir + 'careers.html';
   }
 
   function isCareersHref(href) {
@@ -210,7 +221,7 @@
   }
 
   function applyCareersLinks(root) {
-    if (!root || onJobsHost) return;
+    if (!root || onJobsHost || !useJobsSite) return;
     var target = careersHref();
     var links = root.querySelectorAll('a[href]');
     for (var i = 0; i < links.length; i++) {
