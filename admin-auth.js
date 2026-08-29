@@ -31,62 +31,6 @@
   };
 
 
-  // Sample initial bid inquiries for Sekar Construction tender dashboard
-  const INITIAL_INQUIRIES = [
-    {
-      id: 'INQ-2026-001',
-      name: 'R. K. Parthiban',
-      company: 'Tamil Nadu Infrastructure Dev Corp',
-      email: 'parthiban@example.com',
-      phone: '+91 90000 00001',
-      subject: 'Tender Inquiry: 4-Lane Elevated Flyover Corridor (Chengalpattu)',
-      message: 'Requesting RFP documents and eligibility credentials for Class-I civil contractors for 4-lane elevated corridor construction.',
-      date: '2026-08-24 11:30',
-      status: 'NEW',
-      priority: 'HIGH',
-      value: '₹ 145 Cr'
-    },
-    {
-      id: 'INQ-2026-002',
-      name: 'Dr. S. Meenakshi',
-      company: 'Kudankulam Project Infrastructure',
-      email: 's.meenakshi@example.com',
-      phone: '+91 90000 00002',
-      subject: 'Civil Substructure & Heavy Machinery Foundations',
-      message: 'Seeking Sekar Construction technical bid for heavy RCC foundation work and auxiliary building substructures.',
-      date: '2026-08-23 16:45',
-      status: 'IN_REVIEW',
-      priority: 'URGENT',
-      value: '₹ 220 Cr'
-    },
-    {
-      id: 'INQ-2026-003',
-      name: 'V. Anand Kumar',
-      company: 'Great Lakes Educational Trust',
-      email: 'anand.k@example.com',
-      phone: '+91 90000 00003',
-      subject: 'Campus Expansion Phase IV - Academic Block & Hostel Towers',
-      message: 'Invitation to bid for turn-key civil & structural construction of academic blocks at Manama campus.',
-      date: '2026-08-22 09:15',
-      status: 'CONTACTED',
-      priority: 'MEDIUM',
-      value: '₹ 68 Cr'
-    },
-    {
-      id: 'INQ-2026-004',
-      name: 'K. Senthil Nathan',
-      company: 'Petroleum Infrastructure Corp',
-      email: 'senthil.n@example.com',
-      phone: '+91 90000 00004',
-      subject: 'Industrial Effluent Treatment & Cooling Tower Structures',
-      message: 'Quotation required for specialized acid-resistant RCC tank bunding and cooling tower civil foundations.',
-      date: '2026-08-20 14:10',
-      status: 'APPROVED',
-      priority: 'HIGH',
-      value: '₹ 42 Cr'
-    }
-  ];
-
   class AdminSecurityEngine {
     constructor() {
       this._cmsCache = {};
@@ -241,8 +185,21 @@
      * Never writes password hashes / TOTP secrets. Auth requires apiBaseUrl.
      */
     initStorage() {
-      if (!this.useApi() && !localStorage.getItem(STORAGE_KEYS.INQUIRIES)) {
-        localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(INITIAL_INQUIRIES));
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.INQUIRIES);
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list)) {
+            const cleaned = list.filter((i) => !/^INQ-2026-00[1-4]$/.test(String(i.id || '')));
+            if (cleaned.length !== list.length) {
+              localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(cleaned));
+            }
+          }
+        } else {
+          localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify([]));
+        }
+      } catch (e) {
+        localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify([]));
       }
 
       if (!localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS)) {
@@ -675,8 +632,8 @@
     }
 
     getInquiries() {
-      if (this.useApi() && Array.isArray(this._cmsCache.inquiries)) {
-        return this._cmsCache.inquiries;
+      if (this.useApi()) {
+        return Array.isArray(this._cmsCache.inquiries) ? this._cmsCache.inquiries : [];
       }
       try {
         return JSON.parse(localStorage.getItem(STORAGE_KEYS.INQUIRIES)) || [];

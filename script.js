@@ -327,12 +327,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (homeSection && servicesSection) {
       const setHomeNavActive = (currentLink) => {
         navLinks.forEach(link => {
-          const href = link.getAttribute('href');
-          if (!href || !href.startsWith('#')) return;
+          const href = link.getAttribute('href') || '';
+          const isHomeLink = href === '#home' || href.indexOf('#home') !== -1;
+          const isServicesLink = href === '#services' || href.indexOf('#services') !== -1;
+          if (!isHomeLink && !isServicesLink) return;
+
           link.classList.remove('active');
-          if (currentLink === 'services' && href === '#services') {
+          if (currentLink === 'services' && isServicesLink) {
             link.classList.add('active');
-          } else if (currentLink === 'home' && href === '#home') {
+          } else if (currentLink === 'home' && isHomeLink) {
             link.classList.add('active');
           }
         });
@@ -372,19 +375,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   if ('IntersectionObserver' in window) {
     const sectionObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting || entry.intersectionRatio > 0) {
           entry.target.classList.add('is-visible');
           observer.unobserve(entry.target);
         }
       });
     }, {
       root: null,
-      threshold: 0.15,
-      rootMargin: '0px 0px -50px 0px'
+      threshold: 0.01,
+      rootMargin: '100px 0px 100px 0px'
     });
 
     fadeSections.forEach(section => {
       sectionObserver.observe(section);
+      const rect = section.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 1.5) {
+        section.classList.add('is-visible');
+      }
     });
   } else {
     fadeSections.forEach(section => {
@@ -3085,6 +3092,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     track.addEventListener('touchstart', onTouchStart, { passive: true });
     track.addEventListener('touchend', onTouchEnd, { passive: true });
+
+    // Lightbox modal trigger for certificate image inspection
+    const modal = document.getElementById('certLightboxModal');
+    const modalImg = document.getElementById('certLightboxImg');
+    const modalTitle = document.getElementById('certLightboxTitle');
+    const modalAuthor = document.getElementById('certLightboxAuthor');
+    const modalDetails = document.getElementById('certLightboxDetails');
+    const modalBadge = document.getElementById('certLightboxBadge');
+    const modalDownload = document.getElementById('certLightboxDownloadBtn');
+    const modalClose = document.getElementById('certLightboxClose');
+    const modalBackdrop = document.getElementById('certLightboxBackdrop');
+
+    function openCertLightbox(slide) {
+      if (!modal || !modalImg) return;
+      const img = slide.querySelector('.cert-slide-media img');
+      const title = slide.querySelector('.cert-slide-title');
+      const author = slide.querySelector('.cert-slide-author');
+      const badge = slide.querySelector('.cert-slide-badge');
+      const desc = slide.querySelector('.cert-slide-desc') || slide.querySelector('.cert-slide-quote');
+      
+      if (img) {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt || 'Official Government Certificate';
+        if (modalDownload) modalDownload.href = img.src;
+      }
+      if (title && modalTitle) modalTitle.textContent = title.textContent;
+      if (author && modalAuthor) modalAuthor.innerHTML = author.innerHTML;
+      if (badge && modalBadge) modalBadge.innerHTML = badge.innerHTML;
+      if (desc && modalDetails) modalDetails.innerHTML = desc.innerHTML;
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCertLightbox() {
+      if (!modal) return;
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    slides.forEach((slide) => {
+      const media = slide.querySelector('.cert-slide-media');
+      if (media) {
+        media.style.cursor = 'zoom-in';
+        media.addEventListener('click', () => openCertLightbox(slide));
+      }
+    });
+
+    if (modalClose) modalClose.addEventListener('click', closeCertLightbox);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeCertLightbox);
 
     function startAutoplay() {
       autoplayTimer = setInterval(() => goToSlide(currentIndex + 1), 6000);

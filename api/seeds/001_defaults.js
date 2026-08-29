@@ -251,21 +251,23 @@ exports.seed = async function seed(knex) {
     await knex('gallery_media_items').insert(mediaRows);
   }
 
-  const now = new Date();
-  await knex('inquiries').insert(
-    defaults.sampleInquiries.map((inq) => ({
-      inquiry_id: inq.id,
-      name: inq.name,
-      company: inq.company,
-      email: inq.email,
-      phone: inq.phone,
-      subject: inq.subject,
-      message: inq.message,
-      status: inq.status,
-      priority: inq.priority,
-      value: inq.value,
-      created_at: now,
-      updated_at: now,
-    }))
-  );
+  if (defaults.sampleInquiries.length) {
+    const now = new Date();
+    await knex('inquiries').insert(
+      defaults.sampleInquiries.map((inq) => ({
+        inquiry_id: inq.id,
+        name: inq.name,
+        company: inq.company,
+        email: inq.email,
+        phone: inq.phone,
+        subject: inq.subject,
+        message: inq.message,
+        status: inq.status,
+        priority: inq.priority,
+        value: inq.value,
+        created_at: now,
+        updated_at: now,
+      }))
+    );
+  }
 };

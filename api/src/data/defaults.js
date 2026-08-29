@@ -443,56 +443,8 @@ const galleryMedia = {
   ],
 };
 
-const sampleInquiries = [
-  {
-    id: 'INQ-2026-001',
-    name: 'R. K. Parthiban',
-    company: 'Tamil Nadu Infrastructure Dev Corp',
-    email: 'parthiban@tnidc.gov.in',
-    phone: '+91 94440 12890',
-    subject: 'Tender Inquiry: 4-Lane Elevated Flyover Corridor (Chengalpattu)',
-    message: 'Requesting RFP documents and eligibility credentials for Class-I civil contractors for 4-lane elevated corridor construction.',
-    status: 'NEW',
-    priority: 'HIGH',
-    value: '₹ 145 Cr',
-  },
-  {
-    id: 'INQ-2026-002',
-    name: 'Dr. S. Meenakshi',
-    company: 'NPCIL Kudankulam Project Phase III',
-    email: 's.meenakshi@npcil.gov.in',
-    phone: '+91 98402 33411',
-    subject: 'Civil Substructure & Heavy Machinery Foundations',
-    message: 'Seeking Sekar Construction technical bid for heavy RCC foundation work and reactor auxiliary building substructures.',
-    status: 'IN_REVIEW',
-    priority: 'URGENT',
-    value: '₹ 220 Cr',
-  },
-  {
-    id: 'INQ-2026-003',
-    name: 'V. Anand Kumar',
-    company: 'Great Lakes Educational Trust',
-    email: 'anand.k@greatlakes.edu.in',
-    phone: '+91 96001 88722',
-    subject: 'Campus Expansion Phase IV - Academic Block & Hostel Towers',
-    message: 'Invitation to bid for turn-key civil & structural construction of 400,000 sq.ft academic blocks at Manama campus.',
-    status: 'CONTACTED',
-    priority: 'MEDIUM',
-    value: '₹ 68 Cr',
-  },
-  {
-    id: 'INQ-2026-004',
-    name: 'K. Senthil Nathan',
-    company: 'Chennai Petroleum Corp Ltd (CPCL)',
-    email: 'senthil.n@cpcl.co.in',
-    phone: '+91 97900 54120',
-    subject: 'Industrial Effluent Treatment & Cooling Tower Structures',
-    message: 'Quotation required for specialized acid-resistant RCC tank bunding and cooling tower civil foundations.',
-    status: 'APPROVED',
-    priority: 'HIGH',
-    value: '₹ 42 Cr',
-  },
-];
+/** No seed inquiries — real submissions only via POST /api/inquiries */
+const sampleInquiries = [];
 
 module.exports = {
   infrastructure,

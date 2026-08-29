@@ -365,7 +365,11 @@
       <!-- STEP 1: Username & Password -->
       <div id="step1View" class="step-view active">
         <h1 class="admin-card-title">Executive Sign In</h1>
-        <p class="admin-card-subtitle">Enter your Super Admin credentials to access executive controls.</p>
+        <p class="admin-card-subtitle">Two-step sign-in: enter your <strong>Master Password</strong>, then your <strong>Google Authenticator</strong> 6-digit code on the next screen.</p>
+        <div class="admin-alert warning show" style="margin-bottom: 22px; display: flex;">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <span>2FA is enabled on this account. Password alone is not enough — keep Google Authenticator ready before you continue.</span>
+        </div>
 
         <form id="step1Form" autocomplete="off">
           <div class="form-group">
@@ -395,8 +399,8 @@
 
       <!-- STEP 2: 2FA Master PIN -->
       <div id="step2View" class="step-view">
-        <h1 class="admin-card-title">2FA Security PIN</h1>
-        <p class="admin-card-subtitle">Open <strong>Google Authenticator</strong> on your phone and enter your 6-digit live code.</p>
+        <h1 class="admin-card-title">Step 2 — Authenticator Code</h1>
+        <p class="admin-card-subtitle">Password accepted. Open <strong>Google Authenticator</strong> (or Authy) and enter the current 6-digit code for <strong>superadmin</strong>.</p>
 
         <form id="step2Form">
           <div class="pin-input-container">
@@ -448,8 +452,8 @@
   </div>
 
   <!-- Security Engine Core -->
-  <script src="config.js?v=121"></script>
-  <script src="admin-auth.js?v=142"></script>
+  <script src="config.js?v=122"></script>
+  <script src="admin-auth.js?v=143"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -521,13 +525,6 @@
         adminAlert.className = 'admin-alert';
       }
 
-      // Check lockout state on load
-      const lockoutState = securityEngine.getLockoutState();
-      if (lockoutState.locked) {
-        const remainingMinutes = Math.ceil((lockoutState.unlockTime - Date.now()) / (60 * 1000));
-        showAlert(`Security Shield Active: Super Admin locked for ${remainingMinutes} minute(s) due to repeated failed attempts.`, 'warning');
-      }
-
       // Toggle Password Visibility
       if (togglePwdBtn && adminPassword) {
         togglePwdBtn.addEventListener('click', () => {
@@ -552,7 +549,11 @@
 
         const res = await securityEngine.authenticateCredentials(userVal, pwdVal);
         if (!res.success) {
-          showAlert(res.message, res.locked ? 'warning' : 'danger');
+          let msg = res.message || 'Login failed.';
+          if (!res.locked && !/authenticator|2fa|two-factor/i.test(msg)) {
+            msg += ' If you recently changed your password, use the new one. This account also requires Google Authenticator after the password step.';
+          }
+          showAlert(msg, res.locked ? 'warning' : 'danger');
         } else if (res.requires2FA === false) {
           showAlert(res.message, 'success');
           if (res.mustChangePassword) {
@@ -620,7 +621,7 @@
 
         const enteredPin = Array.from(pinBoxes).map(b => b.value).join('');
         if (enteredPin.length < 6) {
-          showAlert('Please enter the complete 6-digit master security PIN.');
+          showAlert('Please enter the complete 6-digit code from Google Authenticator.');
           return;
         }
 

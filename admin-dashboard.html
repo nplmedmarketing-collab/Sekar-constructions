@@ -154,6 +154,72 @@
       color: #b91c1c;
     }
 
+    .pg-image-source-radios,
+    .admin-image-source-radios {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .pg-image-source-option,
+    .admin-image-source-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--dash-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pg-image-source-option input[type="radio"],
+    .admin-image-source-option input[type="radio"] {
+      accent-color: var(--dash-text);
+      width: 15px;
+      height: 15px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .pg-image-source-url-panel,
+    .pg-image-source-upload-panel,
+    .admin-image-source-url-panel,
+    .admin-image-source-upload-panel {
+      margin-top: 2px;
+    }
+
+    .pg-image-source-url-panel .pg-new-image-url-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .pg-upload-trigger,
+    .admin-upload-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--dash-muted);
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 14px;
+      background: #fff;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .pg-upload-trigger:hover,
+    .admin-upload-trigger:hover {
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+
     .btn-logout:hover {
       background: #fee2e2;
       color: #991b1b;
@@ -1123,17 +1189,28 @@
         <h3 style="margin: 0 0 14px 0; font-size: 1.05rem; color: var(--dash-text);"><i class="fa-solid fa-cloud-arrow-up" style="color: #ea580c;"></i> Upload & Add New Executive Team Photo</h3>
         
         <form id="uploadGalleryForm" style="display: flex; flex-direction: column; gap: 16px;">
-          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-            <!-- File Drag/Browse Box -->
-            <div style="flex: 1; min-width: 260px;">
-              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">Select Photo File (PNG, JPG, WEBP)</label>
-              <input type="file" id="galleryFileInput" accept="image/*" class="dash-search" style="width: 100%; padding: 8px 12px; cursor: pointer;">
-            </div>
-
-            <!-- Image URL Box (Alternative) -->
-            <div style="flex: 1; min-width: 260px;">
-              <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">OR Enter Image File Name / URL</label>
-              <input type="text" id="galleryUrlInput" class="dash-search" placeholder="e.g. dynamic-team-4.jpg" style="width: 100%; padding: 10px 14px;">
+          <div>
+            <label style="display:block; font-size: 0.82rem; font-weight:700; margin-bottom:6px;">Photo Image (PNG, JPG, WEBP)</label>
+            <div id="teamPhotoImageSource" class="admin-image-source-wrap pg-image-source-wrap">
+              <div class="admin-image-source-radios pg-image-source-radios" role="radiogroup" aria-label="Image source">
+                <label class="admin-image-source-option pg-image-source-option">
+                  <input type="radio" name="teamPhotoImageSource" value="url" class="admin-image-source-radio pg-image-source-radio" checked>
+                  <span>Add Image URL</span>
+                </label>
+                <label class="admin-image-source-option pg-image-source-option">
+                  <input type="radio" name="teamPhotoImageSource" value="upload" class="admin-image-source-radio pg-image-source-radio">
+                  <span>Upload</span>
+                </label>
+              </div>
+              <div class="admin-image-source-url-panel pg-image-source-url-panel">
+                <input type="text" id="galleryUrlInput" class="dash-search" placeholder="e.g. dynamic-team-4.jpg" style="width: 100%; padding: 10px 14px;">
+              </div>
+              <div class="admin-image-source-upload-panel pg-image-source-upload-panel" hidden>
+                <label class="pg-upload-trigger admin-upload-trigger">
+                  <i class="fa-solid fa-upload"></i> Choose file to upload
+                  <input type="file" id="galleryFileInput" accept="image/*" style="display:none;">
+                </label>
+              </div>
             </div>
           </div>
 
@@ -1281,8 +1358,8 @@
     </div>
   </div>
 
-  <script src="config.js?v=121"></script>
-  <script src="admin-auth.js?v=142"></script>
+  <script src="config.js?v=122"></script>
+  <script src="admin-auth.js?v=143"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const securityEngine = window.SekarAdminSecurity;
@@ -1297,6 +1374,73 @@
       // Helper for HTML escaping
       function escapeHtml(str) {
         return (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function escapeAttr(value) {
+        return escapeHtml(String(value == null ? '' : value));
+      }
+
+      function syncAdminImageSourcePanels(sourceWrap) {
+        if (!sourceWrap) return;
+        const urlPanel = sourceWrap.querySelector('.admin-image-source-url-panel, .pg-image-source-url-panel');
+        const uploadPanel = sourceWrap.querySelector('.admin-image-source-upload-panel, .pg-image-source-upload-panel');
+        const selected = sourceWrap.querySelector('.admin-image-source-radio:checked, .pg-image-source-radio:checked')?.value || 'url';
+        if (urlPanel) urlPanel.hidden = selected !== 'url';
+        if (uploadPanel) uploadPanel.hidden = selected !== 'upload';
+      }
+
+      function bindAdminImageSourceRadios(sourceWrap) {
+        if (!sourceWrap) return;
+        sourceWrap.querySelectorAll('.admin-image-source-radio, .pg-image-source-radio').forEach((radio) => {
+          radio.addEventListener('change', () => syncAdminImageSourcePanels(sourceWrap));
+        });
+        syncAdminImageSourcePanels(sourceWrap);
+      }
+
+      function bindAdminImageFileInput(sourceWrap, onDataUrl) {
+        if (!sourceWrap || typeof onDataUrl !== 'function') return;
+        const fileInput = sourceWrap.querySelector('input[type="file"]');
+        if (!fileInput) return;
+        fileInput.addEventListener('change', () => {
+          const file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            onDataUrl(String(reader.result || ''));
+            fileInput.value = '';
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderAdminImageSourceBlock(options) {
+        const radioName = escapeAttr(options.radioName || 'imageSource');
+        const urlPanelHtml = options.urlPanelHtml || '';
+        const fileInputClass = escapeAttr(options.fileInputClass || 'admin-image-source-file');
+        const fileInputId = options.fileInputId ? ` id="${escapeAttr(options.fileInputId)}"` : '';
+        const wrapStyle = options.wrapStyle ? ` style="${options.wrapStyle}"` : '';
+        return `
+          <div class="admin-image-source-wrap pg-image-source-wrap"${wrapStyle}>
+            <div class="admin-image-source-radios pg-image-source-radios" role="radiogroup" aria-label="Image source">
+              <label class="admin-image-source-option pg-image-source-option">
+                <input type="radio" name="${radioName}" value="url" class="admin-image-source-radio pg-image-source-radio" checked>
+                <span>Add Image URL</span>
+              </label>
+              <label class="admin-image-source-option pg-image-source-option">
+                <input type="radio" name="${radioName}" value="upload" class="admin-image-source-radio pg-image-source-radio">
+                <span>Upload</span>
+              </label>
+            </div>
+            <div class="admin-image-source-url-panel pg-image-source-url-panel">
+              ${urlPanelHtml}
+            </div>
+            <div class="admin-image-source-upload-panel pg-image-source-upload-panel" hidden>
+              <label class="pg-upload-trigger admin-upload-trigger">
+                <i class="fa-solid fa-upload"></i> Choose file to upload
+                <input type="file" accept="image/*" class="${fileInputClass}"${fileInputId} style="display:none;">
+              </label>
+            </div>
+          </div>`;
       }
 
       function applySaveAlertStyles(alertBox, success) {
@@ -2694,15 +2838,18 @@
                 <div style="grid-column:1 / -1;">
                   <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">IMAGES (MULTIPLE) — FIRST IS COVER</label>
                   <div class="pg-images-list">${imageRows}</div>
-                  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; align-items:center;">
-                    <button type="button" class="btn-dash-action pg-image-add" style="background:#0f172a; color:#fff; border:none; padding:8px 12px;">
-                      <i class="fa-solid fa-plus"></i> Add Image URL
-                    </button>
-                    <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.75rem; color:#64748b; cursor:pointer; border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; background:#fff;">
-                      <i class="fa-solid fa-upload"></i> Upload image
-                      <input type="file" accept="image/*" class="pg-item-file" style="display:none;">
-                    </label>
-                  </div>
+                  ${renderAdminImageSourceBlock({
+                    radioName: `imageSource-${item.id}`,
+                    wrapStyle: 'margin-top:8px;',
+                    fileInputClass: 'pg-item-file admin-image-source-file',
+                    urlPanelHtml: `
+                      <div class="pg-new-image-url-row">
+                        <input type="text" class="dash-search pg-new-image-url" placeholder="Enter image URL or filename" style="flex:1; padding:8px 10px; min-width:0;">
+                        <button type="button" class="btn-dash-action pg-image-add-url" style="background:#0f172a; color:#fff; border:none; padding:8px 14px; white-space:nowrap;">
+                          <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                      </div>`
+                  })}
                 </div>
                 <div>
                   <label style="display:block; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; color:#64748b; margin-bottom:4px;">CLIENT</label>
@@ -2788,27 +2935,6 @@
           }
         };
 
-        wrap.querySelectorAll('.pg-image-add').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const card = btn.closest('.pg-item-card');
-            const list = card?.querySelector('.pg-images-list');
-            if (!list) return;
-            const row = document.createElement('div');
-            row.className = 'pg-image-row';
-            row.style.cssText = 'display:grid; grid-template-columns:48px 1fr auto; gap:8px; align-items:center; margin-bottom:8px;';
-            row.innerHTML = `
-              <div style="height:48px; width:48px; background:#0f172a; border-radius:6px; overflow:hidden; flex-shrink:0;">
-                <img src="" alt="" style="width:100%; height:100%; object-fit:cover; display:none;">
-              </div>
-              <input type="text" class="dash-search pg-item-image-url" value="" placeholder="Image URL / filename" style="width:100%; padding:8px 10px;">
-              <button type="button" class="btn-dash-action pg-image-remove" title="Remove image" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:8px 10px;"><i class="fa-solid fa-xmark"></i></button>
-            `;
-            list.appendChild(row);
-            bindImageRowEvents(row, card);
-            row.querySelector('.pg-item-image-url')?.focus();
-          });
-        });
-
         const bindImageRowEvents = (row, card) => {
           const urlInput = row.querySelector('.pg-item-image-url');
           const thumb = row.querySelector('img');
@@ -2842,45 +2968,70 @@
           }
         };
 
+        const appendImageRow = (card, url = '') => {
+          const list = card?.querySelector('.pg-images-list');
+          if (!list) return null;
+          const safeUrl = escapeHtml(url);
+          const row = document.createElement('div');
+          row.className = 'pg-image-row';
+          row.style.cssText = 'display:grid; grid-template-columns:48px 1fr auto; gap:8px; align-items:center; margin-bottom:8px;';
+          row.innerHTML = `
+            <div style="height:48px; width:48px; background:#0f172a; border-radius:6px; overflow:hidden; flex-shrink:0;">
+              <img src="${safeUrl}" alt="" style="width:100%; height:100%; object-fit:cover;${url ? '' : ' display:none;'}">
+            </div>
+            <input type="text" class="dash-search pg-item-image-url" value="${safeUrl}" placeholder="Image URL / filename" style="width:100%; padding:8px 10px;">
+            <button type="button" class="btn-dash-action pg-image-remove" title="Remove image" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:8px 10px;"><i class="fa-solid fa-xmark"></i></button>
+          `;
+          list.appendChild(row);
+          bindImageRowEvents(row, card);
+          if (url) syncCoverPreview(card);
+          return row;
+        };
+
+        const addImageToCard = (card, url) => {
+          const trimmed = String(url || '').trim();
+          if (!trimmed) return false;
+          const list = card?.querySelector('.pg-images-list');
+          if (!list) return false;
+          const emptyInput = Array.from(list.querySelectorAll('.pg-item-image-url')).find((el) => !el.value.trim());
+          if (emptyInput) {
+            emptyInput.value = trimmed;
+            emptyInput.dispatchEvent(new Event('input'));
+          } else {
+            appendImageRow(card, trimmed);
+          }
+          return true;
+        };
+
+        const bindImageSourceControls = (card) => {
+          const sourceWrap = card.querySelector('.pg-image-source-wrap, .admin-image-source-wrap');
+          if (!sourceWrap) return;
+          bindAdminImageSourceRadios(sourceWrap);
+
+          const newUrlInput = sourceWrap.querySelector('.pg-new-image-url');
+          const addFromUrlField = () => {
+            const url = newUrlInput?.value.trim() || '';
+            if (!url) {
+              newUrlInput?.focus();
+              return;
+            }
+            if (addImageToCard(card, url) && newUrlInput) newUrlInput.value = '';
+          };
+
+          sourceWrap.querySelector('.pg-image-add-url')?.addEventListener('click', addFromUrlField);
+          newUrlInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              addFromUrlField();
+            }
+          });
+
+          bindAdminImageFileInput(sourceWrap, (dataUrl) => addImageToCard(card, dataUrl));
+        };
+
         wrap.querySelectorAll('.pg-item-card').forEach((card) => {
           card.querySelectorAll('.pg-image-row').forEach((row) => bindImageRowEvents(row, card));
-        });
-
-        wrap.querySelectorAll('.pg-item-file').forEach((input) => {
-          input.addEventListener('change', () => {
-            const file = input.files && input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-              const card = input.closest('.pg-item-card');
-              const list = card?.querySelector('.pg-images-list');
-              if (!list) return;
-              const dataUrl = String(reader.result || '');
-              const emptyInput = Array.from(list.querySelectorAll('.pg-item-image-url')).find((el) => !el.value.trim());
-              if (emptyInput) {
-                emptyInput.value = dataUrl;
-                emptyInput.dispatchEvent(new Event('input'));
-              } else {
-                const row = document.createElement('div');
-                row.className = 'pg-image-row';
-                row.style.cssText = 'display:grid; grid-template-columns:48px 1fr auto; gap:8px; align-items:center; margin-bottom:8px;';
-                row.innerHTML = `
-                  <div style="height:48px; width:48px; background:#0f172a; border-radius:6px; overflow:hidden; flex-shrink:0;">
-                    <img src="${dataUrl.replace(/"/g, '&quot;')}" alt="" style="width:100%; height:100%; object-fit:cover;">
-                  </div>
-                  <input type="text" class="dash-search pg-item-image-url" value="" placeholder="Image URL / filename" style="width:100%; padding:8px 10px;">
-                  <button type="button" class="btn-dash-action pg-image-remove" title="Remove image" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:8px 10px;"><i class="fa-solid fa-xmark"></i></button>
-                `;
-                list.appendChild(row);
-                const urlInput = row.querySelector('.pg-item-image-url');
-                if (urlInput) urlInput.value = dataUrl;
-                bindImageRowEvents(row, card);
-                syncCoverPreview(card);
-              }
-              input.value = '';
-            };
-            reader.readAsDataURL(file);
-          });
+          bindImageSourceControls(card);
         });
       }
 
@@ -2945,10 +3096,6 @@
 
       function showGalleryMediaAlert(alertId, msg, success) {
         showSaveResultAlert(document.getElementById(alertId), { success, message: msg }, msg);
-      }
-
-      function escapeAttr(value) {
-        return escapeHtml(String(value == null ? '' : value));
       }
 
       function renderGalleryMediaCardFields(item, index, opts) {
@@ -3049,16 +3196,11 @@
                 <img src="${escapeAttr(item.url)}" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.opacity=0.3">
               </div>
               <div style="display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
-                  <div style="flex:1; min-width:220px;">
-                    <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Image URL</label>
-                    <input type="text" class="dash-search gm-url" value="${escapeAttr(item.url || '')}" style="width:100%; padding:8px 10px;">
-                  </div>
-                  <div>
-                    <label style="display:block; font-size:0.75rem; font-weight:700; margin-bottom:4px;">Upload</label>
-                    <input type="file" accept="image/*" class="gm-file" style="max-width:180px;">
-                  </div>
-                </div>
+                ${renderAdminImageSourceBlock({
+                  radioName: `gm-imageSource-${item.id}`,
+                  fileInputClass: 'gm-file admin-image-source-file',
+                  urlPanelHtml: `<input type="text" class="dash-search gm-url" value="${escapeAttr(item.url || '')}" placeholder="Enter image URL or filename" style="width:100%; padding:8px 10px;">`
+                })}
                 ${extra}
               </div>
             </div>
@@ -3128,19 +3270,20 @@
             }
           });
         });
-        container.querySelectorAll('.gm-file').forEach((input) => {
-          input.addEventListener('change', () => {
-            const file = input.files && input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (evt) => {
-              const card = input.closest('.gm-item-card');
-              const urlInput = card.querySelector('.gm-url');
-              if (urlInput) urlInput.value = evt.target.result;
-              const img = card.querySelector('img');
-              if (img) img.src = evt.target.result;
-            };
-            reader.readAsDataURL(file);
+        container.querySelectorAll('.gm-item-card').forEach((card) => {
+          const sourceWrap = card.querySelector('.admin-image-source-wrap, .pg-image-source-wrap');
+          if (!sourceWrap) return;
+          bindAdminImageSourceRadios(sourceWrap);
+          bindAdminImageFileInput(sourceWrap, (dataUrl) => {
+            const urlInput = card.querySelector('.gm-url');
+            if (urlInput) urlInput.value = dataUrl;
+            const img = card.querySelector('img');
+            if (img) img.src = dataUrl;
+          });
+          const urlInput = card.querySelector('.gm-url');
+          urlInput?.addEventListener('input', () => {
+            const img = card.querySelector('img');
+            if (img) img.src = urlInput.value.trim();
           });
         });
       }
@@ -3327,6 +3470,9 @@
       }
 
       // Handle Upload New Photo Form Submit
+      const teamPhotoImageSource = document.getElementById('teamPhotoImageSource');
+      if (teamPhotoImageSource) bindAdminImageSourceRadios(teamPhotoImageSource);
+
       const uploadGalleryForm = document.getElementById('uploadGalleryForm');
       if (uploadGalleryForm) {
         uploadGalleryForm.addEventListener('submit', async (e) => {
@@ -3336,30 +3482,40 @@
           const captionInput = document.getElementById('galleryCaptionInput');
 
           const caption = captionInput.value.trim();
-          let photoUrl = urlInput.value.trim();
+          const selectedSource = teamPhotoImageSource?.querySelector('.admin-image-source-radio:checked, .pg-image-source-radio:checked')?.value || 'url';
 
-          const file = fileInput.files[0];
-          if (file) {
+          if (selectedSource === 'upload') {
+            const file = fileInput?.files?.[0];
+            if (!file) {
+              alert('Please select an image file to upload.');
+              return;
+            }
             const reader = new FileReader();
             reader.onload = async function(evt) {
               const base64Url = evt.target.result;
               const result = await securityEngine.addGalleryPhoto({ url: base64Url, caption: caption });
               if (result.success) {
                 uploadGalleryForm.reset();
+                syncAdminImageSourcePanels(teamPhotoImageSource);
                 renderGalleryGrid();
               }
               showGalleryAlert(result.message || 'New team photo uploaded and published live!', result.success);
             };
             reader.readAsDataURL(file);
-          } else if (photoUrl) {
+            return;
+          }
+
+          const photoUrl = urlInput.value.trim();
+          if (photoUrl) {
             const result = await securityEngine.addGalleryPhoto({ url: photoUrl, caption: caption });
             if (result.success) {
               uploadGalleryForm.reset();
+              syncAdminImageSourcePanels(teamPhotoImageSource);
               renderGalleryGrid();
             }
             showGalleryAlert(result.message || 'New team photo added and published live!', result.success);
           } else {
-            alert('Please select an image file or enter an image URL.');
+            alert('Please enter an image URL.');
           }
         });
       }
@@ -3456,11 +3612,15 @@
         if (inquiryCountBadge) inquiryCountBadge.textContent = inquiries.length;
 
         if (filtered.length === 0) {
+          const isEmpty = inquiries.length === 0;
+          const emptyMessage = isEmpty
+            ? 'No inquiries yet. New bid submissions will appear here.'
+            : 'No matching bid inquiries found.';
           inquiriesTableBody.innerHTML = `
             <tr>
               <td colspan="7" style="text-align: center; color: var(--dash-muted); padding: 30px;">
                 <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 8px; display:block;"></i>
-                No matching bid inquiries found.
+                ${emptyMessage}
               </td>
             </tr>
           `;
@@ -3515,7 +3675,16 @@
       }
 
       // Initial Render
-      renderInquiries();
+      (async () => {
+        if (securityEngine.useApi && securityEngine.useApi()) {
+          try {
+            await securityEngine.refreshInquiriesFromApi();
+          } catch (err) {
+            console.warn('Failed to load inquiries from API:', err.message);
+          }
+        }
+        renderInquiries();
+      })();
       renderAuditLogs();
 
       // Filters

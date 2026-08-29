@@ -270,9 +270,33 @@
 
   <div id="site-footer"></div>
 
+  <!-- Certificate Lightbox Inspector Modal -->
+  <div class="cert-lightbox-modal" id="certLightboxModal" aria-hidden="true" role="dialog" aria-label="Certificate Inspector">
+    <div class="cert-lightbox-backdrop" id="certLightboxBackdrop"></div>
+    <div class="cert-lightbox-container">
+      <button type="button" class="cert-lightbox-close" id="certLightboxClose" aria-label="Close Inspector">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="cert-lightbox-body">
+        <div class="cert-lightbox-media">
+          <img id="certLightboxImg" src="" alt="Official Government Certificate Inspector">
+        </div>
+        <div class="cert-lightbox-meta">
+          <span class="cert-lightbox-badge" id="certLightboxBadge"><i class="fa-solid fa-certificate"></i> Official Certificate</span>
+          <h3 id="certLightboxTitle">Certificate Title</h3>
+          <p id="certLightboxAuthor" class="cert-lightbox-author"></p>
+          <div id="certLightboxDetails" class="cert-lightbox-details"></div>
+          <a id="certLightboxDownloadBtn" href="" target="_blank" download class="btn btn-primary cert-lightbox-download">
+            <i class="fa-solid fa-download"></i> Download Official Document
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="layout.js?v=141"></script>
-  <script src="config.js?v=121"></script>
+  <script src="config.js?v=122"></script>
   <script src="cms-public.js?v=140"></script>
-  <script src="script.js?v=155"></script>
+  <script src="script.js?v=160"></script>
 </body>
 </html>
