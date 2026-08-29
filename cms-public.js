@@ -361,17 +361,63 @@
       return this.getOngoingRegionOptions(projects);
     }
 
+    /**
+     * Bundled completed-projects directory for static hosts (GitHub Pages)
+     * and API/localStorage misses. Mirrors admin-auth / api seeds.
+     */
+    getBundledCompletedProjectsDefaults() {
+      return {
+        hero: {
+          brand: 'Sekar Constructions',
+          title: 'Completed Projects',
+          lead: 'Since 1995, Sekar Constructions has built an impeccable reputation for executing critical civil engineering structures across India.',
+          ctaLabel: 'View Completed Works',
+          ctaHref: '#completed-projects',
+          image: 'images/completed-projects-hero-kochar.png'
+        },
+        highlights: [
+          { key: 'completed', label: 'Completed Works', value: '12', note: 'Audited major works directory' },
+          { key: 'value', label: 'Combined Value', value: '502', note: '₹ Crores across completed major contracts' },
+          { key: 'years', label: 'Since', value: '1995', note: 'Class-I civil engineering track record' }
+        ],
+        projects: [
+          { id: 'completed-tn-1', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '1', name: 'Site Development and Compound wall works & Construction of Warehouse (7nos) Civil works, Ancillary Building, external works and Plumbing in Kochar Industrial Park at Kandamangalam, Tiruvallur Dist - 602105', valueLakhs: '10006.62' },
+          { id: 'completed-tn-2', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '2', name: 'Construction of On-Site Emergency support centre at Kalpakkam site', valueLakhs: '6080.00' },
+          { id: 'completed-tn-3', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '3', name: 'Construction of C25 Stage Integration Complex and area development works around the facility at IPRC, Mahendragiri (Civil, PH, storm water drains work and mechanical doors)', valueLakhs: '5630.00' },
+          { id: 'completed-tn-4', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '4', name: 'Construction of 150 MLD SWRO Desalination Plant for CMWSSB, Nemmeli on behalf of Cobratecton Pvt. Ltd., Chennai.', valueLakhs: '5232.66' },
+          { id: 'completed-tn-5', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '5', name: 'Construction of Engineering Hall – V in IGCAR at Kalpakkam', valueLakhs: '3654.76' },
+          { id: 'completed-tn-6', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '6', name: 'Construction of Proposed Factory Building, Warehouse Buildings and Ancillary Building Works including Plumbing at Irungattukottai, Chennai', valueLakhs: '7150.72' },
+          { id: 'completed-tn-7', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '7', name: 'Construction of Student Hostel block, Academic block, Ware House, Canteen, Substation, Library, Plumbing work, Sewage Treatment Plant and other miscellaneous work under Phase – III at Great Lakes Institute of Management, Manamai at Kalpakkam.', valueLakhs: '3146.00' },
+          { id: 'completed-tn-8', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '8', name: 'Construction of 116 Nos. of type II-B Residential Quarters in DAE Township at Kalpakkam [including electrical work]', valueLakhs: '2583.04' },
+          { id: 'completed-tn-9', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '9', name: 'Construction of 233 Nos of New academic block including Civil, Mechanical, Electrical, Public health and other miscellaneous works under Phase - IV at Great Lakes Institute of Management, ECR, Manamai.', valueLakhs: '2357.00' },
+          { id: 'completed-tn-10', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '10', name: 'Construction of AUSE Lab Building at IGCAR, Kalpakkam', valueLakhs: '1645.08' },
+          { id: 'completed-tn-11', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '11', name: 'Construction of Balance works for 120 nos. of type IIIC quarters (Tower 4 -G+15 story) in DAE Township at Anupuram.', valueLakhs: '1384.33' },
+          { id: 'completed-tn-12', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '12', name: 'Construction of Infrastructure facilities for Store and workshop for FRFCF at IGCAR, Kalpakkam on behalf of Consolidated Construction Consortium Ltd, Chennai.', valueLakhs: '1360.00' }
+        ]
+      };
+    }
+
+    _completedWithProjectsFallback(data) {
+      const bundled = this.getBundledCompletedProjectsDefaults();
+      if (!data || typeof data !== 'object') {
+        return JSON.parse(JSON.stringify(bundled));
+      }
+      const projects = Array.isArray(data.projects) ? data.projects : [];
+      if (projects.length) return data;
+      return Object.assign({}, data, {
+        hero: data.hero && (data.hero.title || data.hero.brand) ? data.hero : bundled.hero,
+        highlights: Array.isArray(data.highlights) && data.highlights.length ? data.highlights : bundled.highlights,
+        projects: bundled.projects.slice()
+      });
+    }
+
     getCompletedProjectsContent() {
       if (this.useApi()) {
-        const data = this._cmsCache.completed;
-        if (!data || typeof data !== 'object') {
-          return { hero: Object.assign({}, EMPTY_HERO), highlights: [], projects: [] };
-        }
-        return data;
+        return this._completedWithProjectsFallback(this._cmsCache.completed);
       }
-      const stored = this._readLocal('sc_admin_completed_projects_v2');
-      if (stored && typeof stored === 'object') return stored;
-      return { hero: Object.assign({}, EMPTY_HERO), highlights: [], projects: [] };
+      const stored = this._readLocal('sc_admin_completed_projects_v2')
+        || this._readLocal('sc_admin_completed_projects_v1');
+      return this._completedWithProjectsFallback(stored);
     }
 
     getProjectGalleryCategoryPresets() {
