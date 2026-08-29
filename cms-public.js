@@ -7,15 +7,6 @@
 (function (window) {
   'use strict';
 
-  const EMPTY_HERO = {
-    brand: '',
-    title: '',
-    lead: '',
-    ctaLabel: '',
-    ctaHref: '',
-    image: ''
-  };
-
   class PublicCmsClient {
     constructor() {
       this._cmsCache = {};
@@ -88,21 +79,45 @@
       }
     }
 
+    getBundledFleetDefaults() {
+      return [
+        { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry' },
+        { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck' },
+        { key: 'pumps', name: 'Schwing Stetter S36X Boom Pumps', count: '2', icon: 'fa-truck-droplet' },
+        { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving' },
+        { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor' },
+        { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears' },
+        { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain' },
+        { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench' },
+        { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors' },
+        { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group' }
+      ];
+    }
+
     getFleetInventory() {
       if (this.useApi()) {
-        return Array.isArray(this._cmsCache.fleet) ? this._cmsCache.fleet : [];
+        const data = this._cmsCache.fleet;
+        return Array.isArray(data) && data.length ? data : this.getBundledFleetDefaults();
       }
       const stored = this._readLocal('sc_admin_fleet_v1');
-      return Array.isArray(stored) ? stored : [];
+      return Array.isArray(stored) && stored.length ? stored : this.getBundledFleetDefaults();
+    }
+
+    getBundledTeamPhotoDefaults() {
+      return [
+        { id: 'img-1', url: 'dynamic-team-1.jpg', caption: 'Sekar Constructions Executive Team' },
+        { id: 'img-2', url: 'dynamic-team-2.jpg', caption: 'Sekar Constructions Engineering Team on Site' },
+        { id: 'img-3', url: 'dynamic-team-3.jpg', caption: 'Sekar Constructions Civil Work Force' }
+      ];
     }
 
     getGalleryPhotos() {
-      // API mode: never resurrect hardcoded team URLs when hydrate fails.
       if (this.useApi()) {
-        return Array.isArray(this._cmsCache.team) ? this._cmsCache.team : [];
+        const data = this._cmsCache.team;
+        return Array.isArray(data) && data.length ? data : this.getBundledTeamPhotoDefaults();
       }
       const stored = this._readLocal('sc_admin_team_gallery_v1');
-      return Array.isArray(stored) ? stored : [];
+      return Array.isArray(stored) && stored.length ? stored : this.getBundledTeamPhotoDefaults();
     }
 
     getGalleryMediaSections() {
@@ -143,12 +158,50 @@
       return options.find((opt) => opt.id === currencyId) || options[0];
     }
 
+    getBundledFinancialsDefaults() {
+      return [
+        {
+          key: 'turnover',
+          title: 'Annual Turnover',
+          icon: 'fa-chart-line',
+          text: 'Our financial progress reached a whopping annual turnover to the tune of Rs.1420 millions during the Financial Year 2025–26.',
+          currency: 'inr_millions',
+          series: [
+            { year: '2020-21', amount: 560, source: 'published', visible: true },
+            { year: '2021-22', amount: 720, source: 'published', visible: true },
+            { year: '2022-23', amount: 850, source: 'published', visible: true },
+            { year: '2023-24', amount: 990, source: 'published', visible: true },
+            { year: '2024-25', amount: 1175, source: 'published', visible: true },
+            { year: '2025-26', amount: 1420, source: 'published', visible: true },
+            { year: '2026-27', amount: 1650, source: 'published', visible: false },
+            { year: '2027-28', amount: 1900, source: 'published', visible: false },
+            { year: '2028-29', amount: 2200, source: 'published', visible: false },
+            { year: '2029-30', amount: 2500, source: 'published', visible: false },
+            { year: '2030-31', amount: 2800, source: 'published', visible: false }
+          ]
+        },
+        {
+          key: 'resources',
+          title: 'Financial Resources',
+          icon: 'fa-vault',
+          text: 'The financial credibility of the firm has enabled it to secure a Cash Credit Limit of Rs.10.00 Crore and Bank Guarantee Limit of Rs. 25.00 Crore from HDFC, Kalpakkam. Besides this, we are well supported by Banks and Partners.'
+        },
+        {
+          key: 'quality',
+          title: 'Quality Assurance',
+          icon: 'fa-award',
+          text: 'Timely completion with Absolute Quality Control has long been the specialty of Sekar Constructions. Continuous orders from the Department of Atomic Energy and allied premier institutions stand as evidence of that commitment.'
+        }
+      ];
+    }
+
     getFinancialsData() {
       if (this.useApi()) {
-        return Array.isArray(this._cmsCache.financials) ? this._cmsCache.financials : [];
+        const data = this._cmsCache.financials;
+        return Array.isArray(data) && data.length ? data : this.getBundledFinancialsDefaults();
       }
       const stored = this._readLocal('sc_admin_financials_v4');
-      return Array.isArray(stored) ? stored : [];
+      return Array.isArray(stored) && stored.length ? stored : this.getBundledFinancialsDefaults();
     }
 
     /**
@@ -336,17 +389,60 @@
       return Array.from(map.values());
     }
 
+    /**
+     * Bundled ongoing-projects directory for static hosts (GitHub Pages)
+     * and API/localStorage misses. Mirrors admin-auth / api seeds.
+     */
+    getBundledOngoingProjectsDefaults() {
+      return {
+        hero: {
+          brand: 'Sekar Constructions',
+          title: 'Ongoing Projects',
+          lead: 'High-value industrial, utility, and heavy structural contracts across Tamil Nadu and Andhra Pradesh — tracked live by progress, scope, and location.',
+          ctaLabel: 'View Active Sites',
+          ctaHref: '#ongoing-projects',
+          image: 'kochar-warehouse.jpg'
+        },
+        highlights: [
+          { key: 'active', label: 'Active Projects', value: '9', note: 'Live contracts currently under execution' },
+          { key: 'tn', label: 'Tamil Nadu', value: '7', note: 'Active sites across Chennai and Kalpakkam' },
+          { key: 'ap', label: 'Andhra Pradesh', value: '2', note: 'BARC campus works near Visakhapatnam' }
+        ],
+        projects: [
+          { id: 'ongoing-tn-1', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '1', name: 'Construction of Warehouse 8 Civil works, Ancillary Building and external works in Kochar Industrial Park at Kandamangalam, Tiruvallur Dist - 602105', patron: 'M/S. Kochar Properties Pvt Ltd. Chennai', valueLakhs: '2,926', progress: '25' },
+          { id: 'ongoing-tn-3', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '3', name: 'Civil, Structural & Architectural works for foundation & superstructure of various buildings & other miscellaneous structures of Unit # 2 of BTG area at 2x660MW Ennore SEZ STPP (on the ash dyke of NCTPS)', patron: 'BHEL (TNEB) Chennai', valueLakhs: '9,313', progress: '76' },
+          { id: 'ongoing-tn-4', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '4', name: 'Construction of 400 MLD SWRO Desalination Plant for CMWSSB at Perur, Chennai.', patron: 'CMWSSB, Chennai', valueLakhs: '6,688', progress: '65' },
+          { id: 'ongoing-tn-5', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '5', name: 'Construction of Power Station 2 at FRFCF, DAE, Kalpakkam site', patron: 'FRFCF, DAE, Kalpakkam', valueLakhs: '938', progress: '80' },
+          { id: 'ongoing-tn-6', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '6', name: 'Construction of Air Supply, Storage & Exhaust Building for SWPB of CWMF, BARCF at Kalpakkam', patron: 'CWMF, BARCF, Kalpakkam', valueLakhs: '691', progress: '58' },
+          { id: 'ongoing-tn-7', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '7', name: 'Construction of Commercial Building B+G+3 at Thoraipakkam', patron: 'M/S. Jain Group Chennai', valueLakhs: '1,505', progress: '28' },
+          { id: 'ongoing-tn-8', region: 'tn', regionLabel: 'Tamil Nadu', slNo: '8', name: 'Construction of Hostel Building G+4 for NMV University', patron: 'M/S. Savitha Group of Colleges', valueLakhs: '2,666', progress: '8' },
+          { id: 'ongoing-ap-1', region: 'ap', regionLabel: 'Andhra Pradesh', slNo: '1', name: 'Construction of E & F superstructure works of TL-3, finishing works and other miscellaneous works of TL 123 at BARC main campus, Near Visakhapatnam, AP', patron: 'BARC, Vizag', valueLakhs: '1,755', progress: '84' },
+          { id: 'ongoing-ap-2', region: 'ap', regionLabel: 'Andhra Pradesh', slNo: '2', name: 'Supply laying installation testing of underground Chilled water pipeline works from UC-1 CAP towards eastern & western side of campus to cover nearby facilities including provision for future expansion at BARC (V), Atchutapuram near Visakhapatnam', patron: 'BARC, Vizag', valueLakhs: '1,380', progress: '25' }
+        ]
+      };
+    }
+
+    _ongoingWithProjectsFallback(data) {
+      const bundled = this.getBundledOngoingProjectsDefaults();
+      if (!data || typeof data !== 'object') {
+        return JSON.parse(JSON.stringify(bundled));
+      }
+      const projects = Array.isArray(data.projects) ? data.projects : [];
+      if (projects.length) return data;
+      return Object.assign({}, data, {
+        hero: data.hero && (data.hero.title || data.hero.brand) ? data.hero : bundled.hero,
+        highlights: Array.isArray(data.highlights) && data.highlights.length ? data.highlights : bundled.highlights,
+        projects: bundled.projects.slice()
+      });
+    }
+
     getOngoingProjectsContent() {
       if (this.useApi()) {
-        const data = this._cmsCache.ongoing;
-        if (!data || typeof data !== 'object') {
-          return { hero: Object.assign({}, EMPTY_HERO), highlights: [], projects: [] };
-        }
-        return data;
+        return this._ongoingWithProjectsFallback(this._cmsCache.ongoing);
       }
-      const stored = this._readLocal('sc_admin_ongoing_projects_v2');
-      if (stored && typeof stored === 'object') return stored;
-      return { hero: Object.assign({}, EMPTY_HERO), highlights: [], projects: [] };
+      const stored = this._readLocal('sc_admin_ongoing_projects_v2')
+        || this._readLocal('sc_admin_ongoing_projects_v1');
+      return this._ongoingWithProjectsFallback(stored);
     }
 
     getCompletedRegionPresets() {
@@ -568,12 +664,35 @@
       return Object.assign({}, data, { items: mergedItems, highlights: highlights });
     }
 
+    getBundledProjectGalleryShell() {
+      return {
+        hero: {
+          brand: 'Sekar Constructions',
+          title: 'Project Gallery',
+          lead: 'A visual tour of landmark civil works — power, desalination, industrial parks, and institutional campuses across Tamil Nadu.',
+          ctaLabel: 'Browse Case Studies',
+          ctaHref: '#project-gallery',
+          image: 'desalination-plant.jpg'
+        },
+        highlights: [
+          { key: 'studies', label: 'Case Studies', value: '12', note: 'Featured visual project stories' },
+          { key: 'sectors', label: 'Sectors', value: '3', note: 'Infrastructure, industrial & commercial' },
+          { key: 'years', label: 'Since', value: '1995', note: 'Documented Class-I delivery track record' }
+        ],
+        items: []
+      };
+    }
+
     getProjectGalleryContent() {
       // API mode: merge bundled defaults when hydrate is stale / incomplete.
       if (this.useApi()) {
         const data = this._cmsCache.gallery;
         if (!data || typeof data !== 'object') {
-          return { hero: Object.assign({}, EMPTY_HERO, { ctaHref: '#project-gallery' }), highlights: [], items: [] };
+          return this._mergeMissingGalleryDefaults(this.getBundledProjectGalleryShell());
+        }
+        const items = Array.isArray(data.items) ? data.items : [];
+        if (!items.length) {
+          return this._mergeMissingGalleryDefaults(Object.assign({}, this.getBundledProjectGalleryShell(), data, { items: [] }));
         }
         return this._mergeMissingGalleryDefaults(data);
       }
@@ -581,9 +700,13 @@
         || this._readLocal('sc_admin_project_gallery_v2')
         || this._readLocal('sc_admin_project_gallery_v1');
       if (stored && typeof stored === 'object') {
+        const items = Array.isArray(stored.items) ? stored.items : [];
+        if (!items.length) {
+          return this._mergeMissingGalleryDefaults(Object.assign({}, this.getBundledProjectGalleryShell(), stored, { items: [] }));
+        }
         return this._mergeMissingGalleryDefaults(stored);
       }
-      return { hero: Object.assign({}, EMPTY_HERO, { ctaHref: '#project-gallery' }), highlights: [], items: [] };
+      return this._mergeMissingGalleryDefaults(this.getBundledProjectGalleryShell());
     }
 
     async addInquiry(inquiryData) {

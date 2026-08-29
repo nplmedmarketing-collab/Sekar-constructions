@@ -1878,6 +1878,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       if (ongoingEmpty) {
         ongoingEmpty.classList.toggle('is-visible', visible === 0);
+        const msg = ongoingEmpty.querySelector('p');
+        if (msg) {
+          const total = ongoingProjectRows.length;
+          const filtered = total > 0 && (query || selectedRegion !== 'all');
+          msg.textContent = filtered
+            ? 'No projects match your search. Try another keyword or region.'
+            : 'No ongoing projects are available yet.';
+        }
       }
     };
 
