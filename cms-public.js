@@ -151,17 +151,94 @@
       return Array.isArray(stored) ? stored : [];
     }
 
+    /**
+     * Bundled inventory for static hosts (GitHub Pages) and API/localStorage misses.
+     * Mirrors admin-auth getDefaultInfrastructureData / api seeds.
+     */
+    getBundledInfrastructureDefaults() {
+      return {
+        hero: {
+          brand: 'Sekar Constructions',
+          title: 'Infrastructure & Assets',
+          lead: 'Owned quarries, crushing plants, batching machinery, and a full fleet - engineered for quality, schedule certainty, and self-reliant execution.',
+          ctaLabel: 'Explore Inventory',
+          ctaHref: '#infra-inventory',
+          image: 'bhel-btg-civil.jpg'
+        },
+        highlights: [
+          { key: 'quarries', label: 'Quarries', value: '4', note: 'Blue metal quarries under direct ownership' },
+          { key: 'crushing', label: 'Crushing Plants', value: '3', note: 'Dedicated crushing capacity for project supply' },
+          { key: 'assets', label: 'Asset Lines', value: '44', note: 'Owned equipment inventory line items' }
+        ],
+        inventory: [
+          { id: 'infra-1', category: 'own-equipments', description: 'Concrete Boom Pump - 40.10ZX, S36X', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-2', category: 'own-equipments', description: 'Batching Plant - M1T, M1C, KYB 450 & CP45, Z30 & CP30', qty: '6', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-3', category: 'own-equipments', description: 'RMC Transit Mixer', qty: '14', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-4', category: 'own-equipments', description: 'Concrete Pump 1800', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-5', category: 'own-equipments', description: 'Mobile Tower Crane [ACE Make]', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-6', category: 'own-equipments', description: 'Excavator - Hitachi EX 210', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-7', category: 'own-equipments', description: 'JCB', qty: '8', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-8', category: 'own-equipments', description: 'Vibromax 10T - Roller', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-9', category: 'own-equipments', description: 'Walking Roller 1MT', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-10', category: 'own-equipments', description: 'BOBCAT S450', qty: '5', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-11', category: 'own-equipments', description: 'Tipper 10 Wheel', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-12', category: 'own-equipments', description: 'Tractor', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-13', category: 'own-equipments', description: 'TATA Diesel Tanker', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-14', category: 'own-equipments', description: 'Mahindra & Eicher Van', qty: '8', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-15', category: 'own-equipments', description: 'Building Hoist', qty: '5', unit: 'Sets.', categoryLabel: 'Own Equipments' },
+          { id: 'infra-16', category: 'own-equipments', description: 'MS Cuplock System', qty: '400', unit: 'MT', categoryLabel: 'Own Equipments' },
+          { id: 'infra-17', category: 'own-equipments', description: 'System Form Work', qty: '4,120', unit: 'Sqm', categoryLabel: 'Own Equipments' },
+          { id: 'infra-18', category: 'own-equipments', description: 'MS Jolly (Platform)', qty: '6,500', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-19', category: 'own-equipments', description: 'MS Scaffolding Pipes', qty: '30,000', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-20', category: 'own-equipments', description: 'Props 2+2m, 2+3m, 3+3m', qty: '3,500', unit: 'Sets.', categoryLabel: 'Own Equipments' },
+          { id: 'infra-21', category: 'own-equipments', description: 'Agrow Spans 2.4m & 3.0m', qty: '1,500', unit: 'Sets.', categoryLabel: 'Own Equipments' },
+          { id: 'infra-22', category: 'own-equipments', description: 'Centering Sheets 3\' x 2\', 4\' x 2\'', qty: '1,500', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-23', category: 'own-equipments', description: 'MS Velor 1.50m & 1.20m', qty: '1,300', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-24', category: 'own-equipments', description: 'Bar Shearing Machine', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-25', category: 'own-equipments', description: 'Bar Bending Machine', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-26', category: 'own-equipments', description: 'Bar Rings Machine', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-27', category: 'own-equipments', description: 'Bar Threading Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-28', category: 'own-equipments', description: 'Concrete Vibrators', qty: '28', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-29', category: 'own-equipments', description: 'Watering & De-Watering Pumps 5HP, 3HP', qty: '21', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-30', category: 'own-equipments', description: 'Total Station', qty: '7', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-31', category: 'own-equipments', description: 'Levelling Instrument', qty: '18', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-32', category: 'own-equipments', description: 'Cube Testing Machine', qty: '10', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-33', category: 'own-equipments', description: 'Soil Compacting Machine', qty: '7', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-34', category: 'own-equipments', description: 'Wood Plaining Machine', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-35', category: 'own-equipments', description: 'Wood Circular Saw Machine', qty: '25', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-36', category: 'own-equipments', description: 'Welding Machine 3PH & 1PH', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-37', category: 'own-equipments', description: 'Hydraulic Block Making Machine', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-38', category: 'own-equipments', description: 'Fly Ash brick manufacturing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-39', category: 'own-equipments', description: 'Paver/Cover block Vibration Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-40', category: 'own-equipments', description: 'Stone Crushing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-41', category: 'own-equipments', description: 'Mixer Machine - Diesel & Electrical', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-42', category: 'own-equipments', description: 'Crusher Plant', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-43', category: 'own-equipments', description: 'Blue Metal Quarry', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
+          { id: 'infra-44', category: 'own-equipments', description: 'Weight Bridge 100MT', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' }
+        ]
+      };
+    }
+
+    _infrastructureWithInventoryFallback(data) {
+      const bundled = this.getBundledInfrastructureDefaults();
+      if (!data || typeof data !== 'object') {
+        return JSON.parse(JSON.stringify(bundled));
+      }
+      const inventory = Array.isArray(data.inventory) ? data.inventory : [];
+      if (inventory.length) return data;
+      return Object.assign({}, data, {
+        hero: data.hero && (data.hero.title || data.hero.brand) ? data.hero : bundled.hero,
+        highlights: Array.isArray(data.highlights) && data.highlights.length ? data.highlights : bundled.highlights,
+        inventory: bundled.inventory.slice()
+      });
+    }
+
     getInfrastructureContent() {
       if (this.useApi()) {
-        const data = this._cmsCache.infrastructure;
-        if (!data || typeof data !== 'object') {
-          return { hero: Object.assign({}, EMPTY_HERO), highlights: [], inventory: [] };
-        }
-        return data;
+        return this._infrastructureWithInventoryFallback(this._cmsCache.infrastructure);
       }
       const stored = this._readLocal('sc_admin_infrastructure_v2');
-      if (stored && typeof stored === 'object') return stored;
-      return { hero: Object.assign({}, EMPTY_HERO), highlights: [], inventory: [] };
+      return this._infrastructureWithInventoryFallback(stored);
     }
 
     getOngoingRegionPresets() {
