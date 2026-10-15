@@ -44,7 +44,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="styles.css?v=150">
+  <link rel="stylesheet" href="styles.css?v=206">
 </head>
 <body>
 
@@ -57,24 +57,25 @@
   <div id="site-header">
     <header>
       <div class="container nav-container">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
           <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
         </a>
         <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
         <ul class="nav-menu" id="navMenu">
-          <li><a href="index.html#home" class="nav-link active">Home</a></li>
-          <li><a href="index.html#services" class="nav-link">Services</a></li>
-          <li><a href="about.html" class="nav-link">About Us</a></li>
-          <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+          <li><a href="/#home" class="nav-link active">Home</a></li>
+          <li><a href="/#services" class="nav-link">Services</a></li>
+          <li><a href="/about" class="nav-link">About Us</a></li>
+          <li><a href="/leadership" class="nav-link">Leadership</a></li>
+          <li><a href="/infrastructure" class="nav-link">Infrastructure</a></li>
           <li class="dropdown">
             <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="portfolioDropdownBtn">
               Portfolio <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
             </a>
             <ul class="dropdown-menu" id="portfolioDropdownMenu" role="menu" aria-label="Portfolio">
-              <li role="none"><a role="menuitem" href="ongoing-projects.html">Ongoing Projects</a></li>
-              <li role="none"><a role="menuitem" href="portfolio.html">Completed Projects</a></li>
+              <li role="none"><a role="menuitem" href="/ongoing-projects">Ongoing Projects</a></li>
+              <li role="none"><a role="menuitem" href="/portfolio">Completed Projects</a></li>
             </ul>
           </li>
           <li class="dropdown">
@@ -82,17 +83,17 @@
               Gallery <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu--gallery" id="galleryDropdownMenu" role="menu" aria-label="Gallery">
-              <li role="none"><a role="menuitem" href="gallery.html">Projects</a></li>
-              <li role="none"><a role="menuitem" href="gallery-plant-machinery.html">Plant &amp; Machinery</a></li>
-              <li role="none"><a role="menuitem" href="gallery-founder-clients.html">Founder &amp; Clients</a></li>
-              <li role="none"><a role="menuitem" href="gallery-certificates.html" aria-label="Certificates &amp; Accreditations">
+              <li role="none"><a role="menuitem" href="/gallery">Projects</a></li>
+              <li role="none"><a role="menuitem" href="/gallery-plant-machinery">Plant &amp; Machinery</a></li>
+              <li role="none"><a role="menuitem" href="/gallery-founder-clients">Founder &amp; Clients</a></li>
+              <li role="none"><a role="menuitem" href="/gallery-certificates" aria-label="Certificates &amp; Accreditations">
                 <span class="nav-label-long">Certificates &amp; Accreditations</span>
                 <span class="nav-label-short">Certificates</span>
               </a></li>
             </ul>
           </li>
-          <li><a href="careers.html" class="nav-link">Careers</a></li>
-          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="/careers" class="nav-link">Careers</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
         </ul>
       </div>
     </header>
@@ -122,7 +123,7 @@
         <h1>Sekar Constructions</h1>
         <p>Class-I civil engineering contractors executing high-precision atomic reactor aux works, massive seawater desalination systems, and public infrastructure with absolute technical control since 1995.</p>
         <div class="hero-actions">
-          <a href="contact.html" class="btn btn-primary">Get A Quote</a>
+          <a href="/contact" class="btn btn-primary">Get A Quote</a>
         </div>
       </div>
     </div>
@@ -282,69 +283,69 @@
   </section>
 
   <!-- Fleet & Assets (Infrastructure Section) -->
-  <section id="fleet" class="section-padding fade-in-section" style="padding-bottom: 0px;">
+  <section id="fleet" class="section-padding fleet-section fade-in-section" style="padding-bottom: 0px;">
     <div class="container">
       <div class="section-title-wrapper text-center">
         <span class="section-subtitle">Owned Fleet</span>
-        <h2 class="section-title">Our Infrastructure & Assets</h2>
+        <h2 class="section-title">Our Infrastructure &amp; Assets</h2>
       </div>
 
       <p class="fleet-intro">Unlike other contractors, Sekar Constructions operates with its own supply chain assets. We own 3 blue metal quarries, 2 crushing plants, and a fleet of heavy machinery, batching plants, and tankers to ensure high material quality and no supply delays.</p>
 
-      <div class="fleet-grid">
+      <div class="fleet-grid" data-fleet-grid>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-industry"></i></span>
-          <div class="fleet-count">5</div>
+          <div class="fleet-count" data-target="5" data-suffix="">0</div>
           <div class="fleet-name">RMC Batching Plants</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-truck"></i></span>
-          <div class="fleet-count">12</div>
+          <div class="fleet-count" data-target="12" data-suffix="">0</div>
           <div class="fleet-name">Transit Mixers</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-droplet"></i></span>
-          <div class="fleet-count">8</div>
+          <div class="fleet-count" data-target="8" data-suffix="">0</div>
           <div class="fleet-name">Mobile Concrete Pumps</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-truck-moving"></i></span>
-          <div class="fleet-count">15</div>
+          <div class="fleet-count" data-target="15" data-suffix="">0</div>
           <div class="fleet-name">Tipper Trucks</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-tractor"></i></span>
-          <div class="fleet-count">4</div>
-          <div class="fleet-name">Excavators & JCBS</div>
+          <div class="fleet-count" data-target="4" data-suffix="">0</div>
+          <div class="fleet-name">Excavators &amp; JCBS</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-gears"></i></span>
-          <div class="fleet-count">3</div>
+          <div class="fleet-count" data-target="3" data-suffix="">0</div>
           <div class="fleet-name">Crusher Units</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-mountain"></i></span>
-          <div class="fleet-count">3</div>
+          <div class="fleet-count" data-target="3" data-suffix="">0</div>
           <div class="fleet-name">Blue Metal Quarries</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-screwdriver-wrench"></i></span>
-          <div class="fleet-count">2</div>
+          <div class="fleet-count" data-target="2" data-suffix="">0</div>
           <div class="fleet-name">Bar Bending Machines</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-scissors"></i></span>
-          <div class="fleet-count">2</div>
+          <div class="fleet-count" data-target="2" data-suffix="">0</div>
           <div class="fleet-name">Bar Shearing Machines</div>
         </div>
         <div class="fleet-card">
           <span class="fleet-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
-          <div class="fleet-count">30k</div>
+          <div class="fleet-count" data-target="30" data-suffix="k">0</div>
           <div class="fleet-name">Scaffolding Pipes</div>
         </div>
       </div>
       <div class="fleet-cta">
-        <a href="infrastructure.html" class="nav-cta-btn">View Complete Asset Inventory &rarr;</a>
+        <a href="/infrastructure" class="nav-cta-btn">View Complete Asset Inventory &rarr;</a>
       </div>
     </div>
   </section>
@@ -356,7 +357,7 @@
         <span class="footer-cta-eyebrow">Let's Work Together</span>
         <h2 class="footer-cta-headline">Schedule an appointment with us to discuss your project goals and needs.</h2>
       </div>
-      <a href="contact.html" class="footer-cta-btn">Let's Get In Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a href="/contact" class="footer-cta-btn">Let's Get In Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </div>
   </div><!-- /.sc-curtain-panel -->
@@ -402,10 +403,10 @@
   </div>
 
   <!-- Security Core & Custom JS -->
-  <script src="layout.js?v=148"></script>
-  <script src="config.site.js?v=124"></script>
-  <script src="cms-public.js?v=141"></script>
-  <script src="script.site.js?v=153"></script>
+  <script src="layout.js?v=152"></script>
+  <script src="config.site.js?v=126"></script>
+  <script src="cms-public.js?v=142"></script>
+  <script src="script.site.js?v=178"></script>
 
 </body>
 </html>

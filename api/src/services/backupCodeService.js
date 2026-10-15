@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const db = require('../db');
 
 const BCRYPT_ROUNDS = 12;
@@ -45,12 +45,13 @@ async function consumeBackupCode(userId, code) {
 
   for (const row of rows) {
     const ok = await bcrypt.compare(normalized, row.code_hash);
-    if (ok) {
-      await db('admin_backup_codes').where({ id: row.id }).update({
-        used_at: db.fn.now(),
-      });
-      return true;
-    }
+    if (!ok) continue;
+    // Atomic consume: only one concurrent caller wins (0 rows = already used).
+    const updated = await db('admin_backup_codes')
+      .where({ id: row.id })
+      .whereNull('used_at')
+      .update({ used_at: db.fn.now() });
+    if (updated === 1) return true;
   }
   return false;
 }

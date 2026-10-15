@@ -6,57 +6,62 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/about.html</loc>
+    <loc>https://www.sekarconstructions.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/gallery.html</loc>
+    <loc>https://www.sekarconstructions.com/leadership</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.sekarconstructions.com/gallery</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/gallery-plant-machinery.html</loc>
+    <loc>https://www.sekarconstructions.com/gallery-plant-machinery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/gallery-founder-clients.html</loc>
+    <loc>https://www.sekarconstructions.com/gallery-founder-clients</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/gallery-certificates.html</loc>
+    <loc>https://www.sekarconstructions.com/gallery-certificates</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/portfolio.html</loc>
+    <loc>https://www.sekarconstructions.com/portfolio</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/ongoing-projects.html</loc>
+    <loc>https://www.sekarconstructions.com/ongoing-projects</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/infrastructure.html</loc>
+    <loc>https://www.sekarconstructions.com/infrastructure</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobs.sekarconstructions.com/careers.html</loc>
+    <loc>https://jobs.sekarconstructions.com/careers</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/careers.html</loc>
+    <loc>https://www.sekarconstructions.com/careers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.sekarconstructions.com/contact.html</loc>
+    <loc>https://www.sekarconstructions.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

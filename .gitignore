@@ -11,6 +11,11 @@ api/*.sqlite3
 api/dev.sqlite*
 api/.pgdata-local/
 api/.pg-pw.txt
+api/.local-cms-store.json
 node_modules/
 .DS_Store
 *.log
+
+# Local-only deploy package (may contain .env secrets)
+deploy-staging/
+

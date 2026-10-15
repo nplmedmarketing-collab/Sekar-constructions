@@ -4,18 +4,33 @@ const content = require('../services/contentService');
 const authService = require('../services/authService');
 const { requireAuth, requirePasswordChanged } = require('../middleware/auth');
 const { validateBody } = require('../middleware/validate');
+const { isAllowedCtaHref, isAllowedCmsImageSrc } = require('../utils/safeUrl');
 
 const router = express.Router();
 router.use(requireAuth);
 router.use(requirePasswordChanged);
+
+const ctaHrefSchema = z
+  .string()
+  .optional()
+  .refine((v) => v == null || v === '' || isAllowedCtaHref(v), {
+    message: 'ctaHref must be #anchor, relative /path, or https URL',
+  });
+
+const heroImageSchema = z
+  .string()
+  .optional()
+  .refine((v) => v == null || v === '' || isAllowedCmsImageSrc(v), {
+    message: 'image must be a relative path or https URL',
+  });
 
 const heroSchema = z.object({
   brand: z.string().min(1),
   title: z.string().min(1),
   lead: z.string().min(1),
   ctaLabel: z.string().optional(),
-  ctaHref: z.string().optional(),
-  image: z.string().optional(),
+  ctaHref: ctaHrefSchema,
+  image: heroImageSchema,
 });
 
 const highlightSchema = z.object({
@@ -93,6 +108,8 @@ const fleetSchema = z.array(z.object({
   name: z.string().min(1),
   count: z.union([z.string(), z.number()]),
   icon: z.string().optional(),
+  logoUrl: z.string().optional(),
+  logo_url: z.string().optional(),
 }));
 
 const financialsSchema = z.array(z.object({
@@ -138,7 +155,12 @@ const inquiryStatusSchema = z.object({
   status: z.enum(['NEW', 'IN_REVIEW', 'CONTACTED', 'APPROVED', 'CLOSED', 'REJECTED']),
 });
 
-router.put('/infrastructure', validateBody(infraSchema), async (req, res, next) => {
+// POST aliases exist because some IIS hosts block PUT before Node (405 Method Not Allowed).
+router.route('/infrastructure')
+  .put(validateBody(infraSchema), publishInfrastructure)
+  .post(validateBody(infraSchema), publishInfrastructure);
+
+async function publishInfrastructure(req, res, next) {
   try {
     const data = await content.putInfrastructure(req.validated);
     await authService.writeAudit('INFRASTRUCTURE_UPDATED', `Published ${data.inventory.length} inventory rows.`, 'INFO', req, req.admin.id);
@@ -146,9 +168,13 @@ router.put('/infrastructure', validateBody(infraSchema), async (req, res, next) 
   } catch (err) {
     next(err);
   }
-});
+}
 
-router.put('/ongoing-projects', validateBody(ongoingSchema), async (req, res, next) => {
+router.route('/ongoing-projects')
+  .put(validateBody(ongoingSchema), publishOngoing)
+  .post(validateBody(ongoingSchema), publishOngoing);
+
+async function publishOngoing(req, res, next) {
   try {
     const data = await content.putProjectsPage('ongoing', req.validated);
     await authService.writeAudit('ONGOING_PROJECTS_UPDATED', `Published ${data.projects.length} projects.`, 'INFO', req, req.admin.id);
@@ -156,9 +182,13 @@ router.put('/ongoing-projects', validateBody(ongoingSchema), async (req, res, ne
   } catch (err) {
     next(err);
   }
-});
+}
 
-router.put('/completed-projects', validateBody(completedSchema), async (req, res, next) => {
+router.route('/completed-projects')
+  .put(validateBody(completedSchema), publishCompleted)
+  .post(validateBody(completedSchema), publishCompleted);
+
+async function publishCompleted(req, res, next) {
   try {
     const data = await content.putProjectsPage('completed', req.validated);
     await authService.writeAudit('COMPLETED_PROJECTS_UPDATED', `Published ${data.projects.length} projects.`, 'INFO', req, req.admin.id);
@@ -166,9 +196,13 @@ router.put('/completed-projects', validateBody(completedSchema), async (req, res
   } catch (err) {
     next(err);
   }
-});
+}
 
-router.put('/gallery', validateBody(gallerySchema), async (req, res, next) => {
+router.route('/gallery')
+  .put(validateBody(gallerySchema), publishGallery)
+  .post(validateBody(gallerySchema), publishGallery);
+
+async function publishGallery(req, res, next) {
   try {
     const data = await content.putGallery(req.validated);
     await authService.writeAudit('PROJECT_GALLERY_UPDATED', `Published ${data.items.length} case studies.`, 'INFO', req, req.admin.id);
@@ -176,17 +210,21 @@ router.put('/gallery', validateBody(gallerySchema), async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+}
 
-router.put('/fleet', validateBody(fleetSchema), async (req, res, next) => {
+router.route('/fleet')
+  .put(validateBody(fleetSchema), publishFleet)
+  .post(validateBody(fleetSchema), publishFleet);
+
+async function publishFleet(req, res, next) {
   try {
     const data = await content.putFleet(req.validated);
-    await authService.writeAudit('FLEET_INVENTORY_UPDATED', 'Fleet asset counts updated.', 'INFO', req, req.admin.id);
+    await authService.writeAudit('FLEET_INVENTORY_UPDATED', 'Fleet asset inventory updated.', 'INFO', req, req.admin.id);
     res.json(data);
   } catch (err) {
     next(err);
   }
-});
+}
 
 router.get('/financials', async (req, res, next) => {
   try {
@@ -196,7 +234,11 @@ router.get('/financials', async (req, res, next) => {
   }
 });
 
-router.put('/financials', validateBody(financialsSchema), async (req, res, next) => {
+router.route('/financials')
+  .put(validateBody(financialsSchema), publishFinancials)
+  .post(validateBody(financialsSchema), publishFinancials);
+
+async function publishFinancials(req, res, next) {
   try {
     const data = await content.putFinancials(req.validated);
     await authService.writeAudit('FINANCIALS_UPDATED', 'Financials updated.', 'INFO', req, req.admin.id);
@@ -204,9 +246,13 @@ router.put('/financials', validateBody(financialsSchema), async (req, res, next)
   } catch (err) {
     next(err);
   }
-});
+}
 
-router.put('/team-photos', validateBody(teamSchema), async (req, res, next) => {
+router.route('/team-photos')
+  .put(validateBody(teamSchema), publishTeamPhotos)
+  .post(validateBody(teamSchema), publishTeamPhotos);
+
+async function publishTeamPhotos(req, res, next) {
   try {
     const data = await content.putTeamPhotos(req.validated);
     await authService.writeAudit('TEAM_PHOTOS_UPDATED', `Team photos published (${data.length}).`, 'INFO', req, req.admin.id);
@@ -214,9 +260,13 @@ router.put('/team-photos', validateBody(teamSchema), async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+}
 
-router.put('/gallery-media/:section', validateBody(galleryMediaSchema), async (req, res, next) => {
+router.route('/gallery-media/:section')
+  .put(validateBody(galleryMediaSchema), publishGalleryMedia)
+  .post(validateBody(galleryMediaSchema), publishGalleryMedia);
+
+async function publishGalleryMedia(req, res, next) {
   try {
     const section = String(req.params.section || '').replace(/-/g, '_');
     const data = await content.putGalleryMedia(section, req.validated);
@@ -231,7 +281,7 @@ router.put('/gallery-media/:section', validateBody(galleryMediaSchema), async (r
   } catch (err) {
     next(err);
   }
-});
+}
 
 router.get('/inquiries', async (req, res, next) => {
   try {

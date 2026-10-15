@@ -24,7 +24,6 @@ function errorHandler(err, req, res, next) {
       message: safeMessage,
     },
   };
-  if (err.attemptsLeft != null) body.error.attemptsLeft = err.attemptsLeft;
   if (err.locked) body.error.locked = true;
   if (err.remainingMinutes != null) body.error.remainingMinutes = err.remainingMinutes;
   if (err.issues) body.error.issues = err.issues;

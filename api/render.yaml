@@ -3,7 +3,7 @@
 # Easiest path (no Blueprint path confusion):
 #   Render → New → Web Service → connect repo → Root Directory: api
 #   Runtime: Docker → uses api/Dockerfile
-#   Add Postgres → link DATABASE_URL
+#   Attach external MariaDB/MySQL → set DATABASE_URL (mysql://…)
 #   Copy env vars from below
 #
 # Blueprint: place/apply with service rootDir "api" so Docker paths resolve inside api/.
@@ -12,15 +12,11 @@
 # 1. Copy the service URL (https://….onrender.com)
 # 2. Set REMOTE_API_BASE in config.site.js to that URL (no trailing slash)
 # 3. Ensure CORS_ORIGINS includes https://nplmedmarketing-collab.github.io
-# 4. Seed admin: set SEED_ADMIN_PASSWORD, run seed once (Render Shell: npm run seed)
+# 4. Run migrate (Dockerfile does this on boot). Import content separately — do not seed over real CMS data.
 #
 # Free tier spins down when idle — first request after sleep can take ~30–60s.
-
-databases:
-  - name: sekar-cms
-    plan: free
-    databaseName: sekar_cms
-    user: sekar
+#
+# NOTE: This API requires MariaDB/MySQL. Render’s free Postgres addon is not compatible.
 
 services:
   - type: web
@@ -36,10 +32,9 @@ services:
         value: production
       - key: PORT
         value: "3001"
+      # Set DATABASE_URL in the Render Dashboard to your MariaDB/MySQL URL (mysql://…)
       - key: DATABASE_URL
-        fromDatabase:
-          name: sekar-cms
-          property: connectionString
+        sync: false
       - key: SESSION_SECRET
         generateValue: true
       # Cross-origin admin from GitHub Pages (Bearer auth + credentials). Add custom domains as needed.
@@ -50,6 +45,6 @@ services:
         value: "true"
       - key: COOKIE_SAMESITE
         value: none
-      # Set in Render Dashboard after first deploy (do not commit real passwords):
+      # Prefer content import over seed. If you must seed once on empty DB:
       # SEED_ADMIN_USERNAME=superadmin
       # SEED_ADMIN_PASSWORD=<strong unique password>

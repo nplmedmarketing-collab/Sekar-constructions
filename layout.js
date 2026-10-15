@@ -1,6 +1,7 @@
 /**
  * Shared site header & footer injection for Sekar Constructions public pages.
- * Place empty #site-header / #site-footer mounts in HTML; this fills them on load.
+ * Place #site-header / #site-footer mounts in HTML; this fills them on load.
+ * Public URLs are extensionless (/about, /careers). IIS rewrites to *.html.
  */
 (function () {
   var pathname = (window.location.pathname || '').replace(/\\/g, '/');
@@ -34,8 +35,6 @@
     : ''
   ).toLowerCase();
   var onJobsHost = host === 'jobs.sekarconstructions.com';
-  // jobs.sekarconstructions.com has no DNS yet. Keep same-origin careers.html on
-  // GitHub Pages / local / production until SekarConfig.useJobsSite is opted in.
   var useJobsSite =
     !onJobsHost &&
     !!(window.SekarConfig && window.SekarConfig.useJobsSite === true) &&
@@ -44,14 +43,22 @@
     host !== '127.0.0.1' &&
     (typeof window === 'undefined' || window.location.protocol !== 'file:');
 
+  /** about.html → /about ; index.html → / */
+  function pageLink(file) {
+    var name = String(file || '').replace(/^\/+/, '');
+    if (!name || name === 'index.html') return '/';
+    if (/\.html$/i.test(name)) return '/' + name.replace(/\.html$/i, '');
+    return '/' + name;
+  }
+
   function careersHref() {
-    if (useJobsSite) return jobsSiteUrl + '/careers.html';
-    return baseDir + 'careers.html';
+    if (useJobsSite) return jobsSiteUrl + '/careers';
+    return pageLink('careers.html');
   }
 
   function isCareersHref(href) {
-    var n = normalizeHref(href);
-    return n === 'careers.html' || /\/careers\.html$/i.test(String(href || ''));
+    var n = toPageKey(href);
+    return n === 'careers.html' || /\/careers(\.html)?$/i.test(String(href || ''));
   }
 
   var galleryPages = [
@@ -73,6 +80,14 @@
     return normalized;
   }
 
+  function toPageKey(href) {
+    var n = normalizeHref(href);
+    if (!n) return 'index.html';
+    if (n.indexOf('.html') !== -1) return n;
+    if (n.indexOf('.') === -1) return n + '.html';
+    return n;
+  }
+
   function isActive(page) {
     if (page === 'home') return isHome;
     return path === page;
@@ -87,7 +102,7 @@
   }
 
   function homeHref(hash) {
-    return isHome ? hash : baseDir + 'index.html' + hash;
+    return isHome ? hash : '/' + hash;
   }
 
   function applyActiveNav(headerMount) {
@@ -111,13 +126,13 @@
       }
 
       if (isHome) {
-        if (href === '#home' || href === 'index.html#home' || href.indexOf('#home') !== -1) {
+        if (href === '#home' || href === '/#home' || href.indexOf('#home') !== -1) {
           link.classList.add('active');
         }
         continue;
       }
 
-      if (normalizeHref(href) === path) {
+      if (toPageKey(href) === path) {
         link.classList.add('active');
       } else if (path === 'careers.html' && href.indexOf('jobs.sekarconstructions.com') !== -1) {
         link.classList.add('active');
@@ -126,35 +141,36 @@
 
     var menuItems = headerMount.querySelectorAll('.dropdown-menu a');
     for (var k = 0; k < menuItems.length; k++) {
-      if (normalizeHref(menuItems[k].getAttribute('href') || '') === path) {
+      if (toPageKey(menuItems[k].getAttribute('href') || '') === path) {
         menuItems[k].classList.add('active');
       }
     }
   }
 
   function renderHeader() {
-    var logoHref = isHome ? '#' : baseDir + 'index.html';
+    var logoHref = isHome ? '#' : '/';
     return (
       '<header>' +
         '<div class="container nav-container">' +
           '<a href="' + logoHref + '" class="logo">' +
             '<img src="' + baseDir + 'logo-final.png?v=6" alt="Sekar Constructions Logo">' +
           '</a>' +
-          '<button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">' +
+          '<button type="button" class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">' +
             '<span></span><span></span><span></span>' +
           '</button>' +
           '<ul class="nav-menu" id="navMenu">' +
             '<li><a href="' + homeHref('#home') + '" class="' + navClass('home') + '">Home</a></li>' +
             '<li><a href="' + homeHref('#services') + '" class="nav-link">Services</a></li>' +
-            '<li><a href="' + baseDir + 'about.html" class="' + navClass('about.html') + '">About Us</a></li>' +
-            '<li><a href="' + baseDir + 'infrastructure.html" class="' + navClass('infrastructure.html') + '">Infrastructure</a></li>' +
+            '<li><a href="' + pageLink('about.html') + '" class="' + navClass('about.html') + '">About Us</a></li>' +
+            '<li><a href="' + pageLink('leadership.html') + '" class="' + navClass('leadership.html') + '">Leadership</a></li>' +
+            '<li><a href="' + pageLink('infrastructure.html') + '" class="' + navClass('infrastructure.html') + '">Infrastructure</a></li>' +
             '<li class="dropdown">' +
               '<a href="#" class="nav-link dropdown-toggle' + (isPortfolio ? ' active' : '') + '" aria-haspopup="true" aria-expanded="false" id="portfolioDropdownBtn">' +
                 'Portfolio <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>' +
               '</a>' +
               '<ul class="dropdown-menu" id="portfolioDropdownMenu" role="menu" aria-label="Portfolio">' +
-                '<li role="none"><a role="menuitem" href="' + baseDir + 'ongoing-projects.html"' + itemActive('ongoing-projects.html') + '>Ongoing Projects</a></li>' +
-                '<li role="none"><a role="menuitem" href="' + baseDir + 'portfolio.html"' + itemActive('portfolio.html') + '>Completed Projects</a></li>' +
+                '<li role="none"><a role="menuitem" href="' + pageLink('ongoing-projects.html') + '"' + itemActive('ongoing-projects.html') + '>Ongoing Projects</a></li>' +
+                '<li role="none"><a role="menuitem" href="' + pageLink('portfolio.html') + '"' + itemActive('portfolio.html') + '>Completed Projects</a></li>' +
               '</ul>' +
             '</li>' +
             '<li class="dropdown">' +
@@ -162,17 +178,17 @@
                 'Gallery <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>' +
               '</a>' +
               '<ul class="dropdown-menu dropdown-menu--gallery" id="galleryDropdownMenu" role="menu" aria-label="Gallery">' +
-                '<li role="none"><a role="menuitem" href="' + baseDir + 'gallery.html"' + itemActive('gallery.html') + '>Projects</a></li>' +
-                '<li role="none"><a role="menuitem" href="' + baseDir + 'gallery-plant-machinery.html"' + itemActive('gallery-plant-machinery.html') + '>Plant &amp; Machinery</a></li>' +
-                '<li role="none"><a role="menuitem" href="' + baseDir + 'gallery-founder-clients.html"' + itemActive('gallery-founder-clients.html') + '>Founder &amp; Clients</a></li>' +
-                '<li role="none"><a role="menuitem" href="' + baseDir + 'gallery-certificates.html" aria-label="Certificates &amp; Accreditations"' + itemActive('gallery-certificates.html') + '>' +
+                '<li role="none"><a role="menuitem" href="' + pageLink('gallery.html') + '"' + itemActive('gallery.html') + '>Projects</a></li>' +
+                '<li role="none"><a role="menuitem" href="' + pageLink('gallery-plant-machinery.html') + '"' + itemActive('gallery-plant-machinery.html') + '>Plant &amp; Machinery</a></li>' +
+                '<li role="none"><a role="menuitem" href="' + pageLink('gallery-founder-clients.html') + '"' + itemActive('gallery-founder-clients.html') + '>Founder &amp; Clients</a></li>' +
+                '<li role="none"><a role="menuitem" href="' + pageLink('gallery-certificates.html') + '" aria-label="Certificates &amp; Accreditations"' + itemActive('gallery-certificates.html') + '>' +
                   '<span class="nav-label-long">Certificates &amp; Accreditations</span>' +
                   '<span class="nav-label-short">Certificates</span>' +
                 '</a></li>' +
               '</ul>' +
             '</li>' +
             '<li><a href="' + careersHref() + '" class="' + navClass('careers.html') + '">Careers</a></li>' +
-            '<li><a href="' + baseDir + 'contact.html" class="' + navClass('contact.html') + '">Contact</a></li>' +
+            '<li><a href="' + pageLink('contact.html') + '" class="' + navClass('contact.html') + '">Contact</a></li>' +
           '</ul>' +
         '</div>' +
       '</header>'
@@ -193,14 +209,15 @@
           '<div class="footer-links">' +
             '<h4>Quick Navigation</h4>' +
             '<ul>' +
-              '<li><a href="' + baseDir + 'index.html">Home</a></li>' +
-              '<li><a href="' + baseDir + 'about.html">About Us</a></li>' +
-              '<li><a href="' + baseDir + 'index.html#services">Our Services</a></li>' +
-              '<li><a href="' + baseDir + 'infrastructure.html">Infrastructure</a></li>' +
-              '<li><a href="' + baseDir + 'portfolio.html">Portfolio</a></li>' +
-              '<li><a href="' + baseDir + 'gallery.html">Gallery</a></li>' +
+              '<li><a href="/">Home</a></li>' +
+              '<li><a href="' + pageLink('about.html') + '">About Us</a></li>' +
+              '<li><a href="' + pageLink('leadership.html') + '">Leadership</a></li>' +
+              '<li><a href="/#services">Our Services</a></li>' +
+              '<li><a href="' + pageLink('infrastructure.html') + '">Infrastructure</a></li>' +
+              '<li><a href="' + pageLink('portfolio.html') + '">Portfolio</a></li>' +
+              '<li><a href="' + pageLink('gallery.html') + '">Gallery</a></li>' +
               '<li><a href="' + careersHref() + '">Careers</a></li>' +
-              '<li><a href="' + baseDir + 'contact.html">Contact</a></li>' +
+              '<li><a href="' + pageLink('contact.html') + '">Contact</a></li>' +
             '</ul>' +
           '</div>' +
           '<div class="footer-contact">' +
@@ -214,7 +231,7 @@
         '</div>' +
         '<div class="container footer-bottom">' +
           '<p>&copy; 2026 Sekar Constructions. All Rights Reserved.</p>' +
-          '<p>Redesigned &amp; Modernized | Powered by Antigravity</p>' +
+          '<p>Designed &amp; Modernized | Powered by <a href="https://nohitatu.com" target="_blank" rel="noopener noreferrer">Nohitatu</a></p>' +
         '</div>' +
       '</footer>'
     );
@@ -232,22 +249,32 @@
     }
   }
 
+  function renderWhatsAppFab() {
+    return (
+      '<a class="whatsapp-float" href="https://wa.me/919600094464" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">' +
+        '<i class="fa-brands fa-whatsapp" aria-hidden="true"></i>' +
+      '</a>'
+    );
+  }
+
+  function mountWhatsAppFab() {
+    if (document.querySelector('.whatsapp-float')) return;
+    document.body.insertAdjacentHTML('beforeend', renderWhatsAppFab());
+  }
+
   function mount() {
     var headerMount = document.getElementById('site-header');
     var footerMount = document.getElementById('site-footer');
     if (headerMount) {
-      if (!headerMount.firstElementChild) {
-        headerMount.innerHTML = renderHeader();
-      }
+      headerMount.innerHTML = renderHeader();
       applyCareersLinks(headerMount);
       applyActiveNav(headerMount);
     }
     if (footerMount) {
-      if (!footerMount.firstElementChild) {
-        footerMount.innerHTML = renderFooter();
-      }
+      footerMount.innerHTML = renderFooter();
       applyCareersLinks(footerMount);
     }
+    mountWhatsAppFab();
   }
 
   mount();

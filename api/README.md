@@ -1,32 +1,33 @@
 # Sekar Construction CMS API
 
 Production-ready REST API for the Sekar Construction website CMS.  
-**Production database: PostgreSQL only.**  
-**Verified local path on this Windows workspace (no Docker / no `psql` on PATH): SQLite** via `DATABASE_URL=file:./dev.sqlite`.  
-Optional local Postgres via Docker Compose (host port **5433**) when Docker Desktop is installed.
+**Database: MariaDB / MySQL only** (`mysql2` via `DATABASE_URL` or `DB_*`). SQLite and PostgreSQL are not supported.
 
-`better-sqlite3` is an **optionalDependency** so slim VPS installs without native build tools can omit it when using Postgres only.
+Optional local MariaDB via Docker Compose (`api/docker-compose.yml`, host port **3306**) when Docker Desktop is installed.
+
+`better-sqlite3` remains an **optionalDependency** only for the one-off `npm run migrate:from-sqlite` import helper (reading a legacy `dev.sqlite` file). It is not used by the running API.
 
 ## Requirements
 
 - Node.js **18+** (20 LTS recommended)
 - npm 9+
-- **Local (this machine):** SQLite file DB — no Docker required
-- **Optional local Postgres:** Docker Desktop (or Engine + Compose) — see below
-- **Production:** PostgreSQL 14+ (managed or self-hosted)
+- **MariaDB 10.5+ / MySQL 8+** reachable from the API host
+- **Optional local MariaDB:** Docker Desktop (or Engine + Compose) — see below
 
-## Quick start (verified: SQLite, no Docker)
+## Quick start (MariaDB)
 
-This is the path that works when Docker is not installed. Run commands from `api/`.
+Run commands from `api/`. MariaDB must be reachable (remote host, or local Docker).
 
 ```bash
 cd api
 cp .env.example .env
-# .env.example defaults to SQLite — confirm:
-# DATABASE_URL=file:./dev.sqlite
+# Set DATABASE_URL=mysql://USER:PASS%40WORD@HOST:3306/Sekarcons
+# (encode @ in password as %40) — or use DB_HOST / DB_USER / DB_PASSWORD / DB_NAME
 
 npm install
-npm run setup          # migrate + seed
+npm run migrate        # schema only — do NOT seed if importing real content
+# One-time content import from legacy SQLite (optional):
+# npm run migrate:from-sqlite
 npm start              # http://localhost:3001
 npm run smoke          # API must be running
 ```
@@ -34,28 +35,28 @@ npm run smoke          # API must be running
 Serve the static site with **Live Server** (or any HTTP origin), e.g. `http://127.0.0.1:5500`.  
 **Never open pages via `file://` for authenticated / CORS testing** — browsers send `Origin: null`, which the API rejects. `CORS_ORIGINS` must never list `null` or `*`.
 
-Production **hard-fails** if `DATABASE_URL` is not Postgres (`NODE_ENV=production`).
+`DATABASE_URL` / `DB_*` **must** point at MariaDB/MySQL (`mysql://` or `mariadb://`).
 
-## Optional: local Postgres via Docker
+## Optional: local MariaDB via Docker
 
 Only when Docker Desktop (or Engine + Compose) is available. Compose file: **`api/docker-compose.yml`**.
 
-**Local-dev credentials only** (never use in production):
+**Local-dev credentials only** (never use in production — change compose passwords):
 
 | Field | Value |
 |--------|--------|
-| Host / port | `127.0.0.1:5433` (Compose maps host `5433` → container `5432`) |
-| Database | `sekar_cms` |
-| User | `sekar_local` |
-| Password | `sekar_local_dev_only` |
-| `DATABASE_URL` | `postgres://sekar_local:sekar_local_dev_only@127.0.0.1:5433/sekar_cms` |
+| Host / port | `127.0.0.1:3306` |
+| Database | `Sekarcons` |
+| User | `gan131` |
+| Password | `change-me-local-only` (see `docker-compose.yml`) |
+| `DATABASE_URL` | `mysql://gan131:change-me-local-only@127.0.0.1:3306/Sekarcons` |
 
 ```bash
 cd api
-# In .env, set the Postgres URL above (comment out the SQLite line)
+# In .env, set the MariaDB URL / DB_* vars above
 npm install
 npm run db:up          # docker compose up -d
-npm run setup
+npm run migrate
 npm start
 npm run smoke
 ```
@@ -66,16 +67,16 @@ Stop the database container (keeps the named volume):
 npm run db:down
 ```
 
-**Port consistency:** local Docker host port is always **5433** (`"5433:5432"` in `docker-compose.yml`, matching `.env.example` comments and this README). Container-internal Postgres listens on **5432**. Production managed Postgres commonly uses **5432** on the provider host — that is a different environment, not the local Compose mapping.
-
 ## Admin seeding & credentials
 
-Seeding requires **`SEED_ADMIN_PASSWORD`** (and optional `SEED_ADMIN_USERNAME`).
+**Prefer migrating existing content** (`npm run migrate:from-sqlite`) over seeding. Seeding inserts default CMS rows and can overwrite real data — only use seed on an empty DB when you intentionally want defaults.
+
+Seeding requires **`SEED_ADMIN_PASSWORD`** (and optional `SEED_ADMIN_USERNAME`) when you do run it.
 - **Production (`NODE_ENV=production`)**: Seeding **hard-fails** if `SEED_ADMIN_PASSWORD` is not set.
 - **Local development**: If `SEED_ADMIN_PASSWORD` is unset, seed generates a unique temporary password and outputs it to the console.
 
 ```bash
-# Recommended for any shared / staging / production seed:
+# Only when you intentionally need a fresh admin + default CMS (empty DB):
 SEED_ADMIN_USERNAME=superadmin
 SEED_ADMIN_PASSWORD='GenerateAStrongUniquePassword!'
 npm run seed
@@ -110,14 +111,14 @@ See `.env.example`. Critical:
 
 | Variable | Purpose |
 |----------|---------|
-| `DATABASE_URL` | Local verified: `file:./dev.sqlite` · Optional Docker: `postgres://sekar_local:…@127.0.0.1:5433/sekar_cms` · Production: your managed Postgres URL (often `:5432`) |
+| `DATABASE_URL` | Required MariaDB/MySQL URL: `mysql://USER:PASS%40@HOST:3306/Sekarcons` (or use `DB_HOST` / `DB_USER` / `DB_PASSWORD` / `DB_NAME`) |
 | `SESSION_SECRET` | Long random string (≥32 chars). Signs CSRF tokens, encrypts TOTP secrets at rest, and signs 2FA login challenges. Required strong in production. |
 | `CORS_ORIGINS` | Comma-separated allowlist of static site origins (no `null`, no `*`). Production should include `https://jobs.sekarconstructions.com` when careers is served there. |
 | `JOBS_SITE_URL` | Public Sekar careers host (default `https://jobs.sekarconstructions.com`). Web origin only — not SMTP. |
 | `COOKIE_SECURE` | `true` behind HTTPS in production |
 | `SESSION_HOURS` | Absolute server session lifetime (default 8) |
-| `SEED_ADMIN_PASSWORD` | Admin password at seed time (bcrypt-hashed) |
-| `PG_SSL_CA` | Optional CA PEM path/inline for Postgres SSL with `rejectUnauthorized: true` |
+| `SEED_ADMIN_PASSWORD` | Admin password at seed time (bcrypt-hashed) — avoid seed when importing real content |
+| `MYSQL_SSL_CA` | Optional CA PEM path/inline for MariaDB/MySQL SSL with `rejectUnauthorized: true` |
 | `PORT` | Default `3001` |
 | `HRPOPS_API_KEY` | Optional HRPops API key (server-side only; job list and inline apply work without it) |
 | `HRPOPS_COMPANY_ID` | Your HRPops company ID (Sekar: `215`) — required for careers integration |
@@ -128,15 +129,15 @@ See `.env.example`. Critical:
 | `SMTP_PORT` / `SMTP_SECURE` | Optional (default port `587`; set `SMTP_SECURE=true` for 465) |
 | `NOTIFICATION_EMAIL` | Inbox for new contact/inquiry alerts and new careers applications (example: `careers@sekarconstructions.com`; use `ho@` if preferred) |
 
-`.env`, `dev.sqlite`, and `_env` are gitignored. Never commit secrets.
+`.env` and `_env` are gitignored. Never commit secrets. Legacy `dev.sqlite` (if present) is for one-off import only.
 
 When SMTP is unset, contact inquiries still persist and careers apply still returns success after HRPops accepts the application; thank-you / alert emails are skipped with a clear server warning.
 
 **Live apply tests:** Any smoke test, probe, or script that POSTs to HRPops apply must use a clearly labeled **test email** such as `sekar.test+{unix}@mailinator.com` (or `test.sekar.careers+{unix}@mailinator.com`) and a name like `Sekar Test Applicant`. **Do not use real candidate emails.** Default `npm run smoke` only hits careers GETs; set `HRPOPS_SMOKE_APPLY=1` when you intentionally want a live apply.
 
-### Postgres SSL (production)
+### MariaDB / MySQL SSL (production)
 
-Knex enables SSL in production (`rejectUnauthorized: false` by default for managed providers). If your host gives a CA certificate, set `PG_SSL_CA` to the PEM file path (or inline PEM) so the client uses `rejectUnauthorized: true` with that CA.
+Knex enables SSL in production (`rejectUnauthorized: false` by default for managed providers). If your host gives a CA certificate, set `MYSQL_SSL_CA` to the PEM file path (or inline PEM) so the client uses `rejectUnauthorized: true` with that CA. Set `DATABASE_SSL=false` when the host does not support SSL (common on shared hosting localhost sockets).
 
 ## Migrations
 
@@ -265,7 +266,7 @@ To rotate: **Rotate Secret** (requires password + current TOTP). To turn off: **
 
 ## Production
 
-See **[DEPLOY.md](./DEPLOY.md)** for PostgreSQL, PM2, reverse proxy / HTTPS, and client handover checklist.
+See **[DEPLOY.md](./DEPLOY.md)** for MariaDB, PM2, reverse proxy / HTTPS, and client handover checklist.
 
 ## Deferred (phase-2)
 

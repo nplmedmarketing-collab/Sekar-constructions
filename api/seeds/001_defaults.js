@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const defaults = require('../src/data/defaults');
 
 const BCRYPT_ROUNDS = 12;
@@ -32,6 +32,16 @@ exports.seed = async function seed(knex) {
   await knex('audit_logs').del();
   await knex('admin_sessions').del();
   await knex('admin_lockouts').del();
+  try {
+    await knex('login_challenges').del();
+  } catch {
+    /* migration may not have run yet */
+  }
+  try {
+    await knex('admin_backup_codes').del();
+  } catch {
+    /* optional table */
+  }
   await knex('admin_users').del();
 
   const username = process.env.SEED_ADMIN_USERNAME || defaults.LOCAL_ADMIN.username;
@@ -51,16 +61,15 @@ exports.seed = async function seed(knex) {
     }
 
     if (!password) {
-      if (!isProd) {
-        password = 'DevPass-270ac08c8e2b46c9';
-        console.log(`[seed] Default local development admin password for '${username}': ${password}`);
-      } else {
-        const crypto = require('crypto');
-        password = `DevTempPass-${crypto.randomBytes(8).toString('hex')}`;
-        console.warn(
-          `[seed] SEED_ADMIN_PASSWORD unset — generated temporary local admin password for '${username}': ${password}`
-        );
-      }
+      const crypto = require('crypto');
+      password = `DevPass-${crypto.randomBytes(12).toString('hex')}`;
+      console.log('');
+      console.log('============================================================');
+      console.log(`[seed] Generated admin password for '${username}':`);
+      console.log(`        ${password}`);
+      console.log('============================================================');
+      console.log('[seed] Save this password — it will not be shown again.');
+      console.log('');
     }
     const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 

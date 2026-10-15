@@ -23,8 +23,6 @@ const inquirySchema = z.object({
   phone: z.string().max(64).optional().nullable(),
   subject: z.string().min(1).max(512),
   message: z.string().min(1).max(10000),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']).optional(),
-  value: z.string().max(128).optional().nullable(),
 });
 
 const emailService = require('../services/emailService');

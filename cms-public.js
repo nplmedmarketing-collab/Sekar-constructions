@@ -81,26 +81,39 @@
 
     getBundledFleetDefaults() {
       return [
-        { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry' },
-        { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck' },
-        { key: 'pumps', name: 'Schwing Stetter S36X Boom Pumps', count: '2', icon: 'fa-truck-droplet' },
-        { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving' },
-        { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor' },
-        { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears' },
-        { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain' },
-        { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench' },
-        { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors' },
-        { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group' }
+        { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry', logoUrl: '' },
+        { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck', logoUrl: '' },
+        { key: 'pumps', name: 'Schwing Stetter S36X Boom Pumps', count: '2', icon: 'fa-truck-droplet', logoUrl: '' },
+        { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving', logoUrl: '' },
+        { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor', logoUrl: '' },
+        { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears', logoUrl: '' },
+        { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain', logoUrl: '' },
+        { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench', logoUrl: '' },
+        { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors', logoUrl: '' },
+        { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group', logoUrl: '' }
       ];
+    }
+
+    normalizeFleetItem(item) {
+      const src = item || {};
+      return {
+        key: String(src.key || '').trim() || ('fleet-' + Date.now()),
+        name: String(src.name || '').trim() || 'Untitled asset',
+        count: String(src.count == null ? '' : src.count).trim(),
+        icon: String(src.icon || 'fa-truck').replace(/^fa-solid\s+/, '').trim() || 'fa-truck',
+        logoUrl: String(src.logoUrl || src.logo_url || '').trim()
+      };
     }
 
     getFleetInventory() {
       if (this.useApi()) {
         const data = this._cmsCache.fleet;
-        return Array.isArray(data) && data.length ? data : this.getBundledFleetDefaults();
+        const list = Array.isArray(data) && data.length ? data : this.getBundledFleetDefaults();
+        return list.map((f) => this.normalizeFleetItem(f));
       }
       const stored = this._readLocal('sc_admin_fleet_v1');
-      return Array.isArray(stored) && stored.length ? stored : this.getBundledFleetDefaults();
+      const list = Array.isArray(stored) && stored.length ? stored : this.getBundledFleetDefaults();
+      return list.map((f) => this.normalizeFleetItem(f));
     }
 
     getBundledTeamPhotoDefaults() {
@@ -224,50 +237,50 @@
           { key: 'assets', label: 'Asset Lines', value: '44', note: 'Owned equipment inventory line items' }
         ],
         inventory: [
-          { id: 'infra-1', category: 'own-equipments', description: 'Concrete Boom Pump - 40.10ZX, S36X', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-2', category: 'own-equipments', description: 'Batching Plant - M1T, M1C, KYB 450 & CP45, Z30 & CP30', qty: '6', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-3', category: 'own-equipments', description: 'RMC Transit Mixer', qty: '14', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-4', category: 'own-equipments', description: 'Concrete Pump 1800', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-5', category: 'own-equipments', description: 'Mobile Tower Crane [ACE Make]', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-6', category: 'own-equipments', description: 'Excavator - Hitachi EX 210', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-7', category: 'own-equipments', description: 'JCB', qty: '8', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-8', category: 'own-equipments', description: 'Vibromax 10T - Roller', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-9', category: 'own-equipments', description: 'Walking Roller 1MT', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-10', category: 'own-equipments', description: 'BOBCAT S450', qty: '5', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-11', category: 'own-equipments', description: 'Tipper 10 Wheel', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-12', category: 'own-equipments', description: 'Tractor', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-13', category: 'own-equipments', description: 'TATA Diesel Tanker', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-14', category: 'own-equipments', description: 'Mahindra & Eicher Van', qty: '8', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-15', category: 'own-equipments', description: 'Building Hoist', qty: '5', unit: 'Sets.', categoryLabel: 'Own Equipments' },
-          { id: 'infra-16', category: 'own-equipments', description: 'MS Cuplock System', qty: '400', unit: 'MT', categoryLabel: 'Own Equipments' },
-          { id: 'infra-17', category: 'own-equipments', description: 'System Form Work', qty: '4,120', unit: 'Sqm', categoryLabel: 'Own Equipments' },
-          { id: 'infra-18', category: 'own-equipments', description: 'MS Jolly (Platform)', qty: '6,500', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-19', category: 'own-equipments', description: 'MS Scaffolding Pipes', qty: '30,000', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-20', category: 'own-equipments', description: 'Props 2+2m, 2+3m, 3+3m', qty: '3,500', unit: 'Sets.', categoryLabel: 'Own Equipments' },
-          { id: 'infra-21', category: 'own-equipments', description: 'Agrow Spans 2.4m & 3.0m', qty: '1,500', unit: 'Sets.', categoryLabel: 'Own Equipments' },
-          { id: 'infra-22', category: 'own-equipments', description: 'Centering Sheets 3\' x 2\', 4\' x 2\'', qty: '1,500', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-23', category: 'own-equipments', description: 'MS Velor 1.50m & 1.20m', qty: '1,300', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-24', category: 'own-equipments', description: 'Bar Shearing Machine', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-25', category: 'own-equipments', description: 'Bar Bending Machine', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-26', category: 'own-equipments', description: 'Bar Rings Machine', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-27', category: 'own-equipments', description: 'Bar Threading Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-28', category: 'own-equipments', description: 'Concrete Vibrators', qty: '28', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-29', category: 'own-equipments', description: 'Watering & De-Watering Pumps 5HP, 3HP', qty: '21', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-30', category: 'own-equipments', description: 'Total Station', qty: '7', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-31', category: 'own-equipments', description: 'Levelling Instrument', qty: '18', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-32', category: 'own-equipments', description: 'Cube Testing Machine', qty: '10', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-33', category: 'own-equipments', description: 'Soil Compacting Machine', qty: '7', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-34', category: 'own-equipments', description: 'Wood Plaining Machine', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-35', category: 'own-equipments', description: 'Wood Circular Saw Machine', qty: '25', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-36', category: 'own-equipments', description: 'Welding Machine 3PH & 1PH', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-37', category: 'own-equipments', description: 'Hydraulic Block Making Machine', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-38', category: 'own-equipments', description: 'Fly Ash brick manufacturing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-39', category: 'own-equipments', description: 'Paver/Cover block Vibration Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-40', category: 'own-equipments', description: 'Stone Crushing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-41', category: 'own-equipments', description: 'Mixer Machine - Diesel & Electrical', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-42', category: 'own-equipments', description: 'Crusher Plant', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-43', category: 'own-equipments', description: 'Blue Metal Quarry', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-44', category: 'own-equipments', description: 'Weight Bridge 100MT', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' }
+          { id: 'infra-1', category: 'machinery', description: 'Concrete Boom Pump - 40.10ZX, S36X', qty: '3', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-2', category: 'machinery', description: 'Batching Plant - M1T, M1C, KYB 450 & CP45, Z30 & CP30', qty: '6', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-3', category: 'machinery', description: 'RMC Transit Mixer', qty: '14', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-4', category: 'machinery', description: 'Concrete Pump 1800', qty: '4', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-5', category: 'heavy', description: 'Mobile Tower Crane [ACE Make]', qty: '3', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-6', category: 'heavy', description: 'Excavator - Hitachi EX 210', qty: '2', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-7', category: 'heavy', description: 'JCB', qty: '8', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-8', category: 'heavy', description: 'Vibromax 10T - Roller', qty: '1', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-9', category: 'heavy', description: 'Walking Roller 1MT', qty: '3', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-10', category: 'heavy', description: 'BOBCAT S450', qty: '5', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-11', category: 'vehicles', description: 'Tipper 10 Wheel', qty: '4', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-12', category: 'vehicles', description: 'Tractor', qty: '4', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-13', category: 'vehicles', description: 'TATA Diesel Tanker', qty: '1', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-14', category: 'vehicles', description: 'Mahindra & Eicher Van', qty: '8', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-15', category: 'heavy', description: 'Building Hoist', qty: '5', unit: 'Sets.', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-16', category: 'scaffolding', description: 'MS Cuplock System', qty: '400', unit: 'MT', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-17', category: 'scaffolding', description: 'System Form Work', qty: '4,120', unit: 'Sqm', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-18', category: 'scaffolding', description: 'MS Jolly (Platform)', qty: '6,500', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-19', category: 'scaffolding', description: 'MS Scaffolding Pipes', qty: '30,000', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-20', category: 'scaffolding', description: 'Props 2+2m, 2+3m, 3+3m', qty: '3,500', unit: 'Sets.', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-21', category: 'scaffolding', description: 'Agrow Spans 2.4m & 3.0m', qty: '1,500', unit: 'Sets.', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-22', category: 'scaffolding', description: 'Centering Sheets 3\' x 2\', 4\' x 2\'', qty: '1,500', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-23', category: 'scaffolding', description: 'MS Velor 1.50m & 1.20m', qty: '1,300', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-24', category: 'machinery', description: 'Bar Shearing Machine', qty: '15', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-25', category: 'machinery', description: 'Bar Bending Machine', qty: '15', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-26', category: 'machinery', description: 'Bar Rings Machine', qty: '2', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-27', category: 'machinery', description: 'Bar Threading Machine', qty: '1', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-28', category: 'machinery', description: 'Concrete Vibrators', qty: '28', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-29', category: 'machinery', description: 'Watering & De-Watering Pumps 5HP, 3HP', qty: '21', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-30', category: 'instruments', description: 'Total Station', qty: '7', unit: 'Nos', categoryLabel: 'Site Instruments' },
+          { id: 'infra-31', category: 'instruments', description: 'Levelling Instrument', qty: '18', unit: 'Nos', categoryLabel: 'Site Instruments' },
+          { id: 'infra-32', category: 'instruments', description: 'Cube Testing Machine', qty: '10', unit: 'Nos', categoryLabel: 'Site Instruments' },
+          { id: 'infra-33', category: 'heavy', description: 'Soil Compacting Machine', qty: '7', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-34', category: 'machinery', description: 'Wood Plaining Machine', qty: '3', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-35', category: 'machinery', description: 'Wood Circular Saw Machine', qty: '25', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-36', category: 'machinery', description: 'Welding Machine 3PH & 1PH', qty: '15', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-37', category: 'machinery', description: 'Hydraulic Block Making Machine', qty: '2', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-38', category: 'machinery', description: 'Fly Ash brick manufacturing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-39', category: 'machinery', description: 'Paver/Cover block Vibration Machine', qty: '1', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-40', category: 'quarry', description: 'Stone Crushing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Quarry & Crushing' },
+          { id: 'infra-41', category: 'machinery', description: 'Mixer Machine - Diesel & Electrical', qty: '3', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-42', category: 'quarry', description: 'Crusher Plant', qty: '3', unit: 'Nos', categoryLabel: 'Quarry & Crushing' },
+          { id: 'infra-43', category: 'quarry', description: 'Blue Metal Quarry', qty: '4', unit: 'Nos', categoryLabel: 'Quarry & Crushing' },
+          { id: 'infra-44', category: 'quarry', description: 'Weight Bridge 100MT', qty: '1', unit: 'Nos', categoryLabel: 'Quarry & Crushing' }
         ]
       };
     }
@@ -278,11 +291,24 @@
         return JSON.parse(JSON.stringify(bundled));
       }
       const inventory = Array.isArray(data.inventory) ? data.inventory : [];
-      if (inventory.length) return data;
+      if (!inventory.length) {
+        return Object.assign({}, data, {
+          hero: data.hero && (data.hero.title || data.hero.brand) ? data.hero : bundled.hero,
+          highlights: Array.isArray(data.highlights) && data.highlights.length ? data.highlights : bundled.highlights,
+          inventory: bundled.inventory.slice()
+        });
+      }
+      // Upgrade legacy all-own-equipments seeds to typed bundled categories
+      const byId = Object.fromEntries(bundled.inventory.map((r) => [r.id, r]));
+      const seedRows = inventory.filter((r) => r && byId[r.id]);
+      const allLegacy = seedRows.length > 0 && seedRows.every((r) => r.category === 'own-equipments');
+      if (!allLegacy) return data;
       return Object.assign({}, data, {
-        hero: data.hero && (data.hero.title || data.hero.brand) ? data.hero : bundled.hero,
-        highlights: Array.isArray(data.highlights) && data.highlights.length ? data.highlights : bundled.highlights,
-        inventory: bundled.inventory.slice()
+        inventory: inventory.map((r) => {
+          const d = byId[r.id];
+          if (!d || r.category !== 'own-equipments' || d.category === 'own-equipments') return r;
+          return Object.assign({}, r, { category: d.category, categoryLabel: d.categoryLabel });
+        })
       });
     }
 

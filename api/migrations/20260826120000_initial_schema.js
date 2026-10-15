@@ -1,5 +1,5 @@
 /**
- * Initial CMS + auth schema — portable SQLite / PostgreSQL types via Knex.
+ * Initial CMS + auth schema — MariaDB / MySQL via Knex (mysql2).
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {

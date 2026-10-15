@@ -3,14 +3,17 @@
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {
-  const client = knex.client.config.client;
+  const client = String(knex.client.config.client || '');
 
   if (client === 'pg' || client === 'postgresql') {
     await knex.raw(
       'ALTER TABLE admin_users ALTER COLUMN totp_secret TYPE TEXT USING totp_secret::text'
     );
+  } else if (client === 'mysql' || client === 'mysql2') {
+    // MariaDB / MySQL: widen varchar → TEXT for encrypted TOTP secrets
+    await knex.raw('ALTER TABLE admin_users MODIFY totp_secret TEXT NULL');
   } else {
-    // SQLite: recreate column via table copy if needed; Knex alter may no-op on type.
+    // Legacy SQLite path (no longer a supported runtime client)
     const hasCol = await knex.schema.hasColumn('admin_users', 'totp_secret');
     if (hasCol) {
       try {
@@ -18,7 +21,7 @@ exports.up = async function up(knex) {
           t.text('totp_secret').alter();
         });
       } catch {
-        /* SQLite < 3.35 — column stays varchar; encrypted secrets still fit at ~100 chars */
+        /* ignore */
       }
     }
   }

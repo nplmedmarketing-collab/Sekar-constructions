@@ -1,4 +1,4 @@
-# Local-dev PostgreSQL only — NOT for production.
+# Local-dev MariaDB only — NOT for production.
 # Credentials below are intentionally simple for local machines.
 # Path: api/docker-compose.yml (run from api/: npm run db:up)
 #
@@ -6,25 +6,26 @@
 # Docs: api/README.md
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: sekar-cms-postgres
+  mariadb:
+    image: mariadb:11
+    container_name: sekar-cms-mariadb
     restart: unless-stopped
     ports:
-      - "5433:5432"
+      - "3306:3306"
     environment:
       # LOCAL-DEV ONLY — do not reuse in production
-      POSTGRES_USER: sekar_local
-      POSTGRES_PASSWORD: sekar_local_dev_only
-      POSTGRES_DB: sekar_cms
+      MARIADB_DATABASE: Sekarcons
+      MARIADB_USER: gan131
+      MARIADB_PASSWORD: change-me-local-only
+      MARIADB_ROOT_PASSWORD: change-me-root-local-only
     volumes:
-      - sekar_pgdata:/var/lib/postgresql/data
+      - sekar_mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sekar_local -d sekar_cms"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  sekar_pgdata:
-    name: sekar_cms_pgdata
+  sekar_mariadb_data:
+    name: sekar_cms_mariadb

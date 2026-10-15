@@ -20,10 +20,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   let headerScrollTicking = false;
   const HEADER_TOP_SHOW = 50;
   const HEADER_HIDE_DELTA = 8;
+  let headerNavLockUntil = 0;
 
   function isMobileNavOpen() {
     const menu = document.getElementById('navMenu');
     return !!(menu && menu.classList.contains('open'));
+  }
+
+  function revealHeaderForNav(lockMs) {
+    if (!header) return;
+    header.classList.remove('nav-hidden');
+    lastHeaderScrollY = getScrollY();
+    if (lockMs) headerNavLockUntil = Date.now() + lockMs;
   }
 
   function syncHeaderScrollState() {
@@ -36,17 +44,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       header.classList.remove('scrolled');
     }
 
-    // Keep nav visible at page top and while the mobile menu is open
-    if (y <= HEADER_TOP_SHOW || isMobileNavOpen()) {
+    // Keep nav visible at page top, while mobile menu is open, or during
+    // programmatic Home/Services jumps (big scroll deltas would hide it).
+    if (y <= HEADER_TOP_SHOW || isMobileNavOpen() || Date.now() < headerNavLockUntil) {
       header.classList.remove('nav-hidden');
-    } else {
-      const delta = y - lastHeaderScrollY;
-      if (Math.abs(delta) >= HEADER_HIDE_DELTA) {
-        if (delta > 0) {
-          header.classList.add('nav-hidden');
-        } else {
-          header.classList.remove('nav-hidden');
-        }
+      lastHeaderScrollY = y;
+      return;
+    }
+
+    const delta = y - lastHeaderScrollY;
+    if (Math.abs(delta) >= HEADER_HIDE_DELTA) {
+      if (delta > 0) {
+        header.classList.add('nav-hidden');
+      } else {
+        header.classList.remove('nav-hidden');
       }
     }
 
@@ -81,6 +92,101 @@ document.addEventListener('DOMContentLoaded', async () => {
         top: 0,
         behavior: 'smooth'
       });
+    });
+  }
+
+  // 4. Hamburger Menu Toggle (all pages) — MUST bind before any CMS await.
+  //    A hung/slow API used to delay this by up to 4s, so the first tap did nothing.
+  const menuToggle = document.getElementById('menuToggleBtn');
+  const navMenu = document.getElementById('navMenu');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  function setDropdownOpen(toggle, menu, open) {
+    if (!toggle || !menu) return;
+    menu.classList.toggle('show', open);
+    menu.style.display = open ? 'block' : 'none';
+    toggle.setAttribute('aria-expanded', String(open));
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.nav-menu .dropdown-toggle').forEach((toggle) => {
+      setDropdownOpen(toggle, toggle.nextElementSibling, false);
+    });
+  }
+
+  if (menuToggle && navMenu) {
+    function setMobileNavOpen(isOpen) {
+      navMenu.classList.toggle('open', isOpen);
+      menuToggle.classList.toggle('active', isOpen);
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      document.body.classList.toggle('nav-open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+      if (isOpen && header) {
+        header.classList.remove('nav-hidden');
+      }
+      if (!isOpen) closeAllDropdowns();
+    }
+
+    menuToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setMobileNavOpen(!navMenu.classList.contains('open'));
+    });
+
+    // Handle nav links clicks and dropdown toggles
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (link.classList.contains('dropdown-toggle')) {
+          e.preventDefault();
+          e.stopPropagation();
+          const dropdownMenu = link.nextElementSibling;
+          if (dropdownMenu) {
+            const willOpen = !dropdownMenu.classList.contains('show');
+            closeAllDropdowns();
+            setDropdownOpen(link, dropdownMenu, willOpen);
+          }
+          return;
+        }
+        setMobileNavOpen(false);
+      });
+
+      if (link.classList.contains('dropdown-toggle')) {
+        link.addEventListener('keydown', (e) => {
+          const dropdownMenu = link.nextElementSibling;
+          if (!dropdownMenu) return;
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            setDropdownOpen(link, dropdownMenu, true);
+            const firstItem = dropdownMenu.querySelector('a');
+            if (firstItem) firstItem.focus();
+          } else if (e.key === 'Escape') {
+            setDropdownOpen(link, dropdownMenu, false);
+            link.focus();
+          }
+        });
+      }
+    });
+
+    // Close menu when a dropdown child link is clicked
+    navMenu.querySelectorAll('.dropdown-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        setMobileNavOpen(false);
+      });
+      link.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          const toggle = link.closest('.dropdown')?.querySelector('.dropdown-toggle');
+          closeAllDropdowns();
+          if (toggle) toggle.focus();
+        }
+      });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-menu li.dropdown')) {
+        closeAllDropdowns();
+      }
     });
   }
 
@@ -127,6 +233,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const overlap = parseFloat(styles.getPropertyValue('--curtain-overlap')) || 0;
     const hang = parseFloat(styles.getPropertyValue('--curtain-cta-hang')) || 0;
     const footerH = (footer || footerMount).offsetHeight;
+    // Mobile uses position:relative footer (see styles.css) — no reveal spacer.
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      root.style.setProperty('--curtain-reveal-spacer', '0px');
+      return;
+    }
     // Clear room so the cream curtain can lift above the pinned footer.
     // Use max(minClear, capped clearRoom) — never sum clearRoom + overlap + hang
     // (that stacked to ~700px of empty navy on typical viewports).
@@ -186,99 +297,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, { passive: true });
   }
 
-  // 4. Hamburger Menu Toggle (all pages)
-  const menuToggle = document.getElementById('menuToggleBtn');
-  const navMenu = document.getElementById('navMenu');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  function setDropdownOpen(toggle, menu, open) {
-    if (!toggle || !menu) return;
-    menu.classList.toggle('show', open);
-    menu.style.display = open ? 'block' : 'none';
-    toggle.setAttribute('aria-expanded', String(open));
-  }
-
-  function closeAllDropdowns() {
-    document.querySelectorAll('.nav-menu .dropdown-toggle').forEach((toggle) => {
-      setDropdownOpen(toggle, toggle.nextElementSibling, false);
-    });
-  }
-
-  if (menuToggle && navMenu) {
-    menuToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = navMenu.classList.toggle('open');
-      menuToggle.setAttribute('aria-expanded', String(isOpen));
-      menuToggle.classList.toggle('active', isOpen);
-      // Opening the menu must keep the header visible (no awkward hide mid-menu)
-      if (isOpen && header) {
-        header.classList.remove('nav-hidden');
-      }
-    });
-
-    // Handle nav links clicks and dropdown toggles
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (link.classList.contains('dropdown-toggle')) {
-          e.preventDefault();
-          e.stopPropagation();
-          const dropdownMenu = link.nextElementSibling;
-          if (dropdownMenu) {
-            const willOpen = !dropdownMenu.classList.contains('show');
-            closeAllDropdowns();
-            setDropdownOpen(link, dropdownMenu, willOpen);
-          }
-          return;
-        }
-        navMenu.classList.remove('open');
-        menuToggle.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        closeAllDropdowns();
-      });
-
-      if (link.classList.contains('dropdown-toggle')) {
-        link.addEventListener('keydown', (e) => {
-          const dropdownMenu = link.nextElementSibling;
-          if (!dropdownMenu) return;
-          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
-            e.preventDefault();
-            setDropdownOpen(link, dropdownMenu, true);
-            const firstItem = dropdownMenu.querySelector('a');
-            if (firstItem) firstItem.focus();
-          } else if (e.key === 'Escape') {
-            setDropdownOpen(link, dropdownMenu, false);
-            link.focus();
-          }
-        });
-      }
-    });
-
-    // Close menu when a dropdown child link is clicked
-    navMenu.querySelectorAll('.dropdown-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('open');
-        menuToggle.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        closeAllDropdowns();
-      });
-      link.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          const toggle = link.closest('.dropdown')?.querySelector('.dropdown-toggle');
-          closeAllDropdowns();
-          if (toggle) toggle.focus();
-        }
-      });
-    });
-
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.nav-menu li.dropdown')) {
-        closeAllDropdowns();
-      }
-    });
-  }
-
   // Hover Intent Delay for Desktop Dropdowns (Portfolio, Gallery, etc.)
   document.querySelectorAll('.nav-menu li.dropdown').forEach((dropdownLi) => {
     const menu = dropdownLi.querySelector('.dropdown-menu');
@@ -320,9 +338,134 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 5. Homepage ScrollSpy — Home ↔ Services (curtain-safe)
   const isHomepage = document.querySelector('.hero') !== null;
 
+  function getFixedHeaderOffset() {
+    const hdr = document.querySelector('header');
+    if (!hdr) return 96;
+    const rect = hdr.getBoundingClientRect();
+    // Use visible bottom — if nav-hidden has slid the bar off-screen, bottom ≈ 0
+    if (rect.bottom > 1) return Math.round(rect.bottom);
+    return Math.round(hdr.offsetHeight || rect.height || 96);
+  }
+
+  // Sticky hero/stats stay painted until the cream panel fully covers them.
+  // Keep correcting with instant scrollBy until the target sits flush under the header.
+  function alignSectionUnderHeader(el, headerOffset) {
+    const panel = document.querySelector('.sc-curtain-panel');
+    for (let i = 0; i < 48; i++) {
+      const panelTop = panel ? panel.getBoundingClientRect().top : el.getBoundingClientRect().top;
+      // First clear any remaining stats/hero peek above the cream panel
+      if (panel && panelTop > headerOffset + 1) {
+        window.scrollBy(0, Math.ceil(panelTop - headerOffset));
+        continue;
+      }
+      const delta = Math.round(el.getBoundingClientRect().top - headerOffset);
+      if (Math.abs(delta) <= 1) break;
+      window.scrollBy(0, delta);
+    }
+  }
+
+  function scrollHomepageToSection(sectionId, behavior) {
+    const el = document.getElementById(sectionId);
+    if (!el) return false;
+
+    if (sectionId === 'home') {
+      revealHeaderForNav(400);
+      window.scrollTo({ top: 0, behavior: behavior || 'auto' });
+      return true;
+    }
+
+    const run = () => {
+      revealHeaderForNav(600);
+      // Jump lands past the hero — force the slim scrolled header BEFORE measuring.
+      // Otherwise we align to the tall (~140px) header, then it shrinks to ~96px
+      // and leaves a strip of the sticky stats bar visible under the nav.
+      if (header) {
+        header.classList.add('scrolled');
+        header.style.transition = 'none';
+        const nav = header.querySelector('.nav-container');
+        if (nav) nav.style.transition = 'none';
+        void header.offsetHeight;
+      }
+      const headerOffset = getFixedHeaderOffset();
+      alignSectionUnderHeader(el, headerOffset);
+      lastHeaderScrollY = getScrollY();
+      if (header) {
+        header.style.transition = '';
+        const nav = header.querySelector('.nav-container');
+        if (nav) nav.style.transition = '';
+      }
+    };
+
+    // Instant align — smooth / native hash scroll fights sticky curtain and
+    // leaves a strip of the stats bar visible above the services cream panel.
+    run();
+    requestAnimationFrame(run);
+    // Re-assert while sticky metrics / header height transition settle
+    let n = 0;
+    const hold = window.setInterval(() => {
+      run();
+      n += 1;
+      if (n >= 12) window.clearInterval(hold);
+    }, 50);
+    return true;
+  }
+
+  function homepageHashId(href) {
+    if (!href) return '';
+    const hash = String(href).includes('#') ? String(href).split('#')[1] : '';
+    return (hash || '').split('?')[0].trim();
+  }
+
   if (isHomepage) {
     const homeSection = document.getElementById('home');
     const servicesSection = document.getElementById('services');
+
+    // Intercept Home / Services nav so curtain sticky doesn't mis-land the hash.
+    // Capture phase + stopImmediatePropagation: blocks native hash scroll that
+    // undershoots and leaves a strip of the stats bar above the cream panel.
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      const id = homepageHashId(href);
+      if (id !== 'home' && id !== 'services') return;
+
+      let url;
+      try {
+        url = new URL(href, window.location.href);
+      } catch (e) {
+        return;
+      }
+      if (url.origin !== window.location.origin) return;
+      const path = url.pathname.replace(/\/$/, '') || '/';
+      if (path !== '/' && path !== '/index.html') return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (history && history.pushState) {
+        history.pushState(null, '', '#' + id);
+      } else {
+        window.location.hash = id;
+      }
+      scrollHomepageToSection(id, 'auto');
+
+      const menu = document.getElementById('navMenu');
+      const toggle = document.getElementById('menuToggleBtn');
+      if (menu) menu.classList.remove('open');
+      if (toggle) {
+        toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      document.body.classList.remove('nav-open');
+      document.body.style.overflow = '';
+    }, true);
+
+    // Direct visit / refresh with #services
+    const bootHash = homepageHashId(window.location.hash);
+    if (bootHash === 'services' || bootHash === 'home') {
+      // Wait a tick for layout / sticky metrics
+      setTimeout(() => scrollHomepageToSection(bootHash, 'auto'), 50);
+    }
 
     if (homeSection && servicesSection) {
       const setHomeNavActive = (currentLink) => {
@@ -342,7 +485,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
 
       const updateHomeNavFromScroll = () => {
-        const probe = 140; // below sticky header
+        const probe = getFixedHeaderOffset() + 24;
         const homeRect = homeSection.getBoundingClientRect();
         const servicesRect = servicesSection.getBoundingClientRect();
 
@@ -749,31 +892,136 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
       e.preventDefault();
-      window.location.href = 'admin-login.html';
+      window.location.href = '/admin-login';
     }
   });
 
   // 12. Dynamic Fleet Inventory Sync from Super Admin Engine
-  function syncFleetInventoryCounts() {
-    if (!window.SekarAdminSecurity) return;
-    const fleetData = window.SekarAdminSecurity.getFleetInventory();
-    if (!fleetData || !Array.isArray(fleetData)) return;
+  function parseFleetCountDisplay(raw) {
+    const text = String(raw == null ? '' : raw).trim();
+    const match = text.match(/^(\d+(?:\.\d+)?)\s*(k)?$/i);
+    if (!match) return null;
+    return {
+      target: Number(match[1]),
+      suffix: match[2] ? 'k' : ''
+    };
+  }
 
-    const fleetCards = document.querySelectorAll('.fleet-card');
-    fleetCards.forEach(card => {
-      const nameEl = card.querySelector('.fleet-name');
-      const countEl = card.querySelector('.fleet-count');
-      if (nameEl && countEl) {
-        const cardName = nameEl.textContent.trim().toLowerCase();
-        const match = fleetData.find(item => item.name.toLowerCase() === cardName);
-        if (match) {
-          countEl.textContent = match.count;
-        }
-      }
-    });
+  function escapeFleetHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function fleetIconOrLogoHtml(item) {
+    const logoUrl = String(item.logoUrl || item.logo_url || '').trim();
+    if (logoUrl) {
+      return `<img class="fleet-logo" src="${escapeFleetHtml(logoUrl)}" alt="" loading="lazy" onerror="this.style.display='none'">`;
+    }
+    const icon = String(item.icon || 'fa-truck').replace(/^fa-solid\s+/, '').trim() || 'fa-truck';
+    return `<i class="fa-solid ${escapeFleetHtml(icon)}"></i>`;
+  }
+
+  function syncFleetInventoryCounts() {
+    const engine = window.SekarAdminSecurity;
+    if (!engine || typeof engine.getFleetInventory !== 'function') return;
+    const fleetData = engine.getFleetInventory();
+    if (!fleetData || !Array.isArray(fleetData) || !fleetData.length) return;
+
+    const fleetGrid = document.querySelector('[data-fleet-grid]');
+    if (!fleetGrid) return;
+
+    const wasInView = !!(document.getElementById('fleet') && document.getElementById('fleet').classList.contains('fleet-inview'));
+
+    fleetGrid.innerHTML = fleetData.map((item, index) => {
+      const parsed = parseFleetCountDisplay(item.count);
+      const target = parsed ? String(parsed.target) : '';
+      const suffix = parsed ? parsed.suffix : '';
+      const initial = wasInView
+        ? escapeFleetHtml(parsed ? (parsed.target + parsed.suffix) : (item.count || '0'))
+        : '0';
+      const countAttrs = parsed
+        ? ` data-target="${escapeFleetHtml(target)}" data-suffix="${escapeFleetHtml(suffix)}"`
+        : ` data-static-count="${escapeFleetHtml(item.count || '')}"`;
+      return `
+        <div class="fleet-card" style="transition-delay: ${(0.03 * (index + 1)).toFixed(2)}s">
+          <span class="fleet-icon" aria-hidden="true">${fleetIconOrLogoHtml(item)}</span>
+          <div class="fleet-count"${countAttrs}>${initial}</div>
+          <div class="fleet-name">${escapeFleetHtml(item.name)}</div>
+        </div>
+      `;
+    }).join('');
+
+    if (wasInView) {
+      fleetGrid.querySelectorAll('.fleet-count[data-static-count]').forEach((el) => {
+        el.textContent = el.getAttribute('data-static-count') || '';
+      });
+    }
   }
 
   syncFleetInventoryCounts();
+
+  // Fleet section: photo atmosphere + staggered cards + count-up
+  (function initFleetSectionMotion() {
+    const fleetSection = document.getElementById('fleet');
+    if (!fleetSection) return;
+
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let fleetAnimated = false;
+
+    function animateFleetCounters() {
+      const counters = fleetSection.querySelectorAll('.fleet-count[data-target]');
+      counters.forEach((counter) => {
+        const target = Number(counter.getAttribute('data-target'));
+        if (!Number.isFinite(target)) return;
+        const suffix = counter.getAttribute('data-suffix') || '';
+        if (prefersReduced) {
+          counter.textContent = target + suffix;
+          return;
+        }
+        const duration = 1200;
+        const startTime = performance.now();
+        const updateCount = (timestamp) => {
+          const progress = Math.min((timestamp - startTime) / duration, 1);
+          const ease = progress * (2 - progress);
+          counter.textContent = Math.floor(ease * target) + suffix;
+          if (progress < 1) requestAnimationFrame(updateCount);
+          else counter.textContent = target + suffix;
+        };
+        requestAnimationFrame(updateCount);
+      });
+    }
+
+    function playFleetIn() {
+      if (fleetAnimated) return;
+      fleetAnimated = true;
+      fleetSection.classList.add('fleet-inview');
+      animateFleetCounters();
+    }
+
+    if (prefersReduced) {
+      fleetSection.classList.add('fleet-inview');
+      animateFleetCounters();
+      return;
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            playFleetIn();
+            observer.unobserve(fleetSection);
+          }
+        });
+      }, { threshold: 0.22 });
+      observer.observe(fleetSection);
+    } else {
+      playFleetIn();
+    }
+  })();
 
   // Dynamic Executive Team Gallery Sync from Super Admin Engine
   function syncTeamGalleryPhotos() {
@@ -1071,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 14. About workstream columns — staggered entrance
+  // 14. About workstream sector scrubber + reveal
   const aboutWorkstreams = document.querySelector('.about-workstreams');
   const aboutStreams = document.querySelectorAll('.about-stream');
 
@@ -1104,6 +1352,254 @@ document.addEventListener('DOMContentLoaded', async () => {
       revealAboutStreams();
     }
   }
+
+  // 14b. Sector story scrubber tabs (Central / State / Private)
+  const aboutScrubber = document.querySelector('.about-workstreams--scrubber');
+  if (aboutScrubber) {
+    const scrubberTabs = Array.from(aboutScrubber.querySelectorAll('.about-scrubber-tab'));
+    const scrubberPanels = Array.from(aboutScrubber.querySelectorAll('.about-stream[role="tabpanel"]'));
+
+    const activateScrubberPanel = (panelId, { syncHash = false } = {}) => {
+      if (!panelId || !scrubberPanels.some((panel) => panel.id === panelId)) return;
+
+      scrubberTabs.forEach((tab) => {
+        const isActive = tab.getAttribute('aria-controls') === panelId;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.tabIndex = isActive ? 0 : -1;
+      });
+
+      scrubberPanels.forEach((panel) => {
+        const isActive = panel.id === panelId;
+        panel.classList.toggle('is-active', isActive);
+        panel.hidden = !isActive;
+      });
+
+      if (syncHash && /\/about(?:\.html)?$/i.test(window.location.pathname)) {
+        const nextHash = `#${panelId}`;
+        if (window.location.hash !== nextHash) {
+          history.replaceState(null, '', nextHash);
+        }
+      }
+    };
+
+    scrubberTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        activateScrubberPanel(tab.getAttribute('aria-controls'), { syncHash: true });
+      });
+
+      tab.addEventListener('keydown', (event) => {
+        const currentIndex = scrubberTabs.indexOf(tab);
+        if (currentIndex < 0) return;
+
+        let nextIndex = currentIndex;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+          nextIndex = (currentIndex + 1) % scrubberTabs.length;
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+          nextIndex = (currentIndex - 1 + scrubberTabs.length) % scrubberTabs.length;
+        } else if (event.key === 'Home') {
+          nextIndex = 0;
+        } else if (event.key === 'End') {
+          nextIndex = scrubberTabs.length - 1;
+        } else {
+          return;
+        }
+
+        event.preventDefault();
+        const nextTab = scrubberTabs[nextIndex];
+        nextTab.focus();
+        activateScrubberPanel(nextTab.getAttribute('aria-controls'), { syncHash: true });
+      });
+    });
+
+    const initialHash = String(window.location.hash || '').replace(/^#/, '');
+    if (/^stream-(central|state|private)$/.test(initialHash)) {
+      activateScrubberPanel(initialHash);
+    } else {
+      const activeTab = scrubberTabs.find((tab) => tab.classList.contains('is-active')) || scrubberTabs[0];
+      if (activeTab) activateScrubberPanel(activeTab.getAttribute('aria-controls'));
+    }
+
+    window.addEventListener('hashchange', () => {
+      const hash = String(window.location.hash || '').replace(/^#/, '');
+      if (/^stream-(central|state|private)$/.test(hash)) {
+        activateScrubberPanel(hash);
+      }
+    });
+  }
+
+  // 14c. Legacy #stream-* hashes → open sector tab and scroll to workstreams
+  if (/\/about(?:\.html)?$/i.test(window.location.pathname)) {
+    const streamHash = String(window.location.hash || '').replace(/^#/, '');
+    if (/^stream-(central|state|private)$/.test(streamHash)) {
+      const workstreams = document.getElementById('about-workstreams');
+      const target = document.getElementById(streamHash);
+      if (workstreams) {
+        requestAnimationFrame(() => {
+          workstreams.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (target && !aboutScrubber) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    }
+  }
+
+  // 14e. About footprint map pins
+  const aboutFootprint = document.querySelector('.about-footprint');
+  if (aboutFootprint) {
+    const pinDetail = aboutFootprint.querySelector('#about-pin-detail');
+    const pinButtons = Array.from(aboutFootprint.querySelectorAll('.about-map-pin[data-pin]'));
+    const pinData = {
+      ennore: {
+        place: 'Ennore · Minjur',
+        href: '/gallery#gallery-bhel-btg',
+        items: [
+          { status: 'ongoing', project: 'BTG area civil works · Unit #2, 2×660 MW Ennore SEZ STPP', client: 'BHEL (TNEB) Chennai · 76% progress' },
+          { status: 'completed', project: '2×660 MW Ennore SEZ STPP foundations & boiler structures', client: 'BHEL / TANGEDCO' }
+        ]
+      },
+      tiruvallur: {
+        place: 'Kandamangalam · Tiruvallur',
+        href: '/gallery#gallery-kochar',
+        items: [
+          { status: 'ongoing', project: 'Warehouse 8 civil works, ancillary building & external works', client: 'Kochar Properties Pvt Ltd · 25% progress' },
+          { status: 'completed', project: 'Site development, compound wall & 7 warehouses', client: 'Kochar Industrial Park' }
+        ]
+      },
+      nmv: {
+        place: 'Chennai · NMV University',
+        href: '/ongoing-projects',
+        items: [
+          { status: 'ongoing', project: 'Hostel Building G+4 for NMV University', client: 'Savitha Group of Colleges · 8% progress' }
+        ]
+      },
+      thoraipakkam: {
+        place: 'Thoraipakkam · Chennai',
+        href: '/ongoing-projects',
+        items: [
+          { status: 'ongoing', project: 'Commercial Building B+G+3', client: 'Jain Group Chennai · 28% progress' }
+        ]
+      },
+      irungattukottai: {
+        place: 'Irungattukottai',
+        href: '/gallery#gallery-polyhose',
+        items: [
+          { status: 'completed', project: 'Factory buildings, warehouses, PEB & ancillary works', client: 'Polyhose India Pvt. Ltd.' }
+        ]
+      },
+      nemmeli: {
+        place: 'Nemmeli · ECR',
+        href: '/gallery#gallery-desal-150',
+        items: [
+          { status: 'completed', project: '150 MLD SWRO Desalination Plant civil works', client: 'Cobratecton Pvt. Ltd. / CMWSSB' }
+        ]
+      },
+      perur: {
+        place: 'Perur · ECR',
+        href: '/gallery#gallery-desal-perur',
+        items: [
+          { status: 'ongoing', project: '400 MLD SWRO Desalination Plant for CMWSSB', client: 'CMWSSB, Chennai · 65% progress' }
+        ]
+      },
+      manamai: {
+        place: 'Manamai · ECR',
+        href: '/gallery#gallery-great-lakes',
+        items: [
+          { status: 'completed', project: 'Phase III — hostel, academic block, warehouse & campus works', client: 'Great Lakes Institute of Management' },
+          { status: 'completed', project: 'Phase IV — new academic block (233 rooms) & allied works', client: 'Great Lakes Institute of Management' }
+        ]
+      },
+      kalpakkam: {
+        place: 'Kalpakkam · DAE / IGCAR',
+        href: '/gallery#gallery-igcar-hall-v',
+        items: [
+          { status: 'ongoing', project: 'Power Station 2 at FRFCF', client: 'FRFCF, DAE · 80% progress' },
+          { status: 'ongoing', project: 'Air Supply, Storage & Exhaust Building · CWMF / BARCF', client: 'BARCF, Kalpakkam · 58% progress' },
+          { status: 'completed', project: 'On-Site Emergency Support Centre (OESC)', client: 'DAE, Kalpakkam' },
+          { status: 'completed', project: 'Engineering Hall – V', client: 'IGCAR' },
+          { status: 'completed', project: '116 Nos. Type II-B residential quarters', client: 'DAE Township' },
+          { status: 'completed', project: 'AUSE Lab Building', client: 'IGCAR' },
+          { status: 'completed', project: 'FRFCF store & workshop infrastructure', client: 'IGCAR / CCCL' }
+        ]
+      },
+      anupuram: {
+        place: 'Anupuram · DAE Township',
+        href: '/portfolio#completed-projects',
+        items: [
+          { status: 'completed', project: '120 Nos. Type IIIC quarters (Tower 4 · G+15)', client: 'DAE Township, Anupuram' }
+        ]
+      },
+      mahendragiri: {
+        place: 'Mahendragiri · IPRC',
+        href: '/gallery#gallery-isro-c25',
+        items: [
+          { status: 'completed', project: 'C25 Stage Integration Complex & area development', client: 'ISRO Propulsion Complex' }
+        ]
+      }
+    };
+
+    const setPinDetail = (key) => {
+      const data = pinData[key];
+      if (!data || !pinDetail) return;
+      const place = pinDetail.querySelector('.about-footprint-place');
+      const list = pinDetail.querySelector('.about-footprint-projects');
+      const link = pinDetail.querySelector('.about-footprint-link');
+      if (place) place.textContent = data.place;
+      if (list && Array.isArray(data.items)) {
+        list.innerHTML = data.items.map((item) => {
+          const statusLabel = item.status === 'ongoing' ? 'Ongoing' : 'Completed';
+          const statusClass = item.status === 'ongoing'
+            ? 'about-footprint-status--ongoing'
+            : 'about-footprint-status--completed';
+          return (
+            '<li class="about-footprint-item">' +
+              '<span class="about-footprint-status ' + statusClass + '">' + statusLabel + '</span>' +
+              '<span class="about-footprint-project">' + item.project + '</span>' +
+              '<span class="about-footprint-client">' + item.client + '</span>' +
+            '</li>'
+          );
+        }).join('');
+      }
+      if (link) {
+        link.setAttribute('href', data.href);
+        if (data.href.indexOf('gallery') !== -1) {
+          link.textContent = 'View in gallery';
+        } else if (data.href.indexOf('portfolio') !== -1) {
+          link.textContent = 'View completed works';
+        } else {
+          link.textContent = 'View project list';
+        }
+      }
+      pinButtons.forEach((btn) => {
+        const active = btn.getAttribute('data-pin') === key;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    };
+
+    pinButtons.forEach((btn) => {
+      btn.addEventListener('click', () => setPinDetail(btn.getAttribute('data-pin')));
+    });
+  }
+
+  // 14f. About before/after project progress slider
+  document.querySelectorAll('[data-about-ba]').forEach((root) => {
+    const frame = root.querySelector('.about-ba-frame');
+    const range = root.querySelector('.about-ba-range');
+    if (!frame || !range) return;
+
+    const setPos = (value) => {
+      const clamped = Math.max(0, Math.min(100, Number(value)));
+      const pos = clamped + '%';
+      frame.style.setProperty('--ba-pos', pos);
+      if (String(range.value) !== String(clamped)) range.value = String(clamped);
+    };
+
+    setPos(range.value || 50);
+    range.addEventListener('input', () => setPos(range.value));
+    range.addEventListener('change', () => setPos(range.value));
+  });
 
   // 15. About quotes — shared scroll reveal (expertise, customers, quality)
   const aboutQuoteBlocks = document.querySelectorAll('.about-quote');
@@ -1190,7 +1686,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 18. About page — left content list (TOC) scroll spy
+  // 17b. Leadership bios — full text by default; Read less / Read more to clamp
+  const leadershipBios = document.querySelectorAll('.leadership-bio');
+  if (leadershipBios.length) {
+    const syncLeadershipBioToggle = (bio) => {
+      const toggle = bio.parentElement && bio.parentElement.querySelector('.leadership-bio-toggle');
+      if (!toggle) return;
+
+      const wasExpanded = bio.classList.contains('is-expanded');
+      bio.classList.remove('is-expanded');
+      const overflows = bio.scrollHeight > bio.clientHeight + 2;
+      if (wasExpanded) bio.classList.add('is-expanded');
+
+      if (!overflows) {
+        bio.classList.add('is-expanded');
+        toggle.hidden = true;
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.textContent = 'Read less';
+        return;
+      }
+
+      toggle.hidden = false;
+      const expanded = bio.classList.contains('is-expanded');
+      toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      toggle.textContent = expanded ? 'Read less' : 'Read more';
+    };
+
+    leadershipBios.forEach((bio) => {
+      const toggle = bio.parentElement && bio.parentElement.querySelector('.leadership-bio-toggle');
+      if (!toggle) return;
+
+      bio.classList.add('is-expanded');
+      syncLeadershipBioToggle(bio);
+
+      toggle.addEventListener('click', () => {
+        const expanded = bio.classList.toggle('is-expanded');
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggle.textContent = expanded ? 'Read less' : 'Read more';
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      leadershipBios.forEach((bio) => syncLeadershipBioToggle(bio));
+    }, { passive: true });
+  }
+
+  // Legacy /about#about-leadership → dedicated Leadership page
+  if (/\/about(?:\.html)?$/i.test(window.location.pathname) && window.location.hash === '#about-leadership') {
+    window.location.replace('/leadership');
+  }
+
+  // 18. About page — left content list (TOC) scroll spy + progress
   const aboutToc = document.querySelector('.about-toc');
   if (aboutToc) {
     const tocLinks = Array.from(aboutToc.querySelectorAll('.about-toc-link[data-toc-target]'));
@@ -1198,12 +1744,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tocSections = tocIds
       .map((id) => document.getElementById(id))
       .filter(Boolean);
+    const tocPositions = Array.from(aboutToc.querySelectorAll('.about-toc-position'));
+    const tocTotals = Array.from(aboutToc.querySelectorAll('.about-toc-total'));
+    const tocProgressBars = Array.from(aboutToc.querySelectorAll('.about-toc-progress-bar'));
+    const tocTotalCount = tocIds.length || 1;
+
+    tocTotals.forEach((el) => {
+      el.textContent = String(tocTotalCount);
+    });
 
     const setActiveToc = (id) => {
       tocLinks.forEach((link) => {
         link.classList.toggle('is-active', link.getAttribute('data-toc-target') === id);
       });
+
+      const index = Math.max(0, tocIds.indexOf(id));
+      const position = index + 1;
+      const progress = ((position / tocTotalCount) * 100).toFixed(1) + '%';
+
+      tocPositions.forEach((el) => {
+        el.textContent = String(position);
+      });
+      tocProgressBars.forEach((bar) => {
+        bar.style.setProperty('--toc-progress', progress);
+      });
+      aboutToc.setAttribute('data-toc-index', String(position));
+      aboutToc.setAttribute('aria-valuenow', String(position));
+      aboutToc.setAttribute('aria-valuemax', String(tocTotalCount));
     };
+
+    aboutToc.setAttribute('aria-valuemin', '1');
+    aboutToc.setAttribute('aria-valuemax', String(tocTotalCount));
 
     if (tocSections.length > 0) {
       if ('IntersectionObserver' in window) {
@@ -1267,6 +1838,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     quarry: 'badge-quarry'
   };
 
+  const INFRA_HIGHLIGHT_ICONS = {
+    quarries: 'fa-mountain',
+    crushing: 'fa-gears',
+    assets: 'fa-truck-monster'
+  };
+
   function escapeInfraHtml(str) {
     return String(str || '')
       .replace(/&/g, '&amp;')
@@ -1290,8 +1867,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const raw = String(h.value || '').trim();
         const numeric = /^\d+$/.test(raw);
         const countAttr = numeric ? ` data-count="${escapeInfraHtml(raw)}"` : '';
+        const icon = INFRA_HIGHLIGHT_ICONS[String(h.key || '').trim()] || 'fa-layer-group';
         return `
         <div class="infra-highlight">
+          <span class="infra-highlight-icon" aria-hidden="true"><i class="fa-solid ${icon}"></i></span>
           <span class="infra-highlight-label">${escapeInfraHtml(h.label)}</span>
           <span class="infra-highlight-value"${countAttr}>${escapeInfraHtml(raw)}</span>
           <p class="infra-highlight-note">${escapeInfraHtml(h.note)}</p>
@@ -1325,7 +1904,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (!row.category || seen.has(row.category)) return;
           seen.set(row.category, row.categoryLabel || row.category);
         });
-        const presetOrder = ['machinery', 'scaffolding', 'heavy', 'vehicles', 'instruments', 'quarry'];
+        const presetOrder = ['machinery', 'scaffolding', 'heavy', 'vehicles', 'instruments', 'quarry', 'own-equipments'];
         const ordered = [];
         presetOrder.forEach((key) => {
           if (seen.has(key)) {
@@ -1560,56 +2139,56 @@ document.addEventListener('DOMContentLoaded', async () => {
         const JsPDF = window.jspdf.jsPDF;
         const doc = new JsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
         const marginX = 14;
-        let cursorY = 16;
-
+        const contentTop = 54;
         const logoData = await loadInfraLogoDataUrl();
-        if (logoData) {
-          try {
-            doc.addImage(logoData, 'PNG', marginX, 10, 16, 16);
-          } catch (_) {
-            /* text-only header fallback */
+        const generatedLabel = `Generated ${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}  ·  sekarconstructions.com`;
+
+        const drawLetterPad = () => {
+          if (logoData) {
+            try {
+              doc.addImage(logoData, 'PNG', marginX, 10, 16, 16);
+            } catch (_) {
+              /* text-only header fallback */
+            }
           }
-        }
 
-        const titleX = logoData ? marginX + 20 : marginX;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.setTextColor(15, 23, 42);
-        doc.text('Sekar Constructions', titleX, cursorY);
+          const titleX = logoData ? marginX + 20 : marginX;
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(14);
+          doc.setTextColor(15, 23, 42);
+          doc.text('Sekar Constructions', titleX, 16);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(162, 123, 60);
-        doc.text('Class-I Civil Engineers & DAE Contractors', titleX, cursorY + 5);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(162, 123, 60);
+          doc.text('Class-I Civil Engineers & DAE Contractors', titleX, 21);
 
-        doc.setDrawColor(162, 123, 60);
-        doc.setLineWidth(0.6);
-        doc.line(marginX, 30, pageWidth - marginX, 30);
+          doc.setDrawColor(162, 123, 60);
+          doc.setLineWidth(0.6);
+          doc.line(marginX, 30, pageWidth - marginX, 30);
 
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.setTextColor(15, 23, 42);
-        doc.text('Infrastructure & Assets Inventory', marginX, 38);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(13);
+          doc.setTextColor(15, 23, 42);
+          doc.text('Infrastructure & Assets Inventory', marginX, 38);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(71, 85, 105);
-        doc.text(
-          'Full owned-asset listing — machinery, scaffolding, fleet, instruments, quarries & crushing.',
-          marginX,
-          44
-        );
-        doc.text(
-          `Generated ${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}  ·  sekarconstructions.com`,
-          marginX,
-          49
-        );
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8.5);
+          doc.setTextColor(71, 85, 105);
+          doc.text(
+            'Full owned-asset listing — machinery, scaffolding, fleet, instruments, quarries & crushing.',
+            marginX,
+            44
+          );
+          doc.text(generatedLabel, marginX, 49);
+        };
 
         const body = collectInfraPdfRows();
 
         doc.autoTable({
-          startY: 54,
+          startY: contentTop,
           head: [['Sl. No.', 'Description', 'Qty', 'Unit', 'Category']],
           body,
           theme: 'grid',
@@ -1638,8 +2217,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             3: { cellWidth: 18, halign: 'center' },
             4: { cellWidth: 42 }
           },
-          margin: { left: marginX, right: marginX },
+          margin: { top: contentTop, left: marginX, right: marginX, bottom: 16 },
           didDrawPage: (data) => {
+            drawLetterPad();
             const pageCount = doc.internal.getNumberOfPages();
             const page = data.pageNumber;
             doc.setFontSize(7.5);
@@ -1647,10 +2227,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             doc.text(
               `Page ${page} of ${pageCount}`,
               pageWidth - marginX,
-              doc.internal.pageSize.getHeight() - 8,
+              pageHeight - 8,
               { align: 'right' }
             );
-            doc.text('Sekar Constructions — Confidential inventory summary', marginX, doc.internal.pageSize.getHeight() - 8);
+            doc.text('Sekar Constructions — Inventory summary', marginX, pageHeight - 8);
           }
         });
 
@@ -1682,12 +2262,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   function formatOngoingCostLakhs(valueLakhs) {
     const display = String(valueLakhs || '').trim();
     if (!display) return '—';
-    const numeric = parseFloat(display.replace(/,/g, ''));
-    if (Number.isNaN(numeric)) {
-      return `&#8377;${escapeInfraHtml(display)} Lakhs`;
-    }
-    const cr = (numeric / 100).toFixed(2);
-    return `&#8377;${escapeInfraHtml(display)} Lakhs <span class="cost-sub">(&#8377;${escapeInfraHtml(cr)} Cr)</span>`;
+    return `&#8377; ${escapeInfraHtml(display)} Lakhs`;
+  }
+
+  /** PDF-safe cost: Helvetica lacks ₹; strip any legacy Cr conversion suffix. */
+  function formatCostTextForPdf(raw) {
+    return String(raw || '')
+      .replace(/\u20B9\s*/g, 'Rs. ')
+      .replace(/\s*\([^)]*\bCr\.?\)/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   function ongoingProgressClass(pct) {
@@ -1979,7 +2563,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const sl = cells[0]?.textContent?.trim() || String(index + 1);
           const project = (row.querySelector('.col-desc') || cells[1])?.textContent?.trim() || '';
           const client = (row.querySelector('.col-client') || cells[2])?.textContent?.trim() || '';
-          const cost = (cells[3]?.textContent || '').replace(/\s+/g, ' ').trim();
+          const cost = formatCostTextForPdf(cells[3]?.textContent);
           const progressEl = row.querySelector('.progress-text, .scheduled-badge');
           const progress = (progressEl?.textContent || cells[4]?.textContent || '').replace(/\s+/g, ' ').trim();
           const region = REGION_LABELS[row.getAttribute('data-region')] || '';
@@ -2042,57 +2626,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         const JsPDF = window.jspdf.jsPDF;
         const doc = new JsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
         const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
         const marginX = 14;
-        let cursorY = 16;
-
+        const contentTop = 54;
         const logoData = await loadOngoingLogoDataUrl();
-        if (logoData) {
-          try {
-            doc.addImage(logoData, 'PNG', marginX, 10, 16, 16);
-          } catch (_) {
-            /* text-only header fallback */
+        const generatedLabel = `Generated ${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}  ·  sekarconstructions.com`;
+
+        const drawLetterPad = () => {
+          if (logoData) {
+            try {
+              doc.addImage(logoData, 'PNG', marginX, 10, 16, 16);
+            } catch (_) {
+              /* text-only header fallback */
+            }
           }
-        }
 
-        const titleX = logoData ? marginX + 20 : marginX;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.setTextColor(15, 23, 42);
-        doc.text('Sekar Constructions', titleX, cursorY);
+          const titleX = logoData ? marginX + 20 : marginX;
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(14);
+          doc.setTextColor(15, 23, 42);
+          doc.text('Sekar Constructions', titleX, 16);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(162, 123, 60);
-        doc.text('Class-I Civil Engineers & DAE Contractors', titleX, cursorY + 5);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(162, 123, 60);
+          doc.text('Class-I Civil Engineers & DAE Contractors', titleX, 21);
 
-        doc.setDrawColor(162, 123, 60);
-        doc.setLineWidth(0.6);
-        doc.line(marginX, 30, pageWidth - marginX, 30);
+          doc.setDrawColor(162, 123, 60);
+          doc.setLineWidth(0.6);
+          doc.line(marginX, 30, pageWidth - marginX, 30);
 
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.setTextColor(15, 23, 42);
-        doc.text('Ongoing Projects', marginX, 38);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(13);
+          doc.setTextColor(15, 23, 42);
+          doc.text('Ongoing Projects', marginX, 38);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(71, 85, 105);
-        doc.text(
-          'Active industrial, utility, and heavy structural contracts across Tamil Nadu and Andhra Pradesh.',
-          marginX,
-          44
-        );
-        doc.text(
-          `Generated ${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}  ·  sekarconstructions.com`,
-          marginX,
-          49
-        );
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8.5);
+          doc.setTextColor(71, 85, 105);
+          doc.text(
+            'Active industrial, utility, and heavy structural contracts across Tamil Nadu and Andhra Pradesh.',
+            marginX,
+            44
+          );
+          doc.text(generatedLabel, marginX, 49);
+        };
 
         const body = collectOngoingPdfRows();
 
         doc.autoTable({
-          startY: 54,
-          head: [['Sl. No.', 'Project / Location', 'Owner / Client', 'Cost', 'Progress', 'Region']],
+          startY: contentTop,
+          head: [['Sl. No.', 'Project / Location', 'Owner / Client', 'Cost (Lakhs)', 'Progress', 'Region']],
           body,
           theme: 'grid',
           styles: {
@@ -2121,8 +2705,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             4: { cellWidth: 24, halign: 'center' },
             5: { cellWidth: 28, halign: 'center' }
           },
-          margin: { left: marginX, right: marginX },
+          margin: { top: contentTop, left: marginX, right: marginX, bottom: 16 },
           didDrawPage: (data) => {
+            drawLetterPad();
             const pageCount = doc.internal.getNumberOfPages();
             const page = data.pageNumber;
             doc.setFontSize(7.5);
@@ -2130,10 +2715,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             doc.text(
               `Page ${page} of ${pageCount}`,
               pageWidth - marginX,
-              doc.internal.pageSize.getHeight() - 8,
+              pageHeight - 8,
               { align: 'right' }
             );
-            doc.text('Sekar Constructions — Ongoing projects summary', marginX, doc.internal.pageSize.getHeight() - 8);
+            doc.text('Sekar Constructions — Ongoing projects summary', marginX, pageHeight - 8);
           }
         });
 
@@ -2167,14 +2752,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!display) return '—';
     const numeric = parseFloat(display.replace(/,/g, ''));
     if (Number.isNaN(numeric)) {
-      return `&#8377;${escapeInfraHtml(display)} Lakhs`;
+      return `&#8377; ${escapeInfraHtml(display)} Lakhs`;
     }
-    const formatted = numeric.toLocaleString('en-IN', {
-      minimumFractionDigits: display.includes('.') ? (display.split('.')[1] || '').length : 0,
-      maximumFractionDigits: 2
+    const formatted = Math.round(numeric).toLocaleString('en-IN', {
+      maximumFractionDigits: 0
     });
-    const cr = (numeric / 100).toFixed(2);
-    return `&#8377;${escapeInfraHtml(formatted)} Lakhs <span class="cost-sub">(&#8377;${escapeInfraHtml(cr)} Cr)</span>`;
+    return `&#8377; ${escapeInfraHtml(formatted)} Lakhs`;
   }
 
   function syncCompletedProjectsPageFromAdmin() {
@@ -2449,7 +3032,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const cells = row.querySelectorAll('td');
           const sl = cells[0]?.textContent?.trim() || String(index + 1);
           const project = (row.querySelector('.col-desc') || cells[1])?.textContent?.trim() || '';
-          const cost = (cells[2]?.textContent || '').replace(/\s+/g, ' ').trim();
+          const cost = formatCostTextForPdf(cells[2]?.textContent);
           const regionKey = row.getAttribute('data-region') || '';
           const region = regionLabels[regionKey] || regionKey;
           return [sl, project, cost, region];
@@ -2511,56 +3094,56 @@ document.addEventListener('DOMContentLoaded', async () => {
         const JsPDF = window.jspdf.jsPDF;
         const doc = new JsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
         const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
         const marginX = 14;
-        let cursorY = 16;
-
+        const contentTop = 54;
         const logoData = await loadCompletedLogoDataUrl();
-        if (logoData) {
-          try {
-            doc.addImage(logoData, 'PNG', marginX, 10, 16, 16);
-          } catch (_) {
-            /* text-only header fallback */
+        const generatedLabel = `Generated ${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}  ·  sekarconstructions.com`;
+
+        const drawLetterPad = () => {
+          if (logoData) {
+            try {
+              doc.addImage(logoData, 'PNG', marginX, 10, 16, 16);
+            } catch (_) {
+              /* text-only header fallback */
+            }
           }
-        }
 
-        const titleX = logoData ? marginX + 20 : marginX;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.setTextColor(15, 23, 42);
-        doc.text('Sekar Constructions', titleX, cursorY);
+          const titleX = logoData ? marginX + 20 : marginX;
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(14);
+          doc.setTextColor(15, 23, 42);
+          doc.text('Sekar Constructions', titleX, 16);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(162, 123, 60);
-        doc.text('Class-I Civil Engineers & DAE Contractors', titleX, cursorY + 5);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(162, 123, 60);
+          doc.text('Class-I Civil Engineers & DAE Contractors', titleX, 21);
 
-        doc.setDrawColor(162, 123, 60);
-        doc.setLineWidth(0.6);
-        doc.line(marginX, 30, pageWidth - marginX, 30);
+          doc.setDrawColor(162, 123, 60);
+          doc.setLineWidth(0.6);
+          doc.line(marginX, 30, pageWidth - marginX, 30);
 
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.setTextColor(15, 23, 42);
-        doc.text('Completed Major Works', marginX, 38);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(13);
+          doc.setTextColor(15, 23, 42);
+          doc.text('Completed Major Works', marginX, 38);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(71, 85, 105);
-        doc.text(
-          'Audited directory of completed civil engineering contracts.',
-          marginX,
-          44
-        );
-        doc.text(
-          `Generated ${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}  ·  sekarconstructions.com`,
-          marginX,
-          49
-        );
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8.5);
+          doc.setTextColor(71, 85, 105);
+          doc.text(
+            'Audited directory of completed civil engineering contracts.',
+            marginX,
+            44
+          );
+          doc.text(generatedLabel, marginX, 49);
+        };
 
         const body = collectCompletedPdfRows();
 
         doc.autoTable({
-          startY: 54,
+          startY: contentTop,
           head: [['Sl. No.', 'Description of Works', 'Total Value (In Lakhs)', 'Region']],
           body,
           theme: 'grid',
@@ -2588,8 +3171,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             2: { cellWidth: 42, halign: 'center', fontStyle: 'bold' },
             3: { cellWidth: 32, halign: 'center' }
           },
-          margin: { left: marginX, right: marginX },
+          margin: { top: contentTop, left: marginX, right: marginX, bottom: 16 },
           didDrawPage: (data) => {
+            drawLetterPad();
             const pageCount = doc.internal.getNumberOfPages();
             const page = data.pageNumber;
             doc.setFontSize(7.5);
@@ -2597,10 +3181,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             doc.text(
               `Page ${page} of ${pageCount}`,
               pageWidth - marginX,
-              doc.internal.pageSize.getHeight() - 8,
+              pageHeight - 8,
               { align: 'right' }
             );
-            doc.text('Sekar Constructions — Completed major works', marginX, doc.internal.pageSize.getHeight() - 8);
+            doc.text('Sekar Constructions — Completed major works', marginX, pageHeight - 8);
           }
         });
 
@@ -2667,6 +3251,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     return keys;
   }
 
+  function isSafePublicHref(href) {
+    const value = String(href || '').trim();
+    if (!value || value.length > 2048) return false;
+    if (/[\r\n\0]/i.test(value)) return false;
+    const lower = value.toLowerCase();
+    if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+      return false;
+    }
+    if (value.startsWith('#')) return true;
+    if (value.startsWith('/') && !value.startsWith('//')) return true;
+    if (/^https:\/\//i.test(value)) return true;
+    if (/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(value)) return true;
+    return false;
+  }
+
+  function isSafePublicImageSrc(src) {
+    const value = String(src || '').trim();
+    if (!value || value.length > 2048) return false;
+    if (/[\r\n\0]/i.test(value)) return false;
+    const lower = value.toLowerCase();
+    if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+      return false;
+    }
+    if (value.startsWith('/') && !value.startsWith('//')) return true;
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(value)) return true;
+    if (/^https:\/\//i.test(value)) return true;
+    return false;
+  }
+
   function syncProjectGalleryPageFromAdmin() {
     if (!window.SekarAdminSecurity || typeof window.SekarAdminSecurity.getProjectGalleryContent !== 'function') {
       return null;
@@ -2703,9 +3316,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (leadEl) leadEl.textContent = data.hero.lead || '';
       if (ctaEl) {
         ctaEl.textContent = data.hero.ctaLabel || 'Browse Case Studies';
-        if (data.hero.ctaHref) ctaEl.setAttribute('href', data.hero.ctaHref);
+        if (data.hero.ctaHref && isSafePublicHref(data.hero.ctaHref)) {
+          ctaEl.setAttribute('href', data.hero.ctaHref);
+        }
       }
-      if (heroImg && data.hero.image) heroImg.src = data.hero.image;
+      if (heroImg && data.hero.image && isSafePublicImageSrc(data.hero.image)) {
+        heroImg.src = data.hero.image;
+      }
     }
 
     // Drop retired Polyhose PEB-only split; keep one merged carousel.
@@ -3028,6 +3645,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       openGalleryModal(card);
     });
 
+    const openGalleryFromHash = () => {
+      const raw = String(window.location.hash || '').replace(/^#/, '').trim();
+      if (!raw || !raw.startsWith('gallery-')) return false;
+      const card = galleryGrid.querySelector(`.gallery-card[data-id="${raw}"]`);
+      if (!card || card.classList.contains('hidden')) return false;
+      try {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) { /* ignore */ }
+      window.setTimeout(() => openGalleryModal(card), 180);
+      return true;
+    };
+
+    // Deep-link from About collage (/gallery#gallery-isro-c25)
+    if (!openGalleryFromHash()) {
+      window.setTimeout(openGalleryFromHash, 500);
+      window.setTimeout(openGalleryFromHash, 1200);
+    }
+    window.addEventListener('hashchange', openGalleryFromHash);
+
     const modalCloseBtn = document.getElementById('modalCloseBtn');
     if (modalCloseBtn && !projectCards.length) {
       modalCloseBtn.addEventListener('click', closeGalleryModal);
@@ -3124,7 +3760,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modalAuthor = document.getElementById('certLightboxAuthor');
     const modalDetails = document.getElementById('certLightboxDetails');
     const modalBadge = document.getElementById('certLightboxBadge');
-    const modalDownload = document.getElementById('certLightboxDownloadBtn');
     const modalClose = document.getElementById('certLightboxClose');
     const modalBackdrop = document.getElementById('certLightboxBackdrop');
 
@@ -3139,7 +3774,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (img) {
         modalImg.src = img.src;
         modalImg.alt = img.alt || 'Official Government Certificate';
-        if (modalDownload) modalDownload.href = img.src;
       }
       if (title && modalTitle) modalTitle.textContent = title.textContent;
       if (author && modalAuthor) modalAuthor.innerHTML = author.innerHTML;

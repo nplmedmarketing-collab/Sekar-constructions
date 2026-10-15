@@ -1,7 +1,7 @@
 {
   "name": "sekar-construction-api",
   "version": "1.0.0",
-  "description": "Production REST API for Sekar Construction CMS (Postgres / SQLite)",
+  "description": "Production REST API for Sekar Construction CMS (MariaDB)",
   "private": true,
   "main": "src/index.js",
   "engines": {
@@ -10,18 +10,19 @@
   "scripts": {
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "db:logs": "docker compose logs -f postgres",
+    "db:logs": "docker compose logs -f mariadb",
     "migrate": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
-    "setup": "npm run migrate && npm run seed",
+    "setup": "npm run migrate",
+    "migrate:from-sqlite": "node scripts/migrate-sqlite-to-mariadb.js",
     "start": "node src/index.js",
     "start:prod": "node -e \"process.env.NODE_ENV=process.env.NODE_ENV||'production';require('./src/index.js')\"",
     "dev": "node --watch src/index.js",
     "smoke": "node scripts/smoke-test.js"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -31,13 +32,11 @@
     "knex": "^3.1.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.24.3",
     "nodemailer": "^9.0.5",
     "otplib": "^12.0.1",
-    "pg": "^8.13.1",
+    "qrcode": "^1.5.4",
     "uuid": "^11.0.5",
     "zod": "^3.24.1"
-  },
-  "optionalDependencies": {
-    "better-sqlite3": "^11.7.0"
   }
 }

@@ -1,5 +1,6 @@
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
+const { assertAllowedCtaHref, isAllowedCmsImageSrc } = require('../utils/safeUrl');
 
 async function getHeroAndHighlights(pageKey) {
   const heroRow = await db('page_content').where({ page_key: pageKey }).first();
@@ -26,6 +27,13 @@ async function getHeroAndHighlights(pageKey) {
 }
 
 async function upsertPageMeta(pageKey, hero, highlights) {
+  assertAllowedCtaHref(hero && hero.ctaHref);
+  if (hero && hero.image != null && hero.image !== '' && !isAllowedCmsImageSrc(hero.image)) {
+    const err = new Error('Invalid hero image URL.');
+    err.status = 400;
+    err.code = 'INVALID_IMAGE';
+    throw err;
+  }
   const existing = await db('page_content').where({ page_key: pageKey }).first();
   const payload = {
     brand: hero.brand,
@@ -215,27 +223,36 @@ async function putGallery(data) {
 }
 
 async function getFleet() {
+  const hasLogoCol = await db.schema.hasColumn('fleet_assets', 'logo_url');
   const rows = await db('fleet_assets').orderBy('sort_order', 'asc');
   return rows.map((r) => ({
     key: r.key,
     name: r.name,
     count: r.count,
     icon: r.icon,
+    logoUrl: hasLogoCol ? (r.logo_url || '') : '',
   }));
 }
 
 async function putFleet(list) {
+  const hasLogoCol = await db.schema.hasColumn('fleet_assets', 'logo_url');
   await db('fleet_assets').del();
   const arr = Array.isArray(list) ? list : [];
   if (arr.length) {
     await db('fleet_assets').insert(
-      arr.map((f, i) => ({
-        key: f.key || `fleet-${i}`,
-        name: f.name,
-        count: String(f.count ?? ''),
-        icon: f.icon || null,
-        sort_order: i,
-      }))
+      arr.map((f, i) => {
+        const row = {
+          key: f.key || `fleet-${i}`,
+          name: f.name,
+          count: String(f.count ?? ''),
+          icon: f.icon || null,
+          sort_order: i,
+        };
+        if (hasLogoCol) {
+          row.logo_url = f.logoUrl || f.logo_url || null;
+        }
+        return row;
+      })
     );
   }
   return getFleet();
@@ -454,8 +471,9 @@ async function createInquiry(data) {
     subject: data.subject,
     message: data.message,
     status: 'NEW',
-    priority: data.priority || 'MEDIUM',
-    value: data.value || null,
+    // Public create: never trust client priority/value (over-posting).
+    priority: 'MEDIUM',
+    value: null,
   });
   const rows = await db('inquiries').where({ inquiry_id: inquiryId }).first();
   return {

@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 const config = require('../config');
@@ -10,9 +10,64 @@ const backupCodeService = require('./backupCodeService');
 
 const BCRYPT_ROUNDS = 12;
 const TOTP_LOCK_PREFIX = 'totp:';
+// Fixed dummy hash so unknown-user path still runs bcrypt.compare (timing parity).
+const DUMMY_PASSWORD_HASH =
+  '$2b$12$G4N8t.PEd710n3KlrRaFou432s/WHndb8T80zc2PW9vcZnfamw61W';
 
 function clientIp(req) {
   return (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString().split(',')[0].trim();
+}
+
+function invalidCredentialsError() {
+  const err = new Error('Invalid username or password.');
+  err.status = 401;
+  err.code = 'INVALID_CREDENTIALS';
+  return err;
+}
+
+async function purgeExpiredLoginChallenges() {
+  try {
+    await db('login_challenges').where('expires_at', '<', db.fn.now()).del();
+  } catch {
+    /* table may not exist until migrate */
+  }
+}
+
+async function persistLoginChallenge(userId, challengeToken) {
+  const challengeHash = cryptoService.hashChallengeToken(challengeToken);
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+  await purgeExpiredLoginChallenges();
+  await db('login_challenges').insert({
+    challenge_hash: challengeHash,
+    user_id: userId,
+    expires_at: expiresAt,
+    used_at: null,
+  });
+}
+
+/**
+ * Load unused, unexpired challenge for token. Does not mark used.
+ */
+async function getActiveLoginChallenge(challengeToken) {
+  const payload = cryptoService.verifyLoginChallenge(challengeToken);
+  if (!payload) return null;
+  const challengeHash = cryptoService.hashChallengeToken(challengeToken);
+  const row = await db('login_challenges')
+    .where({ challenge_hash: challengeHash })
+    .whereNull('used_at')
+    .where('expires_at', '>', db.fn.now())
+    .first();
+  if (!row) return null;
+  return { payload, challengeHash, row };
+}
+
+/** Atomically mark challenge used; 0 rows = already used / missing. */
+async function markLoginChallengeUsed(challengeHash) {
+  const updated = await db('login_challenges')
+    .where({ challenge_hash: challengeHash })
+    .whereNull('used_at')
+    .update({ used_at: db.fn.now() });
+  return updated === 1;
 }
 
 function hashToken(token) {
@@ -165,7 +220,8 @@ async function clearTotpLockout(username) {
 }
 
 /**
- * Verify TOTP against stored secret with ±1 step window and replay protection.
+ * Verify TOTP against stored secret with ±1 step window and atomic replay protection.
+ * Conditional UPDATE: 0 rows means race/replay → failure.
  * Returns { ok: true, counter } or { ok: false, reason }.
  */
 async function verifyAndConsumeStoredTotp(user, code) {
@@ -180,10 +236,20 @@ async function verifyAndConsumeStoredTotp(user, code) {
   if (lastStep !== null && counter <= lastStep) {
     return { ok: false, reason: 'REPLAY' };
   }
-  await db('admin_users').where({ id: user.id }).update({
+  // Atomic: only succeed if totp_last_step is still null or strictly less than counter.
+  const q = db('admin_users').where({ id: user.id });
+  if (lastStep === null) {
+    q.whereNull('totp_last_step');
+  } else {
+    q.where('totp_last_step', lastStep);
+  }
+  const updated = await q.update({
     totp_last_step: counter,
     updated_at: db.fn.now(),
   });
+  if (updated !== 1) {
+    return { ok: false, reason: 'REPLAY' };
+  }
   return { ok: true, counter };
 }
 
@@ -230,35 +296,22 @@ async function verifyPassword(username, password, req) {
   }
 
   const user = await db('admin_users').whereRaw('LOWER(username) = ?', [userClean]).first();
-  if (!user) {
-    await recordFailedAttempt(userClean, req);
-    const err = new Error('Invalid username or password.');
-    err.status = 401;
-    err.code = 'INVALID_CREDENTIALS';
-    throw err;
-  }
+  const hash = user ? user.password_hash : DUMMY_PASSWORD_HASH;
+  const ok = await bcrypt.compare(pwd, hash);
 
-  const ok = await bcrypt.compare(pwd, user.password_hash);
-  if (!ok) {
+  if (!user || !ok) {
     const fail = await recordFailedAttempt(userClean, req);
     if (fail.locked) {
-      const err = new Error(`Account locked for ${fail.remainingMinutes} minutes due to failed attempts.`);
+      const err = new Error(
+        `Account locked due to repeated failed attempts. Try again in ${fail.remainingMinutes} minute(s).`
+      );
       err.status = 423;
       err.code = 'ACCOUNT_LOCKED';
       err.locked = true;
+      err.remainingMinutes = fail.remainingMinutes;
       throw err;
     }
-    const attemptsLeft = config.MAX_FAILED_ATTEMPTS - fail.attempts;
-    const totpHint = user.totp_enabled
-      ? ' After the password step, you must also enter the 6-digit code from Google Authenticator.'
-      : '';
-    const err = new Error(
-      `Invalid username or password.${totpHint} ${attemptsLeft} attempt(s) remaining.`
-    );
-    err.status = 401;
-    err.code = 'INVALID_CREDENTIALS';
-    err.attemptsLeft = attemptsLeft;
-    throw err;
+    throw invalidCredentialsError();
   }
 
   await clearLockout(userClean);
@@ -270,6 +323,7 @@ async function login(username, password, req) {
 
   if (user.totp_enabled && user.totp_secret) {
     const challengeToken = cryptoService.createLoginChallenge(user.id);
+    await persistLoginChallenge(user.id, challengeToken);
     await writeAudit('LOGIN_PASSWORD_OK', 'Password verified; awaiting TOTP.', 'INFO', req, user.id);
     return {
       requires2FA: true,
@@ -287,19 +341,19 @@ async function login(username, password, req) {
 }
 
 async function verifyTotpLogin(challengeToken, code, req) {
-  const challenge = cryptoService.verifyLoginChallenge(challengeToken);
-  if (!challenge) {
+  const active = await getActiveLoginChallenge(challengeToken);
+  if (!active) {
     const err = new Error('Login challenge expired or invalid. Sign in again with your password.');
     err.status = 401;
     err.code = 'INVALID_CHALLENGE';
     throw err;
   }
 
-  const user = await db('admin_users').where({ id: challenge.uid }).first();
+  const user = await db('admin_users').where({ id: active.payload.uid }).first();
   if (!user || !user.totp_enabled || !user.totp_secret) {
-    const err = new Error('Two-factor authentication is not enabled for this account.');
-    err.status = 400;
-    err.code = 'TOTP_NOT_ENABLED';
+    const err = new Error('Login challenge expired or invalid. Sign in again with your password.');
+    err.status = 401;
+    err.code = 'INVALID_CHALLENGE';
     throw err;
   }
 
@@ -314,9 +368,53 @@ async function verifyTotpLogin(challengeToken, code, req) {
   }
 
   const normalized = totpService.normalizeTotpCode(code);
+  let totpReady = false;
+
+  // Soft-verify TOTP first (no consume) so a wrong code can be retried on the same challenge,
+  // and concurrent double-submits don't both burn the authenticator code.
+  if (/^\d{6}$/.test(normalized)) {
+    const counter = totpService.getVerifiedCounterFromStored(normalized, user.totp_secret);
+    if (counter !== null) {
+      const lastStep = user.totp_last_step != null ? Number(user.totp_last_step) : null;
+      if (lastStep !== null && counter <= lastStep) {
+        await recordTotpFailedAttempt(user.username, req, user.id);
+        const err = new Error('Authenticator code already used. Wait for the next code.');
+        err.status = 401;
+        err.code = 'TOTP_REPLAY';
+        throw err;
+      }
+      totpReady = true;
+    }
+  }
+
+  const looksLikeBackup = !totpReady && String(code || '').replace(/\s/g, '').length >= 8;
+
+  if (!totpReady && !looksLikeBackup) {
+    const fail = await recordTotpFailedAttempt(user.username, req, user.id);
+    if (fail.locked) {
+      const err = new Error(`Too many invalid authenticator attempts. Locked for ${fail.remainingMinutes} minutes.`);
+      err.status = 423;
+      err.code = 'TOTP_LOCKED';
+      throw err;
+    }
+    const err = new Error('Invalid authenticator or backup code.');
+    err.status = 401;
+    err.code = 'INVALID_TOTP';
+    throw err;
+  }
+
+  // Claim challenge atomically — only one concurrent verify may proceed.
+  const consumed = await markLoginChallengeUsed(active.challengeHash);
+  if (!consumed) {
+    const err = new Error('Login challenge expired or invalid. Sign in again with your password.');
+    err.status = 401;
+    err.code = 'INVALID_CHALLENGE';
+    throw err;
+  }
+
   let verified = false;
 
-  if (/^\d{6}$/.test(normalized)) {
+  if (totpReady) {
     const result = await verifyAndConsumeStoredTotp(user, normalized);
     if (result.ok) {
       verified = true;
@@ -463,10 +561,11 @@ async function totpSetup(userId) {
   }
   const secret = totpService.generateSecret();
   const otpauthUrl = totpService.buildOtpauthUrl(user.username, secret);
+  const qrImageUrl = await totpService.qrDataUrl(otpauthUrl);
   return {
     secret,
     otpauthUrl,
-    qrImageUrl: totpService.qrImageUrl(otpauthUrl),
+    qrImageUrl,
     totpEnabled: Boolean(user.totp_enabled),
   };
 }
@@ -631,7 +730,7 @@ async function totpRotate(userId, password, code, req, currentSessionToken) {
     success: true,
     secret,
     otpauthUrl,
-    qrImageUrl: totpService.qrImageUrl(otpauthUrl),
+    qrImageUrl: await totpService.qrDataUrl(otpauthUrl),
     backupCodes,
     sessionsRevoked: revoked,
   };

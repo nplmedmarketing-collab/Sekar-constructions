@@ -1,8 +1,8 @@
 # Production deploy & client handover
 
-This guide is for the client’s IT / hosting team. It does **not** invent hosting credentials — use your own Postgres, VPS, or PaaS accounts.
+This guide is for the client’s IT / hosting team. It does **not** invent hosting credentials — use your own MariaDB, VPS, or PaaS accounts.
 
-**GitHub Pages + remote API (admin from github.io):** see [`DEPLOY-GITHUB-PAGES.md`](./DEPLOY-GITHUB-PAGES.md). Pages cannot host this Node API; use Render/Railway and set `REMOTE_API_BASE` in `config.site.js`.
+**GitHub Pages + remote API (admin from github.io):** see [`DEPLOY-GITHUB-PAGES.md`](./DEPLOY-GITHUB-PAGES.md). Pages cannot host this Node API; use Render/Railway/VPS and set `REMOTE_API_BASE` in `config.site.js`.
 
 ## Architecture (recommended)
 
@@ -12,73 +12,52 @@ This guide is for the client’s IT / hosting team. It does **not** invent hosti
     │
     ├─ pages load config.js → apiBaseUrl = https://api.example.com
     │
-    └─ REST calls ──► [ Node API on :3001 ] ──► [ PostgreSQL ]
+    └─ REST calls ──► [ Node API on :3001 ] ──► [ MariaDB ]
                          HTTPS via Nginx/Caddy
 ```
 
 - **Static site** and **API** may be on different hosts.
-- Production database: **PostgreSQL only**. Do not use SQLite in production (API hard-fails if `DATABASE_URL` is not Postgres).
+- Database: **MariaDB / MySQL only**. SQLite and PostgreSQL are not supported.
 
-## Local development (what actually runs without Docker)
+## Local / staging MariaDB
 
-On machines **without Docker / without `psql` on PATH** (verified on this Windows workspace), use SQLite:
+1. Provision MariaDB (hosting panel, managed DB, or `npm run db:up` for local Docker).
+2. In `.env`, set:
+   - `DATABASE_URL=mysql://USER:PASS%40WORD@HOST:3306/Sekarcons` (encode `@` in password as `%40`), **or**
+   - `DB_HOST` / `DB_PORT` / `DB_USER` / `DB_PASSWORD` / `DB_NAME`
+3. From `api/`: `npm install && npm run migrate`
+4. To import existing CMS content from legacy SQLite: `npm run migrate:from-sqlite` (do **not** run `npm run seed` afterward).
+5. `npm start` then `npm run smoke`
 
-```bash
-cd api
-cp .env.example .env   # defaults to DATABASE_URL=file:./dev.sqlite
-npm install
-npm run setup && npm start
-```
+Shared-hosting MariaDB often **blocks remote TCP :3306** (firewall / “allow remote MySQL” off). If `connect ETIMEDOUT` from your laptop, run migrate + import **on the server** over SSH (or hosting Node console) where the DB listens on `127.0.0.1`, or enable remote MySQL for your IP in the panel.
 
-Serve the static site via Live Server (`http://127.0.0.1:5500`), never `file://`.
+## 1. Provision MariaDB (production)
 
-### Optional: local / staging parity with Docker Postgres
+Create a database and user in your host panel (example names):
 
-When Docker Desktop is available, prefer real Postgres before go-live:
+- Database: `Sekarcons`
+- User with full rights on that database
 
-1. Install **Docker Desktop** (or Docker Engine + Compose plugin).
-2. In `.env`, set `DATABASE_URL=postgres://sekar_local:sekar_local_dev_only@127.0.0.1:5433/sekar_cms` (comment out the SQLite line).
-3. Start DB: `npm run db:up` (Compose file: `api/docker-compose.yml`).
-4. Migrate + seed: `npm run setup`
-5. Run API: `npm start`
-6. Smoke: `npm run smoke`
-
-**Local-dev credentials only** (never reuse in production):
-
-`postgres://sekar_local:sekar_local_dev_only@127.0.0.1:5433/sekar_cms`
-
-Compose maps host **5433** → container **5432** (`"5433:5432"`). Production provider ports (often **5432**) are separate — do not confuse them with the local Compose host mapping.
-
-## 1. Provision PostgreSQL (production)
-
-Create a database and user (example names — replace with **your own strong password**):
-
-```sql
-CREATE USER sekar_app WITH PASSWORD 'USE_A_STRONG_PASSWORD';
-CREATE DATABASE sekar_cms OWNER sekar_app;
-```
-
-Connection string:
+Connection string shape:
 
 ```
-DATABASE_URL=postgres://sekar_app:USE_A_STRONG_PASSWORD@DB_HOST:5432/sekar_cms
+DATABASE_URL=mysql://USER:PASSWORD_ENCODED@DB_HOST:3306/Sekarcons
 ```
 
-SSL: production enables Postgres SSL by default. If your provider supplies a CA, set `PG_SSL_CA` to that PEM so the client uses `rejectUnauthorized: true`.
+SSL: production enables MySQL SSL by default (`rejectUnauthorized: false` unless `MYSQL_SSL_CA` is set). Set `DATABASE_SSL=false` if the host does not support SSL.
 
 ## 2. Deploy the API
 
-On the application server (Node 18+):
+On the application server (Node 18+), ideally **same machine / private network** as MariaDB:
 
 ```bash
 cd api
 cp .env.example .env
-# Edit .env — set production DATABASE_URL, SESSION_SECRET, CORS_ORIGINS, COOKIE_SECURE
+# Edit .env — MariaDB URL or DB_*, SESSION_SECRET, CORS_ORIGINS, COOKIE_SECURE
 npm ci --omit=dev
-# better-sqlite3 is optional — omit is fine when using Postgres only
 npm run migrate
-# First-time only: seed CMS content + admin user
-SEED_ADMIN_PASSWORD='GenerateAStrongUniquePassword!' npm run seed
+# Import real content once (from uploaded dev.sqlite) — skip seed:
+# npm run migrate:from-sqlite
 NODE_ENV=production npm start
 # or use PM2 (below)
 ```
@@ -216,10 +195,10 @@ Optional: on www, 301 `careers.html` → `https://jobs.sekarconstructions.com/ca
 ## 5. Security checklist (must pass before go-live)
 
 - [ ] `NODE_ENV=production`
-- [ ] `DATABASE_URL` points to PostgreSQL (not SQLite) — production hard-fails if SQLite URL is specified
+- [ ] `DATABASE_URL` / `DB_*` points to MariaDB/MySQL (`mysql://` or `mariadb://`) — SQLite/Postgres unsupported
 - [ ] `SESSION_SECRET` is a unique random string ≥ 32 characters (used for CSRF, TOTP encryption, login challenges)
-- [ ] Seed used `SEED_ADMIN_PASSWORD` (unique); local hardcoded fallback block removed from code
-- [ ] Default seed password **changed** (`POST /api/auth/change-password`)
+- [ ] Content imported via `migrate:from-sqlite` (or equivalent) — **do not** re-seed live CMS tables
+- [ ] Admin password set / changed (`POST /api/auth/change-password`)
 - [ ] `must_change_password` is false after first password change
 - [ ] **2FA enabled** for production admin (`Security settings` → Enable 2FA) — recommended before go-live
 - [ ] Admin SPA sends `X-CSRF-Token` on mutations (built into `admin-auth.js`); cookie-only clients must too
@@ -230,16 +209,17 @@ Optional: on www, 301 `careers.html` → `https://jobs.sekarconstructions.com/ca
 - [ ] Public marketing pages load `cms-public.js` only (not `admin-auth.js`); no client-side password hashes in the repo
 - [ ] Local-auth legacy fallback block removed from front-end JS (`admin-auth.js` does not ship secrets or local auth bypass)
 - [ ] Gallery / team photos are real client photography for named projects (no invented stand-ins)
-- [ ] Firewall: only 80/443 public; Postgres not public
-- [ ] Automated backups for Postgres
-- [ ] `.env` / `dev.sqlite` / `_env` never committed; file permissions restricted on server
+- [ ] Firewall: only 80/443 public; MariaDB not public (prefer localhost / private network)
+- [ ] Automated backups for MariaDB
+- [ ] `.env` / legacy `dev.sqlite` / `_env` never committed; file permissions restricted on server
 - [ ] Smoke: `GET /api/health` returns `{ ok: true }`
 - [ ] Smoke: `GET /api/public/infrastructure` returns inventory
 - [ ] Admin login works from a second device/browser
 
-## 6. Migrations & seed
+## 6. Migrations & content import
 
-- After the first production seed, do **not** re-run `npm run seed` on live (it deletes and reloads CMS tables).
+- Prefer `npm run migrate` + `npm run migrate:from-sqlite` over `npm run seed`.
+- After importing real content, do **not** run `npm run seed` on live (it deletes and reloads CMS tables).
 - **Never edit** `migrations/20260826120000_initial_schema.js` (or any migration) after it has run in production — add a new migration instead.
 
 ## 7. Support notes
@@ -248,8 +228,8 @@ Optional: on www, 301 `careers.html` → `https://jobs.sekarconstructions.com/ca
 |------|--------|
 | Health | `GET /api/health` |
 | Docs | `api/README.md` |
-| Local DB (no Docker) | `DATABASE_URL=file:./dev.sqlite` (verified default) |
-| Local Docker Compose (optional) | `api/docker-compose.yml` host **5433** (`npm run db:up`) |
+| Database | MariaDB/MySQL via `DATABASE_URL` or `DB_*` |
+| Local Docker Compose (optional) | `api/docker-compose.yml` host **3306** (`npm run db:up`) |
 | Node | ≥ 18 |
 | Sessions | Server `SESSION_HOURS` (default 8) + client 15-min idle timeout (intentional) |
 | Default local user (dev only) | `superadmin` / `SEED_ADMIN_PASSWORD` — **not for production** |

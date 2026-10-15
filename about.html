@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us | Sekar Constructions</title>
   <meta name="description" content="About Sekar Constructions — Class-I civil contractors based in Mamallapuram near Chennai. Trusted since 1995 for desalination, DAE/atomic energy, and industrial civil works.">
-  <link rel="canonical" href="https://www.sekarconstructions.com/about.html">
+  <link rel="canonical" href="https://www.sekarconstructions.com/about">
   <meta property="og:title" content="About Us | Sekar Constructions">
   <meta property="og:description" content="Class-I civil contractors in Mamallapuram near Chennai since 1995 — desalination, atomic energy, and industrial infrastructure.">
   <meta property="og:image" content="https://www.sekarconstructions.com/hero-bg.jpg">
-  <meta property="og:url" content="https://www.sekarconstructions.com/about.html">
+  <meta property="og:url" content="https://www.sekarconstructions.com/about">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="logo-final.png">
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="styles.css?v=150">
+  <link rel="stylesheet" href="styles.css?v=206">
 </head>
 <body>
 
@@ -30,24 +30,25 @@
   <div id="site-header">
     <header>
       <div class="container nav-container">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
           <img src="logo-final.png?v=6" alt="Sekar Constructions Logo">
         </a>
         <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
         <ul class="nav-menu" id="navMenu">
-          <li><a href="index.html#home" class="nav-link">Home</a></li>
-          <li><a href="index.html#services" class="nav-link">Services</a></li>
-          <li><a href="about.html" class="nav-link active">About Us</a></li>
-          <li><a href="infrastructure.html" class="nav-link">Infrastructure</a></li>
+          <li><a href="/#home" class="nav-link">Home</a></li>
+          <li><a href="/#services" class="nav-link">Services</a></li>
+          <li><a href="/about" class="nav-link active">About Us</a></li>
+          <li><a href="/leadership" class="nav-link">Leadership</a></li>
+          <li><a href="/infrastructure" class="nav-link">Infrastructure</a></li>
           <li class="dropdown">
             <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="portfolioDropdownBtn">
               Portfolio <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
             </a>
             <ul class="dropdown-menu" id="portfolioDropdownMenu" role="menu" aria-label="Portfolio">
-              <li role="none"><a role="menuitem" href="ongoing-projects.html">Ongoing Projects</a></li>
-              <li role="none"><a role="menuitem" href="portfolio.html">Completed Projects</a></li>
+              <li role="none"><a role="menuitem" href="/ongoing-projects">Ongoing Projects</a></li>
+              <li role="none"><a role="menuitem" href="/portfolio">Completed Projects</a></li>
             </ul>
           </li>
           <li class="dropdown">
@@ -55,17 +56,17 @@
               Gallery <i class="fa-solid fa-chevron-down dropdown-chevron" aria-hidden="true"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu--gallery" id="galleryDropdownMenu" role="menu" aria-label="Gallery">
-              <li role="none"><a role="menuitem" href="gallery.html">Projects</a></li>
-              <li role="none"><a role="menuitem" href="gallery-plant-machinery.html">Plant &amp; Machinery</a></li>
-              <li role="none"><a role="menuitem" href="gallery-founder-clients.html">Founder &amp; Clients</a></li>
-              <li role="none"><a role="menuitem" href="gallery-certificates.html" aria-label="Certificates &amp; Accreditations">
+              <li role="none"><a role="menuitem" href="/gallery">Projects</a></li>
+              <li role="none"><a role="menuitem" href="/gallery-plant-machinery">Plant &amp; Machinery</a></li>
+              <li role="none"><a role="menuitem" href="/gallery-founder-clients">Founder &amp; Clients</a></li>
+              <li role="none"><a role="menuitem" href="/gallery-certificates" aria-label="Certificates &amp; Accreditations">
                 <span class="nav-label-long">Certificates &amp; Accreditations</span>
                 <span class="nav-label-short">Certificates</span>
               </a></li>
             </ul>
           </li>
-          <li><a href="careers.html" class="nav-link">Careers</a></li>
-          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="/careers" class="nav-link">Careers</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
         </ul>
       </div>
     </header>
@@ -94,32 +95,52 @@
   <div class="sc-curtain-panel">
   <div class="about-layout-shell">
     <div class="container about-layout">
-      <nav class="about-toc" aria-label="On this page">
+      <nav class="about-toc" aria-label="Page contents">
         <details class="about-toc-mobile">
           <summary class="about-toc-summary">
-            <span class="about-toc-summary-label">On this page</span>
+            <span class="about-toc-summary-label">Contents</span>
+            <span class="about-toc-meta about-toc-meta--inline" aria-live="polite">
+              <span class="about-toc-position">1</span> of <span class="about-toc-total">9</span>
+            </span>
             <i class="fa-solid fa-chevron-down about-toc-chevron" aria-hidden="true"></i>
           </summary>
           <div class="about-toc-body">
+            <div class="about-toc-progress" aria-hidden="true">
+              <span class="about-toc-progress-bar" style="--toc-progress: 12.5%"></span>
+            </div>
             <ul class="about-toc-list">
               <li><a href="#about-story" class="about-toc-link" data-toc-target="about-story">About Us</a></li>
+              <li><a href="#about-timeline" class="about-toc-link" data-toc-target="about-timeline">Our Journey</a></li>
               <li><a href="#about-workstreams" class="about-toc-link" data-toc-target="about-workstreams">Major Civil Works</a></li>
               <li><a href="#about-capabilities" class="about-toc-link" data-toc-target="about-capabilities">Execution Capabilities</a></li>
               <li><a href="#about-customers" class="about-toc-link" data-toc-target="about-customers">Our Leading Customers</a></li>
+              <li><a href="#about-footprint" class="about-toc-link" data-toc-target="about-footprint">Project Footprint</a></li>
+              <li><a href="#about-progress" class="about-toc-link" data-toc-target="about-progress">Project Progress</a></li>
               <li><a href="#about-financials" class="about-toc-link" data-toc-target="about-financials">Financial Capacity &amp; Quality</a></li>
-              <li><a href="#about-leadership" class="about-toc-link" data-toc-target="about-leadership">Leadership</a></li>
+              <li><a href="#about-team" class="about-toc-link" data-toc-target="about-team">Dynamic Executive Team</a></li>
             </ul>
           </div>
         </details>
         <div class="about-toc-desktop" aria-hidden="false">
-          <p class="about-toc-heading">On this page</p>
+          <div class="about-toc-head">
+            <p class="about-toc-heading">Contents</p>
+            <p class="about-toc-meta" aria-live="polite">
+              <span class="about-toc-position">1</span> of <span class="about-toc-total">9</span>
+            </p>
+          </div>
+          <div class="about-toc-progress" aria-hidden="true">
+            <span class="about-toc-progress-bar" style="--toc-progress: 12.5%"></span>
+          </div>
           <ul class="about-toc-list">
             <li><a href="#about-story" class="about-toc-link" data-toc-target="about-story">About Us</a></li>
+            <li><a href="#about-timeline" class="about-toc-link" data-toc-target="about-timeline">Our Journey</a></li>
             <li><a href="#about-workstreams" class="about-toc-link" data-toc-target="about-workstreams">Major Civil Works</a></li>
             <li><a href="#about-capabilities" class="about-toc-link" data-toc-target="about-capabilities">Execution Capabilities</a></li>
             <li><a href="#about-customers" class="about-toc-link" data-toc-target="about-customers">Our Leading Customers</a></li>
+            <li><a href="#about-footprint" class="about-toc-link" data-toc-target="about-footprint">Project Footprint</a></li>
+            <li><a href="#about-progress" class="about-toc-link" data-toc-target="about-progress">Project Progress</a></li>
             <li><a href="#about-financials" class="about-toc-link" data-toc-target="about-financials">Financial Capacity &amp; Quality</a></li>
-            <li><a href="#about-leadership" class="about-toc-link" data-toc-target="about-leadership">Leadership</a></li>
+            <li><a href="#about-team" class="about-toc-link" data-toc-target="about-team">Dynamic Executive Team</a></li>
           </ul>
         </div>
       </nav>
@@ -128,107 +149,297 @@
   <!-- About Us Page Content -->
   <section class="section-padding bg-light about-story-section">
     <div class="about-content">
-      <div id="about-story" class="about-intro">
-        <span class="section-subtitle">Our Journey</span>
-        <h2 class="about-intro-title">About Us</h2>
-        <p class="about-story-lead">
-          Sekar Constructions commenced its journey in <strong>1995</strong> as a civil construction company.
-          Founded by <strong>Mr. Ethiraj Sekar</strong>, the firm has undertaken major civil engineering works for
-          Central Government, State Government, and reputed private-sector institutions and companies.
-        </p>
-        <ul class="about-client-pills" aria-label="Client sectors">
-          <li style="--pill-i: 0"><a href="#stream-central">Central Government</a></li>
-          <li style="--pill-i: 1"><a href="#stream-state">State Government</a></li>
-          <li style="--pill-i: 2"><a href="#stream-private">Private Sector</a></li>
-        </ul>
+      <div id="about-story" class="about-intro about-intro--split">
+        <div class="about-intro-copy">
+          <span class="section-subtitle">Our Journey</span>
+          <h2 class="about-intro-title">About Us</h2>
+          <p class="about-story-lead">
+            Sekar Constructions commenced its journey in <strong>1995</strong> as a civil construction company.
+            Founded by <strong>Mr. Ethiraj Sekar</strong>, the firm has undertaken major civil engineering works for
+            Central Government, State Government, and reputed private-sector institutions and companies.
+          </p>
+        </div>
+        <div class="about-intro-collage" aria-label="Featured completed projects">
+          <a class="about-collage-item about-collage-item--lg" href="/gallery#gallery-isro-c25">
+            <img src="isro-c25-integration-exterior.png" alt="ISRO C25 Stage Integration Complex, Mahendragiri" width="600" height="800" loading="eager" decoding="async">
+            <span class="about-collage-label">ISRO C25 · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--sm" href="/gallery#gallery-kochar">
+            <img src="kochar-warehouse-01-finished.png" alt="Kochar Industrial Park warehouse" width="600" height="400" loading="eager" decoding="async">
+            <span class="about-collage-label">Kochar · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--md" href="/gallery#gallery-polyhose">
+            <img src="polyhose-facility-front.png" alt="Polyhose industrial facility, Irungattukottai" width="600" height="500" loading="lazy" decoding="async">
+            <span class="about-collage-label">Polyhose · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--md" href="/gallery#gallery-great-lakes">
+            <img src="great-lakes-building.png" alt="Great Lakes Institute campus building, Manamai" width="600" height="500" loading="lazy" decoding="async">
+            <span class="about-collage-label">Great Lakes · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--sm" href="/gallery#gallery-desal-150">
+            <img src="nemmeli-desal-coastal-aerial.png" alt="Nemmeli desalination plant aerial view" width="600" height="400" loading="lazy" decoding="async">
+            <span class="about-collage-label">Nemmeli · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--lg" href="/gallery#gallery-igcar-hall-v">
+            <img src="igcar-campus-aerial.png" alt="IGCAR Kalpakkam research campus aerial view" width="600" height="800" loading="lazy" decoding="async">
+            <span class="about-collage-label">IGCAR · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--sm" href="/gallery#gallery-polyhose">
+            <img src="polyhose-aerial-solar.png" alt="Polyhose campus aerial with solar rooftops" width="600" height="400" loading="lazy" decoding="async">
+            <span class="about-collage-label">Polyhose · View project</span>
+          </a>
+          <a class="about-collage-item about-collage-item--md" href="/gallery#gallery-kochar">
+            <img src="kochar-entrance.png" alt="Kochar Industrial Park entrance" width="600" height="500" loading="lazy" decoding="async">
+            <span class="about-collage-label">Kochar · View project</span>
+          </a>
+        </div>
       </div>
 
-      <div id="about-workstreams" class="about-workstreams">
-        <article id="stream-central" class="about-stream" style="--stream-i: 0">
-          <div class="about-stream-head">
-            <span class="about-stream-index" aria-hidden="true">01</span>
-            <div class="about-stream-titles">
-              <p class="about-stream-eyebrow">Central Government</p>
-              <h3>Major Civil Works</h3>
+      <div id="about-timeline" class="about-timeline">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">Milestones</span>
+          <h3 class="about-timeline-title">Our Journey Since 1995</h3>
+        </div>
+        <ol class="about-timeline-rail" aria-label="Company milestones since 1995">
+          <li class="about-timeline-node about-timeline-node--above">
+            <div class="about-timeline-card">
+              <div class="about-timeline-media">
+                <span class="about-timeline-orb" aria-hidden="true"></span>
+                <img src="sekar-founder.png" alt="" width="220" height="220" loading="lazy" decoding="async">
+              </div>
+              <p class="about-timeline-year">1995</p>
+              <p class="about-timeline-tag">Founded</p>
+              <p class="about-timeline-text">Founded in Mamallapuram by Mr. Ethiraj Sekar as a Class-I civil construction company.</p>
             </div>
-            <span class="about-stream-rule" aria-hidden="true"></span>
-          </div>
-          <div class="about-stream-body">
-            <p class="about-stream-note">
-              Executed and under execution for Atomic Research Projects, Nuclear Power Plants, Thermal Power Plants, ISRO, and related programmes.
-            </p>
-            <ul class="about-work-list">
-              <li>Residential Buildings and Towers</li>
-              <li>High Rise Industrial / Workshop Buildings</li>
-              <li>Advanced Facility Buildings</li>
-              <li>Advanced Hospital Buildings</li>
-              <li>Advanced Laboratory Buildings</li>
-              <li>Electrical Substation Buildings</li>
-              <li>Major Fire Water Systems</li>
-              <li>Water Retaining Structures</li>
-              <li>Pre-engineered Steel Structures &amp; Large Warehouses</li>
-              <li>Road Works (Bitumen and RCC)</li>
-            </ul>
-          </div>
-        </article>
+            <span class="about-timeline-stem" aria-hidden="true"></span>
+            <span class="about-timeline-node-dot" aria-hidden="true"></span>
+          </li>
+          <li class="about-timeline-node about-timeline-node--below">
+            <div class="about-timeline-card">
+              <div class="about-timeline-media">
+                <span class="about-timeline-orb" aria-hidden="true"></span>
+                <img src="igcar-campus-aerial.png" alt="" width="220" height="220" loading="lazy" decoding="async">
+              </div>
+              <p class="about-timeline-year">2000<span class="about-timeline-year-s">s</span>–</p>
+              <p class="about-timeline-tag">DAE</p>
+              <p class="about-timeline-text">Trusted civil partner for IGCAR, BARC, FRFCF, MAPS, BHAVINI and GSO.</p>
+            </div>
+            <span class="about-timeline-stem" aria-hidden="true"></span>
+            <span class="about-timeline-node-dot" aria-hidden="true"></span>
+          </li>
+          <li class="about-timeline-node about-timeline-node--above">
+            <div class="about-timeline-card">
+              <div class="about-timeline-media">
+                <span class="about-timeline-orb" aria-hidden="true"></span>
+                <img src="nemmeli-desal-coastal-aerial.png" alt="" width="220" height="220" loading="lazy" decoding="async">
+              </div>
+              <p class="about-timeline-year">2010<span class="about-timeline-year-s">s</span>–</p>
+              <p class="about-timeline-tag">Desal</p>
+              <p class="about-timeline-text">150 MLD &amp; 400 MLD seawater desalination civil works along Tamil Nadu’s ECR.</p>
+            </div>
+            <span class="about-timeline-stem" aria-hidden="true"></span>
+            <span class="about-timeline-node-dot" aria-hidden="true"></span>
+          </li>
+          <li class="about-timeline-node about-timeline-node--below">
+            <div class="about-timeline-card">
+              <div class="about-timeline-media">
+                <span class="about-timeline-orb" aria-hidden="true"></span>
+                <img src="great-lakes-entrance-sunset.png" alt="" width="220" height="220" loading="lazy" decoding="async">
+              </div>
+              <p class="about-timeline-year">2015–</p>
+              <p class="about-timeline-tag">Private</p>
+              <p class="about-timeline-text">Campus and industrial works for Great Lakes, Kochar, Polyhose and peer institutions.</p>
+            </div>
+            <span class="about-timeline-stem" aria-hidden="true"></span>
+            <span class="about-timeline-node-dot" aria-hidden="true"></span>
+          </li>
+          <li class="about-timeline-node about-timeline-node--above">
+            <div class="about-timeline-card">
+              <div class="about-timeline-media">
+                <span class="about-timeline-orb" aria-hidden="true"></span>
+                <img src="isro-c25-integration-exterior.png" alt="" width="220" height="220" loading="lazy" decoding="async">
+              </div>
+              <p class="about-timeline-year">2022–24</p>
+              <p class="about-timeline-tag">ISRO</p>
+              <p class="about-timeline-text">C25 Stage Integration Complex at IPRC Mahendragiri, including clean-room works.</p>
+            </div>
+            <span class="about-timeline-stem" aria-hidden="true"></span>
+            <span class="about-timeline-node-dot" aria-hidden="true"></span>
+          </li>
+          <li class="about-timeline-node about-timeline-node--below">
+            <div class="about-timeline-card">
+              <div class="about-timeline-media">
+                <span class="about-timeline-orb" aria-hidden="true"></span>
+                <img src="kochar-warehouse-01-finished.png" alt="" width="220" height="220" loading="lazy" decoding="async">
+              </div>
+              <p class="about-timeline-year">2025–26</p>
+              <p class="about-timeline-tag">Today</p>
+              <p class="about-timeline-text">Turnover of Rs.1420 millions in FY 2025–26 with Absolute Quality Control systems.</p>
+            </div>
+            <span class="about-timeline-stem" aria-hidden="true"></span>
+            <span class="about-timeline-node-dot" aria-hidden="true"></span>
+          </li>
+        </ol>
+      </div>
 
-        <article id="stream-state" class="about-stream" style="--stream-i: 1">
-          <div class="about-stream-head">
-            <span class="about-stream-index" aria-hidden="true">02</span>
-            <div class="about-stream-titles">
-              <p class="about-stream-eyebrow">State Government</p>
-              <h3>Sea Water Desalination</h3>
-            </div>
-            <span class="about-stream-rule" aria-hidden="true"></span>
-          </div>
-          <div class="about-stream-body">
-            <p class="about-stream-note">
-              Large-scale desalination infrastructure for state projects, including the
-              <strong>150 MLD</strong> and <strong>400 MLD</strong> plants at <strong>Nemmeli, Tamil Nadu</strong>.
-            </p>
-            <div class="about-stream-list-block">
-              <p class="about-desal-label">Key infrastructure delivered</p>
-              <ul class="about-work-list">
-                <li>Intake Well</li>
-                <li>Pump House</li>
-                <li>Lamella</li>
-                <li>GDMF</li>
-                <li>DAF</li>
-                <li>Sledge Tank</li>
-                <li>Sledge Balancing Tank</li>
-                <li>Main Electrical Building</li>
-                <li>Clear Water Reservoir</li>
-                <li>Product Water Tank</li>
-              </ul>
-            </div>
-          </div>
-        </article>
+      <div id="about-workstreams" class="about-workstreams about-workstreams--scrubber">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">By Client Sector</span>
+          <h3 class="about-workstreams-title">Major Civil Works</h3>
+        </div>
 
-        <article id="stream-private" class="about-stream" style="--stream-i: 2">
-          <div class="about-stream-head">
-            <span class="about-stream-index" aria-hidden="true">03</span>
-            <div class="about-stream-titles">
-              <p class="about-stream-eyebrow">Private Sector</p>
-              <h3>Institutions &amp; Companies</h3>
+        <div class="about-scrubber-tabs" role="tablist" aria-label="Client sectors">
+          <button
+            type="button"
+            class="about-scrubber-tab is-active"
+            role="tab"
+            id="tab-stream-central"
+            aria-controls="stream-central"
+            aria-selected="true"
+            tabindex="0">
+            <span class="about-scrubber-tab-index" aria-hidden="true">01</span>
+            <span class="about-scrubber-tab-label">Central Government</span>
+          </button>
+          <button
+            type="button"
+            class="about-scrubber-tab"
+            role="tab"
+            id="tab-stream-state"
+            aria-controls="stream-state"
+            aria-selected="false"
+            tabindex="-1">
+            <span class="about-scrubber-tab-index" aria-hidden="true">02</span>
+            <span class="about-scrubber-tab-label">State Government</span>
+          </button>
+          <button
+            type="button"
+            class="about-scrubber-tab"
+            role="tab"
+            id="tab-stream-private"
+            aria-controls="stream-private"
+            aria-selected="false"
+            tabindex="-1">
+            <span class="about-scrubber-tab-index" aria-hidden="true">03</span>
+            <span class="about-scrubber-tab-label">Private Sector</span>
+          </button>
+        </div>
+
+        <div class="about-scrubber-panels">
+          <article
+            id="stream-central"
+            class="about-stream is-active"
+            role="tabpanel"
+            aria-labelledby="tab-stream-central"
+            tabindex="0">
+            <div class="about-stream-layout">
+              <figure class="about-figure about-stream-figure">
+                <img
+                  src="igcar-campus-aerial.png?v=2"
+                  alt="Aerial view of IGCAR Kalpakkam research campus with dome and facility buildings"
+                  width="720"
+                  height="540"
+                  loading="lazy"
+                  decoding="async">
+                <figcaption>IGCAR Campus · Kalpakkam</figcaption>
+              </figure>
+              <div class="about-stream-body">
+                <h3 class="about-stream-panel-title">Major Civil Works</h3>
+                <p class="about-stream-note">
+                  Executed and under execution for Atomic Research Projects, Nuclear Power Plants, Thermal Power Plants, ISRO, and related programmes.
+                </p>
+                <ul class="about-work-list">
+                  <li>Residential Buildings and Towers</li>
+                  <li>High Rise Industrial / Workshop Buildings</li>
+                  <li>Advanced Facility Buildings</li>
+                  <li>Advanced Hospital Buildings</li>
+                  <li>Advanced Laboratory Buildings</li>
+                  <li>Electrical Substation Buildings</li>
+                  <li>Major Fire Water Systems</li>
+                  <li>Water Retaining Structures</li>
+                  <li>Pre-engineered Steel Structures &amp; Large Warehouses</li>
+                  <li>Road Works (Bitumen and RCC)</li>
+                </ul>
+              </div>
             </div>
-            <span class="about-stream-rule" aria-hidden="true"></span>
-          </div>
-          <div class="about-stream-body">
-            <p class="about-stream-note">
-              Major works executed and under execution for private institutions and companies.
-            </p>
-            <ul class="about-work-list">
-              <li>Large Warehouse Buildings</li>
-              <li>Industrial / Factory Buildings</li>
-              <li>Aesthetic College Buildings</li>
-              <li>Large Compound Walls</li>
-              <li>Water Supply and Sewerage Line Works</li>
-              <li>Sewage Treatment Plants</li>
-              <li>Road Works (Bitumen &amp; RCC)</li>
-              <li>Electrical &amp; Plumbing Works</li>
-            </ul>
-          </div>
-        </article>
+          </article>
+
+          <article
+            id="stream-state"
+            class="about-stream"
+            role="tabpanel"
+            aria-labelledby="tab-stream-state"
+            tabindex="0"
+            hidden>
+            <div class="about-stream-layout">
+              <figure class="about-figure about-stream-figure">
+                <img
+                  src="nemmeli-desal-coastal-aerial.png?v=1"
+                  alt="Coastal aerial view of completed 150 MLD SWRO desalination plant at Nemmeli on ECR"
+                  width="720"
+                  height="540"
+                  loading="lazy"
+                  decoding="async">
+                <figcaption>150 MLD SWRO Plant · Nemmeli, ECR</figcaption>
+              </figure>
+              <div class="about-stream-body">
+                <h3 class="about-stream-panel-title">Sea Water Desalination</h3>
+                <p class="about-stream-note">
+                  Large-scale desalination infrastructure for state projects, including the
+                  <strong>150 MLD</strong> and <strong>400 MLD</strong> plants at <strong>Nemmeli, Tamil Nadu</strong>.
+                </p>
+                <ul class="about-work-list">
+                  <li>Intake Well</li>
+                  <li>Pump House</li>
+                  <li>Lamella</li>
+                  <li>GDMF</li>
+                  <li>DAF</li>
+                  <li>Sledge Tank</li>
+                  <li>Sledge Balancing Tank</li>
+                  <li>Main Electrical Building</li>
+                  <li>Clear Water Reservoir</li>
+                  <li>Product Water Tank</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article
+            id="stream-private"
+            class="about-stream"
+            role="tabpanel"
+            aria-labelledby="tab-stream-private"
+            tabindex="0"
+            hidden>
+            <div class="about-stream-layout">
+              <figure class="about-figure about-stream-figure">
+                <img
+                  src="polyhose-warehouses-aerial.png?v=2"
+                  alt="Aerial view of completed Polyhose warehouse buildings at Irungattukottai"
+                  width="720"
+                  height="540"
+                  loading="lazy"
+                  decoding="async">
+                <figcaption>Polyhose Warehouses · Irungattukottai</figcaption>
+              </figure>
+              <div class="about-stream-body">
+                <h3 class="about-stream-panel-title">Institutions &amp; Companies</h3>
+                <p class="about-stream-note">
+                  Major works executed and under execution for private institutions and companies.
+                </p>
+                <ul class="about-work-list">
+                  <li>Large Warehouse Buildings</li>
+                  <li>Industrial / Factory Buildings</li>
+                  <li>Aesthetic College Buildings</li>
+                  <li>Large Compound Walls</li>
+                  <li>Water Supply and Sewerage Line Works</li>
+                  <li>Sewage Treatment Plants</li>
+                  <li>Road Works (Bitumen &amp; RCC)</li>
+                  <li>Electrical &amp; Plumbing Works</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
 
       <div id="about-capabilities" class="about-capabilities">
@@ -236,9 +447,17 @@
           <span class="section-subtitle">Areas of Work</span>
           <h3 class="about-capabilities-title">Execution Capabilities</h3>
         </div>
-        <p class="about-capabilities-lead">
-          Diversified civil engineering works undertaken across buildings, electrical, water, and infrastructure.
-        </p>
+        <figure class="about-figure about-band-figure">
+          <img
+            src="bhel-power-plant.jpg"
+            alt="BHEL Ennore SEZ thermal power plant civil works"
+            width="1400"
+            height="700"
+            loading="lazy"
+            decoding="async">
+          <figcaption>BHEL Ennore SEZ STPP · power plant civil works</figcaption>
+        </figure>
+        <p class="about-capabilities-lead">Diversified civil engineering works undertaken across buildings, electrical, water, and infrastructure.</p>
         <div class="works-grid">
           <div class="work-item">
             <i class="fa-solid fa-building-user" aria-hidden="true"></i>
@@ -327,6 +546,28 @@
           <span class="section-subtitle">Trusted Partners</span>
           <h3 class="about-customers-title">Our Leading Customers</h3>
         </div>
+        <div class="about-customers-visual">
+          <figure class="about-figure about-customers-figure">
+            <img
+              src="isro-c25-facade.png"
+              alt="ISRO C25 Stage Integration Complex facade at IPRC Mahendragiri"
+              width="900"
+              height="600"
+              loading="lazy"
+              decoding="async">
+            <figcaption>ISRO C25 Integration Complex · Mahendragiri</figcaption>
+          </figure>
+          <figure class="about-figure about-customers-figure">
+            <img
+              src="igcar-campus-aerial.png"
+              alt="Aerial view of IGCAR Kalpakkam research campus"
+              width="900"
+              height="600"
+              loading="lazy"
+              decoding="async">
+            <figcaption>IGCAR Campus · Kalpakkam</figcaption>
+          </figure>
+        </div>
         <p class="about-customers-intro">
           We feel very proud in serving as a major Patron for Civil Construction activities of various Projects pertaining to the Premier Central Government Departments like Department of Atomic Energy, Nuclear Power Corporation Ltd., Bharatiya Nabhikiya Vidyut Nigam Ltd., Bharat Heavy Electricals Ltd, Department of Space etc., across the Nation for the past 3 Decades as detailed below:
         </p>
@@ -374,34 +615,96 @@
           <p class="about-customers-intro about-customers-intro--private">
             We parallely extend our Quality Service to the Private Sector Institutions and Companies as detailed below:
           </p>
-          <ul class="about-customers-list" aria-label="Private sector clients">
+          <ul class="about-private-grid" aria-label="Private sector clients">
             <li style="--customer-i: 0">
-              <span class="about-customer-name">M/S. Cobratecton India Private Limited, Chennai</span>
-              <span class="about-customer-desc">150MLD Water Desalination Projects</span>
+              <figure class="about-private-figure">
+                <img
+                  src="nemmeli-desal-coastal-aerial.png"
+                  alt="Aerial view of 150 MLD desalination plant civil works for Cobratecton"
+                  width="640"
+                  height="400"
+                  loading="lazy"
+                  decoding="async">
+              </figure>
+              <div class="about-private-copy">
+                <span class="about-customer-name">M/S. Cobratecton India Private Limited, Chennai</span>
+                <span class="about-customer-desc">150MLD Water Desalination Projects</span>
+              </div>
             </li>
             <li style="--customer-i: 1">
-              <span class="about-customer-name">M/S. VA Tech Wabag Ltd., Chennai</span>
-              <span class="about-customer-desc">400MLD Water Desalination Projects</span>
+              <figure class="about-private-figure">
+                <img
+                  src="perur-desalination.jpg"
+                  alt="400 MLD Perur desalination plant civil works for VA Tech Wabag"
+                  width="640"
+                  height="400"
+                  loading="lazy"
+                  decoding="async">
+              </figure>
+              <div class="about-private-copy">
+                <span class="about-customer-name">M/S. VA Tech Wabag Ltd., Chennai</span>
+                <span class="about-customer-desc">400MLD Water Desalination Projects</span>
+              </div>
             </li>
             <li style="--customer-i: 2">
-              <span class="about-customer-name">M/S. Great Lakes Institute of Management, Manamai</span>
-              <span class="about-customer-desc">Premier Institute for Management Studies</span>
+              <figure class="about-private-figure">
+                <img
+                  src="great-lakes-entrance-sunset.png"
+                  alt="Great Lakes Institute of Management entrance at Manamai at golden hour"
+                  width="640"
+                  height="400"
+                  loading="lazy"
+                  decoding="async">
+              </figure>
+              <div class="about-private-copy">
+                <span class="about-customer-name">M/S. Great Lakes Institute of Management, Manamai</span>
+                <span class="about-customer-desc">Premier Institute for Management Studies</span>
+              </div>
             </li>
             <li style="--customer-i: 3">
-              <span class="about-customer-name">M/S. KOCHAR Propeties Pvt. Ltd., Chennai</span>
-              <span class="about-customer-desc">Industrial Park &amp; Housing Developers</span>
+              <figure class="about-private-figure">
+                <img
+                  src="kochar-entrance.png"
+                  alt="Entrance gate of Kochar Industrial Park at Tiruvallur"
+                  width="640"
+                  height="400"
+                  loading="lazy"
+                  decoding="async">
+              </figure>
+              <div class="about-private-copy">
+                <span class="about-customer-name">M/S. KOCHAR Propeties Pvt. Ltd., Chennai</span>
+                <span class="about-customer-desc">Industrial Park &amp; Housing Developers</span>
+              </div>
             </li>
             <li style="--customer-i: 4">
-              <span class="about-customer-name">M/S. Polyhose India Private Ltd., Chennai</span>
-              <span class="about-customer-desc">Pioneers in all kind of Industrial Hose Manufacturer</span>
+              <figure class="about-private-figure">
+                <img
+                  src="polyhose-aerial-solar.png"
+                  alt="Aerial view of Polyhose industrial campus with solar rooftops"
+                  width="640"
+                  height="400"
+                  loading="lazy"
+                  decoding="async">
+              </figure>
+              <div class="about-private-copy">
+                <span class="about-customer-name">M/S. Polyhose India Private Ltd., Chennai</span>
+                <span class="about-customer-desc">Pioneers in all kind of Industrial Hose Manufacturer</span>
+              </div>
             </li>
             <li style="--customer-i: 5">
-              <span class="about-customer-name">M/S. NMV University</span>
-              <span class="about-customer-desc">Group of Savitha Educational Trust, Chennai</span>
-            </li>
-            <li style="--customer-i: 6">
-              <span class="about-customer-name">M/S. IVRCL</span>
-              <span class="about-customer-desc">Veeranam Projects, Chennai</span>
+              <figure class="about-private-figure">
+                <img
+                  src="great-lakes-hostel-court.png"
+                  alt="Multi-storey institutional residential campus court — educational hostel typology"
+                  width="640"
+                  height="400"
+                  loading="lazy"
+                  decoding="async">
+              </figure>
+              <div class="about-private-copy">
+                <span class="about-customer-name">M/S. NMV University</span>
+                <span class="about-customer-desc">Group of Savitha Educational Trust, Chennai</span>
+              </div>
             </li>
           </ul>
         </div>
@@ -414,6 +717,136 @@
         </p>
       </blockquote>
 
+      <div id="about-footprint" class="about-footprint">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">Across Tamil Nadu</span>
+          <h3 class="about-footprint-title">Project Footprint</h3>
+        </div>
+        <p class="about-footprint-lead">Completed and ongoing delivery sites — select a pin for projects at that location.</p>
+        <ul class="about-footprint-legend" aria-label="Project status legend">
+          <li><span class="about-footprint-legend-swatch about-footprint-legend-swatch--completed" aria-hidden="true"></span> Completed</li>
+          <li><span class="about-footprint-legend-swatch about-footprint-legend-swatch--ongoing" aria-hidden="true"></span> Ongoing</li>
+          <li><span class="about-footprint-legend-swatch about-footprint-legend-swatch--mixed" aria-hidden="true"></span> Completed &amp; ongoing</li>
+        </ul>
+        <div class="about-footprint-shell">
+          <div class="about-footprint-map-wrap">
+            <img
+              class="about-footprint-map"
+              src="images/maps/tamil-nadu-outline.svg"
+              width="1510"
+              height="1975"
+              alt="Outline map of Tamil Nadu showing Sekar Constructions project locations"
+              decoding="async">
+            <button type="button" class="about-map-pin about-map-pin--mixed is-active" style="--pin-x:90%; --pin-y:6%" data-pin="ennore" aria-pressed="true" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Ennore</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--mixed" style="--pin-x:78%; --pin-y:9%" data-pin="tiruvallur" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Tiruvallur</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--ongoing" style="--pin-x:82%; --pin-y:11%" data-pin="nmv" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">NMV</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--ongoing" style="--pin-x:87%; --pin-y:12%" data-pin="thoraipakkam" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Thoraipakkam</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--completed" style="--pin-x:74%; --pin-y:13%" data-pin="irungattukottai" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Irungattukottai</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--completed" style="--pin-x:88%; --pin-y:16%" data-pin="nemmeli" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Nemmeli</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--ongoing" style="--pin-x:89%; --pin-y:18%" data-pin="perur" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Perur</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--completed" style="--pin-x:86%; --pin-y:19%" data-pin="manamai" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Manamai</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--mixed" style="--pin-x:85%; --pin-y:22%" data-pin="kalpakkam" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Kalpakkam</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--completed" style="--pin-x:83%; --pin-y:24%" data-pin="anupuram" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Anupuram</span>
+            </button>
+            <button type="button" class="about-map-pin about-map-pin--completed" style="--pin-x:42%; --pin-y:88%" data-pin="mahendragiri" aria-pressed="false" aria-controls="about-pin-detail">
+              <span class="about-map-pin-dot" aria-hidden="true"></span>
+              <span class="about-map-pin-label">Mahendragiri</span>
+            </button>
+          </div>
+          <aside class="about-footprint-detail" id="about-pin-detail" aria-live="polite">
+            <p class="about-footprint-place">Ennore · Minjur</p>
+            <ul class="about-footprint-projects">
+              <li class="about-footprint-item">
+                <span class="about-footprint-status about-footprint-status--ongoing">Ongoing</span>
+                <span class="about-footprint-project">BTG area civil works · Unit #2, 2×660 MW Ennore SEZ STPP</span>
+                <span class="about-footprint-client">BHEL (TNEB) Chennai · 76% progress</span>
+              </li>
+              <li class="about-footprint-item">
+                <span class="about-footprint-status about-footprint-status--completed">Completed</span>
+                <span class="about-footprint-project">2×660 MW Ennore SEZ STPP foundations &amp; boiler structures</span>
+                <span class="about-footprint-client">BHEL / TANGEDCO</span>
+              </li>
+            </ul>
+            <a class="about-footprint-link" href="/gallery#gallery-bhel-btg">View in gallery</a>
+          </aside>
+        </div>
+        <p class="about-footprint-note">Also ongoing in Andhra Pradesh: BARC campus works near Visakhapatnam (Atchutapuram) — see <a href="/ongoing-projects">Ongoing Projects</a>.</p>
+      </div>
+
+      <div id="about-progress" class="about-progress">
+        <div class="section-title-wrapper text-center about-block-heading">
+          <span class="section-subtitle">From Site to Handover</span>
+          <h3 class="about-progress-title">Progress of One of the Projects</h3>
+        </div>
+        <p class="about-progress-lead">Kochar Industrial Park · Warehouse 01 — drag to compare steel-frame works with the completed facility.</p>
+        <div class="about-ba" data-about-ba>
+          <div class="about-ba-frame" style="--ba-pos: 50%">
+            <img
+              class="about-ba-img about-ba-img--after"
+              src="kochar-warehouse-01-finished.png"
+              alt="Completed Warehouse 01 at Kochar Industrial Park, Tiruvallur"
+              width="1200"
+              height="750"
+              loading="lazy"
+              decoding="async">
+            <img
+              class="about-ba-img about-ba-img--before"
+              src="kochar-warehouse-01-during.png"
+              alt="Warehouse 01 steel frame and slab works under construction"
+              width="1200"
+              height="750"
+              loading="lazy"
+              decoding="async">
+            <input
+              type="range"
+              class="about-ba-range"
+              min="0"
+              max="100"
+              value="50"
+              aria-label="Compare construction progress with the completed warehouse">
+            <div class="about-ba-handle" aria-hidden="true">
+              <span class="about-ba-handle-line"></span>
+              <span class="about-ba-handle-knob">
+                <i class="fa-solid fa-left-right" aria-hidden="true"></i>
+              </span>
+            </div>
+            <span class="about-ba-label about-ba-label--before">During</span>
+            <span class="about-ba-label about-ba-label--after">Completed</span>
+          </div>
+          <p class="about-progress-caption">Warehouse 01 · Kochar Industrial Park, Tiruvallur</p>
+          <a class="about-progress-link" href="/gallery#gallery-kochar">View in gallery</a>
+        </div>
+      </div>
+
       <hr class="about-divider">
 
       <!-- Financial Capacity & Quality Standards -->
@@ -423,14 +856,16 @@
           <h3 class="about-financials-title">Financial Capacity &amp; Quality Standards</h3>
         </div>
 
-        <div class="about-quality-block">
-          <p>
-            We always admire the principle of “TIME IS THE ESSENCE OF THE CONTRACT” and consistently deliver all our commitments right on time.
-            Our prime motto is to execute all the works with high, up-to-date standards through our stringent Absolute Quality Control systems.
-          </p>
-          <p>
-            This ethical performance, competitive pricing, and related strengths have enabled Sekar Constructions to secure continuous orders from premier Central Government institutions such as the Department of Atomic Energy (BARC, IGCAR, FRFCF, etc.), the Department of Space (ISRO), Nuclear Power Corporation (MAPS), BHAVINI, BHEL, and private institutions and companies across the country.
-          </p>
+        <div class="about-quality-split about-quality-split--text">
+          <div class="about-quality-block">
+            <p>
+              We always admire the principle of “TIME IS THE ESSENCE OF THE CONTRACT” and consistently deliver all our commitments right on time.
+              Our prime motto is to execute all the works with high, up-to-date standards through our stringent Absolute Quality Control systems.
+            </p>
+            <p>
+              This ethical performance, competitive pricing, and related strengths have enabled Sekar Constructions to secure continuous orders from premier Central Government institutions such as the Department of Atomic Energy (BARC, IGCAR, FRFCF, etc.), the Department of Space (ISRO), Nuclear Power Corporation (MAPS), BHAVINI, BHEL, and private institutions and companies across the country.
+            </p>
+          </div>
         </div>
 
         <div class="financials-grid">
@@ -536,7 +971,7 @@
 
           <!--
             Resources back-face metrics (hardcoded from published copy):
-            Cash Credit Limit = ₹10.00 Cr · Bank Guarantee Limit = ₹25.00 Cr · HDFC Kalpakkam.
+            Cash Credit Limit = â‚¹10.00 Cr · Bank Guarantee Limit = â‚¹25.00 Cr · HDFC Kalpakkam.
             Front copy syncs from admin; update these chart values in about.html if limits change.
           -->
           <div
@@ -558,7 +993,7 @@
 
               <div class="financial-card-face financial-card-face--back" aria-hidden="true">
                 <h3 class="turnover-chart-title">Bank Facilities</h3>
-                <p class="turnover-chart-unit">₹ Crore · HDFC Kalpakkam</p>
+                <p class="turnover-chart-unit">â‚¹ Crore · HDFC Kalpakkam</p>
                 <div
                   class="turnover-chart resources-chart"
                   role="img"
@@ -584,8 +1019,8 @@
                     </g>
                     <!-- value labels on bars -->
                     <g class="resources-chart-values" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">
-                      <text x="186" y="67">₹10 Cr</text>
-                      <text x="276" y="119">₹25 Cr</text>
+                      <text x="186" y="67">â‚¹10 Cr</text>
+                      <text x="276" y="119">â‚¹25 Cr</text>
                     </g>
                     <!-- category labels (Y) -->
                     <g class="resources-chart-ylabels" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="10" text-anchor="end">
@@ -602,7 +1037,7 @@
                       <text x="298" y="164">30</text>
                     </g>
                     <!-- X-axis title -->
-                    <text class="turnover-axis-x" x="208" y="186" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Limit (₹ Crore)</text>
+                    <text class="turnover-axis-x" x="208" y="186" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700">Limit (â‚¹ Crore)</text>
                   </svg>
                 </div>
                 <p class="turnover-chart-note">Secured limits · HDFC, Kalpakkam</p>
@@ -698,77 +1133,9 @@
     </div>
   </section>
 
-  <!-- Our Team Section -->
-  <section id="about-leadership" class="section-padding about-leadership-section">
+  <!-- Dynamic Executive Team (stays on About; Leadership bios live on /leadership) -->
+  <section id="about-team" class="section-padding about-team-section">
     <div class="about-leadership-inner">
-      <div class="section-title-wrapper text-center about-block-heading">
-        <span class="section-subtitle">Founder &amp; Partners</span>
-        <h2 class="section-title">Leadership</h2>
-      </div>
-
-      <!-- Leadership people: portrait + bio (swap images in images/leadership/) -->
-      <div class="leadership-people">
-        <article class="leadership-person">
-          <figure class="leadership-portrait" data-initials="ES">
-            <img
-              src="images/leadership/sekar.jpg?v=2"
-              alt="Mr. Ethiraj Sekar, Founder &amp; Managing Director"
-              width="400"
-              height="500"
-              loading="lazy"
-              decoding="async"
-              onerror="this.classList.add('is-missing'); this.removeAttribute('src');"
-            >
-          </figure>
-          <div class="leadership-person-body leadership-block">
-            <span class="team-role">FOUNDER &amp; MANAGING PARTNER</span>
-            <h3>Mr. E. Sekar</h3>
-            <p>With the world-class technical skills and management expertise gained by serving for more than fifteen years abroad with companies of international repute such as <strong>M/s. National Petroleum Construction Company (Abu Dhabi)</strong>, the founder Mr. E. Sekar commenced the business in 1995.</p>
-            <p>The enthusiastic and visionary founder Mr. Sekar has been leading the company for over 30 years and has brought gradual, steady growth that has established Sekar Constructions as a prominent Class-I civil construction company, identified for its excellent quality, ethical standards, sound systems, and strong credibility.</p>
-          </div>
-        </article>
-
-        <article class="leadership-person">
-          <figure class="leadership-portrait" data-initials="SK">
-            <img
-              src="images/leadership/sasikala.jpg"
-              alt="Portrait of Mrs. S. Sasikala, Partner"
-              width="400"
-              height="500"
-              loading="lazy"
-              decoding="async"
-              onerror="this.classList.add('is-missing'); this.removeAttribute('src');"
-            >
-          </figure>
-          <div class="leadership-person-body leadership-block">
-            <span class="team-role">PARTNER</span>
-            <h3>Mrs. S. Sasikala</h3>
-            <p>Mrs. S. Sasikala, a manufacturer and supplier of construction materials and a transport supplier, also actively functions as a Partner of Sekar Constructions. Her participation in the business has been highly supportive in securing uninterrupted supply of building materials and transportation.</p>
-          </div>
-        </article>
-
-        <article class="leadership-person">
-          <figure class="leadership-portrait" data-initials="SU">
-            <img
-              src="images/leadership/sudhangan.jpg"
-              alt="Portrait of Mr. S. Sudhangan, Partner"
-              width="400"
-              height="500"
-              loading="lazy"
-              decoding="async"
-              onerror="this.classList.add('is-missing'); this.removeAttribute('src');"
-            >
-          </figure>
-          <div class="leadership-person-body leadership-block">
-            <span class="team-role">PARTNER</span>
-            <h3>Mr. S. Sudhangan</h3>
-            <p>Mr. S. Sudhangan, a first-class graduate in Civil Engineering with up-to-date technical know-how, has been directly involved in all aspects of project management in the company. His active participation in Absolute Quality Control has further strengthened the company’s reputation for quality and speedy execution in recent times.</p>
-            <p>In addition to his role in project management, he plays a predominant role in the building materials industry in the Kalpakkam area. He serves as an active partner with <strong>M/s. Thirupathi Blue Metals</strong>, <strong>M/s. Seven Hills Mines</strong>, <strong>M/s. Pallava Mines</strong>, and <strong>M/s. Sree Balaji Blue Metals</strong>. He is also the owner of <strong>M/s. SS Bricks and Concrete</strong> manufacturing company. Thereby, Sekar Constructions enjoys the privilege of procuring all sorts of building materials effortlessly even during scarcities.</p>
-          </div>
-        </article>
-      </div>
-
-      <!-- Dynamic Executive Team Section -->
       <div class="dynamic-team-section">
         <h3 class="team-subheading">Dynamic Executive Team</h3>
         <div class="dynamic-team-gallery">
@@ -785,18 +1152,19 @@
       </div>
     </div>
   </section>
+
       </div><!-- /.about-layout-main -->
     </div><!-- /.about-layout -->
   </div><!-- /.about-layout-shell -->
 
-  <!-- CTA inside panel so Leadership → surround share one cream paint (no seam) -->
+  <!-- CTA inside panel so About → surround share one cream paint (no seam) -->
   <div class="container footer-cta-wrap">
     <div class="footer-cta">
       <div class="footer-cta-copy">
         <span class="footer-cta-eyebrow">Let's Work Together</span>
         <h2 class="footer-cta-headline">Schedule an appointment with us to discuss your project goals and needs.</h2>
       </div>
-      <a href="contact.html" class="footer-cta-btn">Let's Get In Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a href="/contact" class="footer-cta-btn">Let's Get In Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </div>
   </div><!-- /.sc-curtain-panel -->
@@ -807,10 +1175,10 @@
   <div id="site-footer"></div>
 
   <!-- Custom JS -->
-  <script src="layout.js?v=148"></script>
+  <script src="layout.js?v=152"></script>
   <script src="config.site.js?v=124"></script>
   <script src="cms-public.js?v=141"></script>
-  <script src="script.site.js?v=153"></script>
+  <script src="script.site.js?v=178"></script>
 
 </body>
 </html>

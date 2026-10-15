@@ -38,6 +38,7 @@
       this._csrfToken = null;
       this._loginChallenge = null;
       this._totpSetupCache = null;
+      this._authInFlight = false;
       this.initStorage();
       this.hydrateSessionFromStorage();
       this.sessionTimer = null;
@@ -45,6 +46,12 @@
       this.activityEvents = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
       this.boundResetTimer = this.resetInactivityTimer.bind(this);
       this.apiReady = this.useApi() ? this.hydrateFromApi() : Promise.resolve();
+    }
+
+    /** Auth bootstrap endpoints must not send stale Bearer/CSRF from a prior session. */
+    isPublicAuthPath(path) {
+      const p = String(path || '').split('?')[0];
+      return p === '/api/auth/login' || p === '/api/auth/verify-totp';
     }
 
     /** @returns {string} API base URL without trailing slash, or '' if offline/local mode */
@@ -55,6 +62,29 @@
 
     useApi() {
       return Boolean(this.getApiBase());
+    }
+
+    /**
+     * Soft ping so the login page can warn before submit, and wake a sleeping API.
+     * @returns {Promise<{ ok: boolean, message?: string }>}
+     */
+    async pingApi() {
+      if (!this.useApi()) {
+        return { ok: false, message: 'API base URL is not configured in config.site.js.' };
+      }
+      const base = this.getApiBase();
+      try {
+        const res = await fetch(base + '/api/health', { method: 'GET', credentials: 'omit' });
+        if (!res.ok) {
+          return { ok: false, message: 'API health check failed (' + res.status + ') at ' + base };
+        }
+        return { ok: true };
+      } catch (e) {
+        return {
+          ok: false,
+          message: 'Cannot reach API at ' + base + '. Start the API or fix CORS_ORIGINS for this site.'
+        };
+      }
     }
 
     hydrateSessionFromStorage() {
@@ -118,30 +148,54 @@
       const base = this.getApiBase();
       if (!base) throw new Error('API base URL not configured');
       const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
-      let token = this._apiToken;
-      if (!token) {
-        this.hydrateSessionFromStorage();
-        token = this._apiToken;
-      }
-      if (token) headers.Authorization = 'Bearer ' + token;
-
+      const publicAuth = this.isPublicAuthPath(path);
       const method = (options.method || 'GET').toUpperCase();
       const isMutation = method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS';
-      if (isMutation) {
-        if (!this._csrfToken) this.hydrateSessionFromStorage();
-        if (this._csrfToken) headers['X-CSRF-Token'] = this._csrfToken;
+
+      if (!publicAuth) {
+        let token = this._apiToken;
+        if (!token) {
+          this.hydrateSessionFromStorage();
+          token = this._apiToken;
+        }
+        if (token) headers.Authorization = 'Bearer ' + token;
+
+        if (isMutation) {
+          if (!this._csrfToken) this.hydrateSessionFromStorage();
+          if (this._csrfToken) headers['X-CSRF-Token'] = this._csrfToken;
+        }
       }
 
-      const res = await fetch(base + path, Object.assign({}, options, {
-        headers,
-        credentials: 'include'
-      }));
+      let res;
+      try {
+        res = await fetch(base + path, Object.assign({}, options, {
+          headers,
+          credentials: 'include'
+        }));
+      } catch (networkErr) {
+        // Retry transient network / TLS / cold-start failures on login bootstrap.
+        const attempt = Number(options._networkAttempt || 0);
+        if (publicAuth && attempt < 2) {
+          await new Promise((r) => setTimeout(r, 700 * (attempt + 1)));
+          return this.apiFetch(path, Object.assign({}, options, { _networkAttempt: attempt + 1 }));
+        }
+        const baseUrl = this.getApiBase();
+        const err = new Error(
+          'Cannot reach the API at ' + baseUrl +
+          '. Check your connection, confirm the API is running, and that this site origin is allowed in CORS_ORIGINS.'
+        );
+        err.status = 0;
+        err.network = true;
+        err.cause = networkErr;
+        throw err;
+      }
+
       let body = null;
       const text = await res.text();
       try { body = text ? JSON.parse(text) : null; } catch (e) { body = { raw: text }; }
       if (!res.ok) {
         const code = body && body.error && body.error.code;
-        if (res.status === 403 && (code === 'CSRF_TOKEN_INVALID' || code === 'CSRF_TOKEN_REQUIRED')) {
+        if (!publicAuth && res.status === 403 && (code === 'CSRF_TOKEN_INVALID' || code === 'CSRF_TOKEN_REQUIRED')) {
           await this.refreshCsrfToken();
           if (this._csrfToken && isMutation && !options._csrfRetried) {
             return this.apiFetch(path, Object.assign({}, options, { _csrfRetried: true }));
@@ -392,6 +446,10 @@
      * API mode only (server bcrypt). Offline local-auth secrets are not shipped.
      */
     async authenticateCredentials(username, password) {
+      if (this._authInFlight) {
+        return { success: false, message: 'Login already in progress. Please wait…', inFlight: true };
+      }
+
       const userClean = (username || '').toLowerCase().trim();
       const pwdClean = (password || '').trim();
 
@@ -401,6 +459,14 @@
           message: 'Admin login requires config.js apiBaseUrl. Seed the API with SEED_ADMIN_PASSWORD.'
         };
       }
+
+      this._authInFlight = true;
+      // Drop stale session so a prior Bearer/CSRF cannot interfere with a fresh login.
+      try {
+        sessionStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
+      } catch (e) { /* ignore */ }
+      this._apiToken = null;
+      this._csrfToken = null;
 
       try {
         const data = await this.apiFetch('/api/auth/login', {
@@ -448,8 +514,11 @@
         return {
           success: false,
           locked: !!locked,
+          network: !!(err.network || err.status === 0),
           message: err.message || 'Login failed.'
         };
+      } finally {
+        this._authInFlight = false;
       }
     }
 
@@ -457,6 +526,9 @@
      * Step 2 Authentication: verify server-side TOTP after password challenge.
      */
     async verify2FAPin(pin) {
+      if (this._authInFlight) {
+        return { success: false, message: 'Verification already in progress. Please wait…', inFlight: true };
+      }
       if (!this.useApi()) {
         return { success: false, message: '2FA requires apiBaseUrl and a live API session.' };
       }
@@ -470,6 +542,8 @@
       if (!challengeToken) {
         return { success: false, message: 'Login session expired. Sign in with your password again.' };
       }
+
+      this._authInFlight = true;
       try {
         const data = await this.apiFetch('/api/auth/verify-totp', {
           method: 'POST',
@@ -495,6 +569,8 @@
         };
       } catch (err) {
         return { success: false, message: err.message || 'Invalid authenticator code.' };
+      } finally {
+        this._authInFlight = false;
       }
     }
 
@@ -885,28 +961,17 @@
      */
     getFleetInventory() {
       if (this.useApi()) {
-        return Array.isArray(this._cmsCache.fleet) ? this._cmsCache.fleet : [];
+        return Array.isArray(this._cmsCache.fleet) ? this._cmsCache.fleet.map((f) => this.normalizeFleetItem(f)) : [];
       }
       const STORAGE_KEY = 'sc_admin_fleet_v1';
-      const DEFAULT_FLEET = [
-        { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry' },
-        { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck' },
-        { key: 'pumps', name: 'Mobile Concrete Pumps', count: '8', icon: 'fa-droplet' },
-        { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving' },
-        { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor' },
-        { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears' },
-        { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain' },
-        { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench' },
-        { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors' },
-        { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group' }
-      ];
+      const DEFAULT_FLEET = this.getBundledFleetDefaults();
 
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (!stored) return DEFAULT_FLEET;
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map((f) => this.normalizeFleetItem(f));
         }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_FLEET));
         return DEFAULT_FLEET;
@@ -915,24 +980,52 @@
       }
     }
 
+    getBundledFleetDefaults() {
+      return [
+        { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry', logoUrl: '' },
+        { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck', logoUrl: '' },
+        { key: 'pumps', name: 'Mobile Concrete Pumps', count: '8', icon: 'fa-droplet', logoUrl: '' },
+        { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving', logoUrl: '' },
+        { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor', logoUrl: '' },
+        { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears', logoUrl: '' },
+        { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain', logoUrl: '' },
+        { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench', logoUrl: '' },
+        { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors', logoUrl: '' },
+        { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group', logoUrl: '' }
+      ];
+    }
+
+    normalizeFleetItem(item) {
+      const src = item || {};
+      return {
+        key: String(src.key || '').trim() || ('fleet-' + Date.now()),
+        name: String(src.name || '').trim() || 'Untitled asset',
+        count: String(src.count == null ? '' : src.count).trim(),
+        icon: String(src.icon || 'fa-truck').replace(/^fa-solid\s+/, '').trim() || 'fa-truck',
+        logoUrl: String(src.logoUrl || src.logo_url || '').trim()
+      };
+    }
 
     async updateFleetInventory(updatedFleet) {
+      const normalized = (Array.isArray(updatedFleet) ? updatedFleet : [])
+        .map((f) => this.normalizeFleetItem(f))
+        .filter((f) => f.name);
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/fleet', {
-            method: 'PUT',
-            body: JSON.stringify(updatedFleet)
+            method: 'POST',
+            body: JSON.stringify(normalized)
           });
-          this._cmsCache.fleet = updatedFleet;
-          return { success: true, message: 'Fleet asset counts published live.' };
+          this._cmsCache.fleet = normalized;
+          return { success: true, message: 'Fleet inventory published live.' };
         } catch (err) {
           return { success: false, message: 'Save failed — changes not published. ' + err.message };
         }
       }
       const STORAGE_KEY = 'sc_admin_fleet_v1';
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedFleet));
-      this.addAuditLog('FLEET_INVENTORY_UPDATED', 'Asset inventory counts updated and published to public website.', 'INFO');
-      return { success: true, message: 'Fleet asset counts updated and published live to website!' };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+      this.addAuditLog('FLEET_INVENTORY_UPDATED', 'Asset inventory updated and published to public website.', 'INFO');
+      return { success: true, message: 'Fleet inventory updated and published live to website!' };
     }
 
     /**
@@ -1073,7 +1166,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/financials', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(normalized)
           });
           this._cmsCache.financials = normalized;
@@ -1119,7 +1212,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/team-photos', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(current)
           });
           this._cmsCache.team = current;
@@ -1139,7 +1232,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/team-photos', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(current)
           });
           this._cmsCache.team = current;
@@ -1292,7 +1385,7 @@
       if (this.useApi()) {
         try {
           const saved = await this.apiFetch(this.galleryMediaApiPath(key), {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(normalized)
           });
           if (!this._cmsCache.galleryMedia || typeof this._cmsCache.galleryMedia !== 'object') {
@@ -1330,50 +1423,50 @@
           { key: 'assets', label: 'Asset Lines', value: '44', note: 'Owned equipment inventory line items' }
         ],
         inventory: [
-          { id: 'infra-1', category: 'own-equipments', description: 'Concrete Boom Pump - 40.10ZX, S36X', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-2', category: 'own-equipments', description: 'Batching Plant - M1T, M1C, KYB 450 & CP45, Z30 & CP30', qty: '6', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-3', category: 'own-equipments', description: 'RMC Transit Mixer', qty: '14', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-4', category: 'own-equipments', description: 'Concrete Pump 1800', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-5', category: 'own-equipments', description: 'Mobile Tower Crane [ACE Make]', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-6', category: 'own-equipments', description: 'Excavator - Hitachi EX 210', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-7', category: 'own-equipments', description: 'JCB', qty: '8', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-8', category: 'own-equipments', description: 'Vibromax 10T - Roller', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-9', category: 'own-equipments', description: 'Walking Roller 1MT', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-10', category: 'own-equipments', description: 'BOBCAT S450', qty: '5', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-11', category: 'own-equipments', description: 'Tipper 10 Wheel', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-12', category: 'own-equipments', description: 'Tractor', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-13', category: 'own-equipments', description: 'TATA Diesel Tanker', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-14', category: 'own-equipments', description: 'Mahindra & Eicher Van', qty: '8', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-15', category: 'own-equipments', description: 'Building Hoist', qty: '5', unit: 'Sets.', categoryLabel: 'Own Equipments' },
-          { id: 'infra-16', category: 'own-equipments', description: 'MS Cuplock System', qty: '400', unit: 'MT', categoryLabel: 'Own Equipments' },
-          { id: 'infra-17', category: 'own-equipments', description: 'System Form Work', qty: '4,120', unit: 'Sqm', categoryLabel: 'Own Equipments' },
-          { id: 'infra-18', category: 'own-equipments', description: 'MS Jolly (Platform)', qty: '6,500', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-19', category: 'own-equipments', description: 'MS Scaffolding Pipes', qty: '30,000', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-20', category: 'own-equipments', description: 'Props 2+2m, 2+3m, 3+3m', qty: '3,500', unit: 'Sets.', categoryLabel: 'Own Equipments' },
-          { id: 'infra-21', category: 'own-equipments', description: 'Agrow Spans 2.4m & 3.0m', qty: '1,500', unit: 'Sets.', categoryLabel: 'Own Equipments' },
-          { id: 'infra-22', category: 'own-equipments', description: 'Centering Sheets 3\' x 2\', 4\' x 2\'', qty: '1,500', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-23', category: 'own-equipments', description: 'MS Velor 1.50m & 1.20m', qty: '1,300', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-24', category: 'own-equipments', description: 'Bar Shearing Machine', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-25', category: 'own-equipments', description: 'Bar Bending Machine', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-26', category: 'own-equipments', description: 'Bar Rings Machine', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-27', category: 'own-equipments', description: 'Bar Threading Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-28', category: 'own-equipments', description: 'Concrete Vibrators', qty: '28', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-29', category: 'own-equipments', description: 'Watering & De-Watering Pumps 5HP, 3HP', qty: '21', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-30', category: 'own-equipments', description: 'Total Station', qty: '7', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-31', category: 'own-equipments', description: 'Levelling Instrument', qty: '18', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-32', category: 'own-equipments', description: 'Cube Testing Machine', qty: '10', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-33', category: 'own-equipments', description: 'Soil Compacting Machine', qty: '7', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-34', category: 'own-equipments', description: 'Wood Plaining Machine', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-35', category: 'own-equipments', description: 'Wood Circular Saw Machine', qty: '25', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-36', category: 'own-equipments', description: 'Welding Machine 3PH & 1PH', qty: '15', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-37', category: 'own-equipments', description: 'Hydraulic Block Making Machine', qty: '2', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-38', category: 'own-equipments', description: 'Fly Ash brick manufacturing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-39', category: 'own-equipments', description: 'Paver/Cover block Vibration Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-40', category: 'own-equipments', description: 'Stone Crushing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-41', category: 'own-equipments', description: 'Mixer Machine - Diesel & Electrical', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-42', category: 'own-equipments', description: 'Crusher Plant', qty: '3', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-43', category: 'own-equipments', description: 'Blue Metal Quarry', qty: '4', unit: 'Nos', categoryLabel: 'Own Equipments' },
-          { id: 'infra-44', category: 'own-equipments', description: 'Weight Bridge 100MT', qty: '1', unit: 'Nos', categoryLabel: 'Own Equipments' }
+          { id: 'infra-1', category: 'machinery', description: 'Concrete Boom Pump - 40.10ZX, S36X', qty: '3', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-2', category: 'machinery', description: 'Batching Plant - M1T, M1C, KYB 450 & CP45, Z30 & CP30', qty: '6', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-3', category: 'machinery', description: 'RMC Transit Mixer', qty: '14', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-4', category: 'machinery', description: 'Concrete Pump 1800', qty: '4', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-5', category: 'heavy', description: 'Mobile Tower Crane [ACE Make]', qty: '3', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-6', category: 'heavy', description: 'Excavator - Hitachi EX 210', qty: '2', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-7', category: 'heavy', description: 'JCB', qty: '8', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-8', category: 'heavy', description: 'Vibromax 10T - Roller', qty: '1', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-9', category: 'heavy', description: 'Walking Roller 1MT', qty: '3', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-10', category: 'heavy', description: 'BOBCAT S450', qty: '5', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-11', category: 'vehicles', description: 'Tipper 10 Wheel', qty: '4', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-12', category: 'vehicles', description: 'Tractor', qty: '4', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-13', category: 'vehicles', description: 'TATA Diesel Tanker', qty: '1', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-14', category: 'vehicles', description: 'Mahindra & Eicher Van', qty: '8', unit: 'Nos', categoryLabel: 'Vehicles & Transport' },
+          { id: 'infra-15', category: 'heavy', description: 'Building Hoist', qty: '5', unit: 'Sets.', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-16', category: 'scaffolding', description: 'MS Cuplock System', qty: '400', unit: 'MT', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-17', category: 'scaffolding', description: 'System Form Work', qty: '4,120', unit: 'Sqm', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-18', category: 'scaffolding', description: 'MS Jolly (Platform)', qty: '6,500', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-19', category: 'scaffolding', description: 'MS Scaffolding Pipes', qty: '30,000', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-20', category: 'scaffolding', description: 'Props 2+2m, 2+3m, 3+3m', qty: '3,500', unit: 'Sets.', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-21', category: 'scaffolding', description: 'Agrow Spans 2.4m & 3.0m', qty: '1,500', unit: 'Sets.', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-22', category: 'scaffolding', description: 'Centering Sheets 3\' x 2\', 4\' x 2\'', qty: '1,500', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-23', category: 'scaffolding', description: 'MS Velor 1.50m & 1.20m', qty: '1,300', unit: 'Nos', categoryLabel: 'Scaffolding & Formwork' },
+          { id: 'infra-24', category: 'machinery', description: 'Bar Shearing Machine', qty: '15', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-25', category: 'machinery', description: 'Bar Bending Machine', qty: '15', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-26', category: 'machinery', description: 'Bar Rings Machine', qty: '2', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-27', category: 'machinery', description: 'Bar Threading Machine', qty: '1', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-28', category: 'machinery', description: 'Concrete Vibrators', qty: '28', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-29', category: 'machinery', description: 'Watering & De-Watering Pumps 5HP, 3HP', qty: '21', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-30', category: 'instruments', description: 'Total Station', qty: '7', unit: 'Nos', categoryLabel: 'Site Instruments' },
+          { id: 'infra-31', category: 'instruments', description: 'Levelling Instrument', qty: '18', unit: 'Nos', categoryLabel: 'Site Instruments' },
+          { id: 'infra-32', category: 'instruments', description: 'Cube Testing Machine', qty: '10', unit: 'Nos', categoryLabel: 'Site Instruments' },
+          { id: 'infra-33', category: 'heavy', description: 'Soil Compacting Machine', qty: '7', unit: 'Nos', categoryLabel: 'Lifting & Excavation' },
+          { id: 'infra-34', category: 'machinery', description: 'Wood Plaining Machine', qty: '3', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-35', category: 'machinery', description: 'Wood Circular Saw Machine', qty: '25', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-36', category: 'machinery', description: 'Welding Machine 3PH & 1PH', qty: '15', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-37', category: 'machinery', description: 'Hydraulic Block Making Machine', qty: '2', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-38', category: 'machinery', description: 'Fly Ash brick manufacturing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-39', category: 'machinery', description: 'Paver/Cover block Vibration Machine', qty: '1', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-40', category: 'quarry', description: 'Stone Crushing Machine', qty: '1', unit: 'Nos', categoryLabel: 'Quarry & Crushing' },
+          { id: 'infra-41', category: 'machinery', description: 'Mixer Machine - Diesel & Electrical', qty: '3', unit: 'Nos', categoryLabel: 'Concrete Machinery' },
+          { id: 'infra-42', category: 'quarry', description: 'Crusher Plant', qty: '3', unit: 'Nos', categoryLabel: 'Quarry & Crushing' },
+          { id: 'infra-43', category: 'quarry', description: 'Blue Metal Quarry', qty: '4', unit: 'Nos', categoryLabel: 'Quarry & Crushing' },
+          { id: 'infra-44', category: 'quarry', description: 'Weight Bridge 100MT', qty: '1', unit: 'Nos', categoryLabel: 'Quarry & Crushing' }
         ]
       };
     }
@@ -1401,6 +1494,29 @@
       return base || `custom-${Date.now()}`;
     }
 
+    /**
+     * One-shot upgrade: when every known seed row is still the legacy
+     * catch-all `own-equipments`, remapping to typed defaults (machinery, etc.).
+     * Skips if any seed row was already given a typed category.
+     */
+    upgradeLegacyOwnEquipmentsInventory(inventory) {
+      const defaults = this.getDefaultInfrastructureData().inventory || [];
+      const byId = Object.fromEntries(defaults.map((r) => [r.id, r]));
+      const rows = Array.isArray(inventory) ? inventory : [];
+      const seedRows = rows.filter((r) => r && byId[r.id]);
+      if (!seedRows.length) return rows;
+      const allLegacy = seedRows.every((r) => r.category === 'own-equipments');
+      if (!allLegacy) return rows;
+      return rows.map((r) => {
+        const d = byId[r.id];
+        if (!d || r.category !== 'own-equipments' || d.category === 'own-equipments') return r;
+        return Object.assign({}, r, {
+          category: d.category,
+          categoryLabel: d.categoryLabel
+        });
+      });
+    }
+
     normalizeInfrastructureData(raw) {
       const defaults = this.getDefaultInfrastructureData();
       const data = raw && typeof raw === 'object' ? raw : {};
@@ -1408,7 +1524,9 @@
       const catMap = Object.fromEntries(cats.map((c) => [c.value, c]));
       const reserved = new Set(cats.map((c) => c.value).concat(['all', 'other', 'custom']));
 
-      const inventory = Array.isArray(data.inventory) ? data.inventory : defaults.inventory;
+      const inventory = this.upgradeLegacyOwnEquipmentsInventory(
+        Array.isArray(data.inventory) ? data.inventory : defaults.inventory
+      );
       const normalizedInventory = inventory.map((row, index) => {
         const preset = catMap[row.category] || null;
         let category;
@@ -1466,7 +1584,10 @@
     getInfrastructureContent() {
       if (this.useApi()) {
         if (this._cmsCache.infrastructure) {
-          return this.normalizeInfrastructureData(this._cmsCache.infrastructure);
+          const normalized = this.normalizeInfrastructureData(this._cmsCache.infrastructure);
+          // Keep in-memory cache aligned after legacy own-equipments upgrade
+          this._cmsCache.infrastructure = normalized;
+          return normalized;
         }
         return {
           hero: { brand: '', title: '', lead: '', ctaLabel: '', ctaHref: '', image: '' },
@@ -1486,10 +1607,18 @@
         const parsed = JSON.parse(stored);
         const normalized = this.normalizeInfrastructureData(parsed);
         if (!normalized.inventory.length && defaults.inventory.length) {
-          const seeded = this.normalizeInfrastructureData(defaults);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
-          return seeded;
+          // Only seed defaults when there is no saved inventory yet.
+          // Do not resurrect rows after an intentional delete-all publish.
+          if (!stored || !parsed || !Object.prototype.hasOwnProperty.call(parsed, 'inventory')) {
+            const seeded = this.normalizeInfrastructureData(defaults);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+            return seeded;
+          }
         }
+        // Persist typed categories when upgrading legacy localStorage seeds
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+        } catch (persistErr) { /* ignore quota */ }
         return normalized;
       } catch (e) {
         return this.normalizeInfrastructureData(defaults);
@@ -1501,7 +1630,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/infrastructure', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(normalized)
           });
           this._cmsCache.infrastructure = normalized;
@@ -1851,7 +1980,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/ongoing-projects', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(normalized)
           });
           this._cmsCache.ongoing = normalized;
@@ -2113,7 +2242,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/completed-projects', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(normalized)
           });
           this._cmsCache.completed = normalized;
@@ -2254,8 +2383,10 @@
             valueBadge: '₹52.32 Cr',
             location: 'ECR, Nemmeli, Chennai, TN',
             scope: 'SWRO plant civil works, process basins, foundations',
-            image: 'nemmeli-desalination.jpg',
+            image: 'nemmeli-desal-coastal-aerial.png',
             images: [
+              'nemmeli-desal-coastal-aerial.png',
+              'nemmeli-desal-tanks.png',
               'nemmeli-desalination.jpg',
               'nemmeli-desal-aerial.png',
               'nemmeli-desal-basins.png',
@@ -2313,8 +2444,7 @@
               'polyhose-foundation.png',
               'polyhose-facility-front.png',
               'polyhose-aerial-solar.png',
-              'polyhose-warehouses-aerial.png',
-              'polyhose-peb-warehouse.png'
+              'polyhose-warehouses-aerial.png'
             ],
             shortDesc: 'Factory buildings, warehouses, PEB works, and ancillary buildings for Polyhose India at Irungattukottai.',
             description: 'Construction of proposed factory buildings, warehouse buildings including PEB works, and ancillary building works including plumbing for Polyhose India at Irungattukottai, Chennai. Scope covers structural framing, machinery foundations, PEB steel framing and cladding, interior flooring, utility integration, and external service pathways across the industrial campus.'
@@ -2690,7 +2820,7 @@
       if (this.useApi()) {
         try {
           await this.apiFetch('/api/admin/gallery', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify(normalized)
           });
           this._cmsCache.gallery = normalized;

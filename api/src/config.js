@@ -47,9 +47,15 @@ const SESSION_SECRET = process.env.SESSION_SECRET || 'dev-only-session-secret-ch
 requireInProduction('SESSION_SECRET', SESSION_SECRET);
 // Used by: CSRF HMAC, TOTP AES-256-GCM encryption, signed 2FA login challenges (cryptoService).
 
-const DATABASE_URL = process.env.DATABASE_URL || 'file:./dev.sqlite';
-if (isProd && !/^postgres(ql)?:\/\//.test(DATABASE_URL)) {
-  throw new Error('Production requires a PostgreSQL DATABASE_URL. SQLite fallback is not allowed.');
+const hasDiscreteDb =
+  Boolean(process.env.DB_HOST && process.env.DB_USER && process.env.DB_NAME);
+const DATABASE_URL = process.env.DATABASE_URL || '';
+if (!hasDiscreteDb && !/^(mysql|mariadb):\/\//i.test(DATABASE_URL)) {
+  throw new Error(
+    'DATABASE_URL must be a MariaDB/MySQL URL (mysql:// or mariadb://), ' +
+      'or set DB_HOST / DB_USER / DB_NAME (/ DB_PASSWORD / DB_PORT). ' +
+      'SQLite and PostgreSQL are not supported.'
+  );
 }
 
 const CORS_ORIGINS = parseCorsOrigins(process.env.CORS_ORIGINS);
@@ -71,7 +77,8 @@ module.exports = {
   DATABASE_URL,
   SESSION_SECRET,
   COOKIE_SECURE: process.env.COOKIE_SECURE === 'true' || isProd,
-  COOKIE_SAMESITE: process.env.COOKIE_SAMESITE || (isProd ? 'none' : 'lax'),
+  // Default lax (same-site). Set COOKIE_SAMESITE=none when admin is cross-origin (requires Secure).
+  COOKIE_SAMESITE: process.env.COOKIE_SAMESITE || 'lax',
   SESSION_HOURS: Number(process.env.SESSION_HOURS || 8),
   CORS_ORIGINS,
   MAX_FAILED_ATTEMPTS: Number(process.env.MAX_FAILED_ATTEMPTS || 5),

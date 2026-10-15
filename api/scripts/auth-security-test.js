@@ -5,7 +5,7 @@
 const base = process.argv[2] || process.env.SMOKE_BASE || 'http://127.0.0.1:3001';
 
 async function resetAdminForTest() {
-  const bcrypt = require('bcrypt');
+  const bcrypt = require('bcryptjs');
   const db = require('../src/db');
   const hash = await bcrypt.hash('TestFixturePassword@2026!', 12);
   await db('admin_lockouts').del();

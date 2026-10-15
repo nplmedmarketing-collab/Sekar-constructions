@@ -1,4 +1,5 @@
 const { authenticator } = require('otplib');
+const QRCode = require('qrcode');
 const cryptoService = require('./cryptoService');
 
 authenticator.options = { window: 1 };
@@ -13,8 +14,14 @@ function buildOtpauthUrl(username, secret) {
   return `otpauth://totp/${label}?secret=${secret}&issuer=${issuer}&algorithm=SHA1&digits=6&period=30`;
 }
 
-function qrImageUrl(otpauthUrl) {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(otpauthUrl)}`;
+/** Local PNG data URL — never send otpauth secrets to third-party QR APIs. */
+async function qrDataUrl(otpauthUrl) {
+  return QRCode.toDataURL(String(otpauthUrl || ''), {
+    errorCorrectionLevel: 'M',
+    margin: 2,
+    width: 200,
+    type: 'image/png',
+  });
 }
 
 function normalizeTotpCode(code) {
@@ -63,7 +70,7 @@ function getVerifiedCounterFromStored(code, encryptedSecret) {
 module.exports = {
   generateSecret,
   buildOtpauthUrl,
-  qrImageUrl,
+  qrDataUrl,
   normalizeTotpCode,
   verifyCode,
   verifyStoredCode,

@@ -56,6 +56,10 @@ function verifySignedPayload(token, expectedType) {
   return payload;
 }
 
+function hashChallengeToken(token) {
+  return crypto.createHash('sha256').update(String(token || '')).digest('hex');
+}
+
 /** Short-lived signed token after password step when TOTP is required. */
 function createLoginChallenge(userId) {
   return signPayload({
@@ -77,5 +81,6 @@ module.exports = {
   decryptTotpSecret,
   createLoginChallenge,
   verifyLoginChallenge,
+  hashChallengeToken,
   CHALLENGE_PREFIX,
 };

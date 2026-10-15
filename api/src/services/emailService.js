@@ -58,6 +58,26 @@ function warnSmtpMissing(context) {
   );
 }
 
+/** Strip CR/LF from header fields to prevent SMTP header injection. */
+function sanitizeHeader(value, maxLen = 200) {
+  return String(value == null ? '' : value)
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLen);
+}
+
+/** Stricter than soft UI checks — reject injection / obvious junk before thank-you relay. */
+function isStrictEmail(email) {
+  const to = String(email || '').trim();
+  if (!to || to.length > 254) return false;
+  if (/[\r\n]/.test(to)) return false;
+  // Practical RFC5322-ish local@domain with a real TLD
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(
+    to
+  );
+}
+
 async function sendInquiryNotification(inquiry) {
   const recipient = process.env.NOTIFICATION_EMAIL || 'ho@sekarconstructions.com';
   const transporter = getTransporter();
@@ -68,7 +88,9 @@ async function sendInquiryNotification(inquiry) {
     return { sent: false, reason: 'SMTP not configured' };
   }
 
-  const subject = `[New Inquiry ${inquiry.id}] ${inquiry.subject}`;
+  const inquiryId = sanitizeHeader(inquiry.id, 64);
+  // Fixed subject template — user subject lives in body only.
+  const subject = sanitizeHeader(`[New Inquiry ${inquiryId}] Website contact form`);
   const text = `
 New tender/contact inquiry received on Sekar Constructions website:
 
@@ -108,7 +130,7 @@ Log in to Sekar Construction Super Admin to manage inquiries.
  */
 async function sendApplicationThankYou({ email, candidateName, jobTitle } = {}) {
   const to = String(email || '').trim();
-  if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+  if (!isStrictEmail(to)) {
     console.warn('[emailService] Careers thank-you skipped — missing or invalid candidate email.');
     return { sent: false, reason: 'invalid email' };
   }
@@ -119,15 +141,14 @@ async function sendApplicationThankYou({ email, candidateName, jobTitle } = {}) 
     return { sent: false, reason: 'SMTP not configured' };
   }
 
-  const name = String(candidateName || '').trim() || 'Candidate';
-  const role = String(jobTitle || '').trim();
+  const name = sanitizeHeader(candidateName || '', 120) || 'Candidate';
+  const role = sanitizeHeader(jobTitle || '', 120);
   const roleLine = role
     ? `Thank you for applying for the ${role} position at Sekar Constructions.`
     : 'Thank you for applying to Sekar Constructions.';
 
-  const subject = role
-    ? `Thank you for applying — ${role} | Sekar Constructions`
-    : 'Thank you for applying | Sekar Constructions';
+  // Fixed subject — role details stay in body to avoid header injection.
+  const subject = 'Thank you for applying | Sekar Constructions';
 
   const text = `
 Dear ${name},
@@ -178,11 +199,11 @@ async function sendApplicationHrNotification({ email, candidateName, jobTitle } 
     return { sent: false, reason: 'SMTP not configured' };
   }
 
-  const name = String(candidateName || '').trim() || 'Unknown';
-  const candidateEmail = String(email || '').trim() || 'N/A';
-  const role = String(jobTitle || '').trim() || 'N/A';
+  const name = sanitizeHeader(candidateName || '', 120) || 'Unknown';
+  const candidateEmail = sanitizeHeader(email || '', 254) || 'N/A';
+  const role = sanitizeHeader(jobTitle || '', 120) || 'N/A';
 
-  const subject = `[New Careers Application] ${role} — ${name}`;
+  const subject = sanitizeHeader(`[New Careers Application] ${role} — ${name}`);
   const text = `
 A new job application was submitted on the Sekar Constructions careers page:
 
@@ -213,4 +234,6 @@ module.exports = {
   sendApplicationThankYou,
   sendApplicationHrNotification,
   getSmtpStartupStatus,
+  isStrictEmail,
+  sanitizeHeader,
 };

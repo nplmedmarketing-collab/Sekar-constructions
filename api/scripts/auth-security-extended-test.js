@@ -56,7 +56,7 @@ async function waitForNextTotpStep() {
 }
 
 async function resetAdminForTest() {
-  const bcrypt = require('bcrypt');
+  const bcrypt = require('bcryptjs');
   const hash = await bcrypt.hash('TestFixturePassword@2026!', 12);
   await fetch(`${base}/api/health`).catch(() => {});
   const db = require('../src/db');

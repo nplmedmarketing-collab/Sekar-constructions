@@ -2,7 +2,7 @@
 
 ## Honest limit
 
-**GitHub Pages is static only.** It cannot run `/api/auth/login`, CMS writes, or Postgres. The marketing site can live on `*.github.io`; the **Node API must run elsewhere** (Render, Railway, VPS).
+**GitHub Pages is static only.** It cannot run `/api/auth/login`, CMS writes, or MariaDB. The marketing site can live on `*.github.io`; the **Node API must run elsewhere** (VPS, Render, Railway) with a MariaDB/MySQL `DATABASE_URL`.
 
 Admin already supports **cross-origin** login via **Bearer tokens** (`admin-auth.js` stores the session token and sends `Authorization: Bearer …`). Cookies are secondary; for github.io → remote API use `COOKIE_SAMESITE=none` and `COOKIE_SECURE=true` if you rely on cookies at all.
 
@@ -15,7 +15,7 @@ Admin already supports **cross-origin** login via **Bearer tokens** (`admin-auth
 | API routes (`/api/auth/*`, CMS, inquiries) | Exist under `api/` |
 | Bearer + CSRF (bearer skips CSRF) | Supported |
 | CORS allowlist + `credentials: true` | `api/src/app.js` |
-| Prod cookie defaults | `COOKIE_SAMESITE=none`, `COOKIE_SECURE` when `NODE_ENV=production` |
+| Prod cookie defaults | `COOKIE_SAMESITE=lax`, `COOKIE_SECURE` when `NODE_ENV=production` (set `COOKIE_SAMESITE=none` only for cross-origin admin cookies) |
 
 ## Steps: API on Render (free tier)
 
@@ -26,7 +26,7 @@ Admin already supports **cross-origin** login via **Bearer tokens** (`admin-auth
      If Render’s root is the **repo root**, set Docker context / Dockerfile to `api/` (edit the blueprint paths or create the Web Service manually with Root Directory `api`).
    - **Option B — Manual Web Service:** Root Directory = `api`, Runtime = Docker (uses `api/Dockerfile`), or Node with Build `npm install` and Start `npm run migrate && npm start`.
 
-3. **Add a PostgreSQL database** on Render (free) and set `DATABASE_URL` to the internal connection string.
+3. **Attach MariaDB / MySQL** (external host or managed MySQL if available) and set `DATABASE_URL` to a `mysql://` connection string. Render’s free Postgres addon is **not** compatible with this API anymore.
 
 4. **Environment variables** (Dashboard → Environment):
 
@@ -34,7 +34,7 @@ Admin already supports **cross-origin** login via **Bearer tokens** (`admin-auth
    |----------|--------|
    | `NODE_ENV` | `production` |
    | `SESSION_SECRET` | Long random string (≥32 chars); Render can generate |
-   | `DATABASE_URL` | Render Postgres URL |
+   | `DATABASE_URL` | MariaDB/MySQL URL (`mysql://…`) |
    | `CORS_ORIGINS` | `https://nplmedmarketing-collab.github.io` (comma-separate more origins if needed) |
    | `COOKIE_SECURE` | `true` |
    | `COOKIE_SAMESITE` | `none` |
@@ -65,7 +65,7 @@ Admin already supports **cross-origin** login via **Bearer tokens** (`admin-auth
 ## Alternative: Railway
 
 1. New project → Deploy from GitHub → root `api` (or Dockerfile).
-2. Add Postgres plugin; set the same env vars as above (`CORS_ORIGINS`, `SESSION_SECRET`, `COOKIE_*`, `SEED_ADMIN_PASSWORD`).
+2. Add a MariaDB/MySQL database; set the same env vars as above (`CORS_ORIGINS`, `SESSION_SECRET`, `COOKIE_*`). Prefer `migrate` + content import over seed.
 3. Set `REMOTE_API_BASE` in `config.site.js` to the Railway public HTTPS URL.
 
 ## Same-origin alternative (simpler cookies)
@@ -80,7 +80,7 @@ GitHub Pages alone cannot do this; you need a host that runs Node.
 
 ## Checklist
 
-- [ ] API deployed with Postgres `DATABASE_URL`
+- [ ] API deployed with MariaDB/MySQL `DATABASE_URL`
 - [ ] `SESSION_SECRET` strong and unique
 - [ ] `CORS_ORIGINS` includes `https://nplmedmarketing-collab.github.io`
 - [ ] `REMOTE_API_BASE` in `config.site.js` matches the live API URL

@@ -374,11 +374,10 @@
       background: #f8fafc;
       border: 1.5px solid #e2e8f0;
       border-radius: 10px;
-      padding: 12px 18px;
+      padding: 14px 16px;
       display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 12px;
       transition: all 0.2s ease;
     }
 
@@ -388,23 +387,65 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.04);
     }
 
-    .fleet-edit-left {
+    .fleet-edit-top {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
     }
 
-    .fleet-edit-icon {
-      font-size: 1.2rem;
+    .fleet-edit-logo-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
       color: #ea580c;
-      width: 24px;
-      text-align: center;
+      font-size: 1.25rem;
     }
 
-    .fleet-edit-label {
-      font-size: 0.9rem;
+    .fleet-edit-logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .fleet-edit-fields {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fleet-edit-name-input {
+      width: 100%;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.92rem;
       font-weight: 700;
       color: var(--dash-text);
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 10px;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .fleet-edit-name-input:focus {
+      border-color: var(--dash-primary);
+      box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
+    }
+
+    .fleet-edit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .fleet-edit-input {
@@ -424,6 +465,24 @@
     .fleet-edit-input:focus {
       border-color: var(--dash-primary);
       box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
+    }
+
+    .fleet-edit-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .fleet-edit-actions .btn-dash-action {
+      padding: 6px 10px;
+      font-size: 0.78rem;
+    }
+
+    .fleet-edit-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
     }
 
 
@@ -751,7 +810,7 @@
   <!-- Top Navbar -->
   <header class="dash-navbar">
     <div class="dash-brand">
-      <a href="index.html">
+      <a href="/">
         <img src="logo-final.png?v=6" alt="Sekar Construction Logo" class="dash-brand-logo">
       </a>
       <div class="dash-title-badge">
@@ -870,12 +929,18 @@
           <i class="fa-solid fa-truck-monster" style="color: var(--dash-primary);"></i> Heavy Fleet & Supply Chain Asset Inventory
         </h2>
         <button id="saveFleetBtn" class="btn-dash-action" style="background: var(--dash-primary); color: #fff; border:none; padding: 10px 20px;">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Counts to Website
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish to Website
         </button>
       </div>
 
       <div id="fleetStatusAlert" style="display:none; padding: 12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; border-radius:10px; font-size:0.85rem; margin-bottom:18px; font-weight: 500;">
-        <i class="fa-solid fa-circle-check"></i> Asset inventory counts updated live on public website!
+        <i class="fa-solid fa-circle-check"></i> Fleet inventory updated live on public website!
+      </div>
+
+      <div class="fleet-edit-toolbar">
+        <button type="button" id="addFleetItemBtn" class="btn-dash-action" style="background:#fff; border:1.5px solid #cbd5e1; color: var(--dash-text);">
+          <i class="fa-solid fa-plus"></i> Add fleet item
+        </button>
       </div>
 
       <div class="fleet-edit-grid" id="fleetEditGrid">
@@ -925,7 +990,7 @@
                   <th>Description</th>
                   <th style="width:90px;">Qty</th>
                   <th style="width:90px;">Unit</th>
-                  <th style="width:260px;">Category</th>
+                  <th style="width:280px;">Category <span style="font-weight:500; text-transform:none; letter-spacing:0; color:#94a3b8;">(preset + name)</span></th>
                   <th style="width:90px;">Actions</th>
                 </tr>
               </thead>
@@ -1358,16 +1423,24 @@
     </div>
   </div>
 
-  <script src="config.site.js?v=124"></script>
-  <script src="admin-auth.js?v=143"></script>
+  <script src="config.site.js?v=126"></script>
+  <script src="admin-auth.js?v=147"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const securityEngine = window.SekarAdminSecurity;
 
       // 1. Verify Active Session
       if (!securityEngine || !securityEngine.isSessionValid()) {
-        window.location.href = 'admin-login.html';
+        window.location.href = '/admin-login';
         return;
+      }
+
+      if (securityEngine.apiReady) {
+        try {
+          await securityEngine.apiReady;
+        } catch (err) {
+          console.warn('Admin CMS hydrate failed:', err);
+        }
       }
 
       // UI Element Refs
@@ -1485,7 +1558,7 @@
         },
         () => {
           alert('Session expired due to inactivity.');
-          window.location.href = 'admin-login.html';
+          window.location.href = '/admin-login';
         }
       );
 
@@ -1541,39 +1614,173 @@
 
 
       // Render Fleet Inventory Edit Manager Cards
+      let fleetEditState = null;
+
+      const FLEET_ICON_OPTIONS = [
+        'fa-industry', 'fa-truck', 'fa-truck-droplet', 'fa-truck-moving', 'fa-tractor',
+        'fa-gears', 'fa-mountain', 'fa-screwdriver-wrench', 'fa-scissors', 'fa-layer-group',
+        'fa-droplet', 'fa-warehouse', 'fa-helmet-safety', 'fa-road', 'fa-ship'
+      ];
+
+      function ensureFleetEditState() {
+        if (Array.isArray(fleetEditState)) return fleetEditState;
+        let fleetData = securityEngine.getFleetInventory();
+        if (!fleetData || !fleetData.length) {
+          fleetData = securityEngine.getBundledFleetDefaults
+            ? securityEngine.getBundledFleetDefaults()
+            : [];
+        }
+        fleetEditState = fleetData.map((f) => securityEngine.normalizeFleetItem(f));
+        return fleetEditState;
+      }
+
+      function fleetLogoMarkup(item) {
+        if (item.logoUrl) {
+          return `<img src="${escapeAttr(item.logoUrl)}" alt="" onerror="this.remove()">`;
+        }
+        return `<i class="fa-solid ${escapeAttr(item.icon || 'fa-truck')}"></i>`;
+      }
+
+      function resizeFleetLogoFile(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error('Could not read image file.'));
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = () => reject(new Error('Invalid image file.'));
+            img.onload = () => {
+              const size = 128;
+              const canvas = document.createElement('canvas');
+              canvas.width = size;
+              canvas.height = size;
+              const ctx = canvas.getContext('2d');
+              ctx.clearRect(0, 0, size, size);
+              const scale = Math.min(size / img.width, size / img.height);
+              const w = Math.max(1, Math.round(img.width * scale));
+              const h = Math.max(1, Math.round(img.height * scale));
+              ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+              resolve(canvas.toDataURL('image/png'));
+            };
+            img.src = String(reader.result || '');
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
       function renderFleetEditGrid() {
         const fleetGrid = document.getElementById('fleetEditGrid');
         if (!fleetGrid) return;
-        let fleetData = securityEngine.getFleetInventory();
-        
-        if (!fleetData || !Array.isArray(fleetData) || fleetData.length === 0) {
-          fleetData = [
-            { key: 'rmc', name: 'RMC Batching Plants', count: '5', icon: 'fa-industry' },
-            { key: 'mixers', name: 'Transit Mixers', count: '12', icon: 'fa-truck' },
-            { key: 'pumps', name: 'Mobile Concrete Pumps', count: '8', icon: 'fa-droplet' },
-            { key: 'tippers', name: 'Tipper Trucks', count: '15', icon: 'fa-truck-moving' },
-            { key: 'excavators', name: 'Excavators & JCBS', count: '4', icon: 'fa-tractor' },
-            { key: 'crushers', name: 'Crusher Units', count: '3', icon: 'fa-gears' },
-            { key: 'quarries', name: 'Blue Metal Quarries', count: '3', icon: 'fa-mountain' },
-            { key: 'bending', name: 'Bar Bending Machines', count: '2', icon: 'fa-screwdriver-wrench' },
-            { key: 'shearing', name: 'Bar Shearing Machines', count: '2', icon: 'fa-scissors' },
-            { key: 'scaffolding', name: 'Scaffolding Pipes', count: '30k', icon: 'fa-layer-group' }
-          ];
-        }
+        const fleetData = ensureFleetEditState();
 
-        fleetGrid.innerHTML = fleetData.map(item => `
-          <div class="fleet-edit-item">
-            <div class="fleet-edit-left">
-              <span class="fleet-edit-icon"><i class="fa-solid ${item.icon}"></i></span>
-              <span class="fleet-edit-label">${escapeHtml(item.name)}</span>
+        fleetGrid.innerHTML = fleetData.map((item, index) => `
+          <div class="fleet-edit-item" data-fleet-index="${index}">
+            <div class="fleet-edit-top">
+              <div class="fleet-edit-logo-wrap" data-fleet-logo>${fleetLogoMarkup(item)}</div>
+              <div class="fleet-edit-fields">
+                <input type="text" class="fleet-edit-name-input" data-fleet-field="name" value="${escapeAttr(item.name)}" placeholder="Asset name" aria-label="Fleet item name">
+                <div class="fleet-edit-row">
+                  <label style="font-size:0.75rem; color:var(--dash-muted); font-weight:600;">Count</label>
+                  <input type="text" class="fleet-edit-input" data-fleet-field="count" value="${escapeAttr(item.count)}" placeholder="0" aria-label="Fleet item count">
+                  <label style="font-size:0.75rem; color:var(--dash-muted); font-weight:600;">Icon</label>
+                  <select class="dash-search" data-fleet-field="icon" style="max-width:180px; padding:6px 8px;" aria-label="Fallback icon">
+                    ${FLEET_ICON_OPTIONS.map((icon) => `
+                      <option value="${escapeAttr(icon)}" ${item.icon === icon ? 'selected' : ''}>${escapeHtml(icon.replace(/^fa-/, ''))}</option>
+                    `).join('')}
+                  </select>
+                </div>
+              </div>
             </div>
-            <input type="text" class="fleet-edit-input" data-key="${item.key}" value="${escapeHtml(item.count)}">
+            <div class="fleet-edit-actions">
+              <label class="btn-dash-action" style="cursor:pointer; margin:0;">
+                <i class="fa-solid fa-image"></i> ${item.logoUrl ? 'Change logo' : 'Upload logo'}
+                <input type="file" accept="image/*" data-fleet-logo-file hidden>
+              </label>
+              ${item.logoUrl ? `<button type="button" class="btn-dash-action" data-fleet-clear-logo style="background:#fff7ed; border:1px solid #fed7aa; color:#c2410c;"><i class="fa-solid fa-rotate-left"></i> Use icon</button>` : ''}
+              <button type="button" class="btn-dash-action" data-fleet-remove style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; margin-left:auto;">
+                <i class="fa-solid fa-trash"></i> Remove
+              </button>
+            </div>
           </div>
         `).join('');
-
       }
 
       renderFleetEditGrid();
+
+      const fleetEditGridEl = document.getElementById('fleetEditGrid');
+      if (fleetEditGridEl) {
+        fleetEditGridEl.addEventListener('input', (e) => {
+          const card = e.target.closest('[data-fleet-index]');
+          if (!card) return;
+          const index = Number(card.getAttribute('data-fleet-index'));
+          const field = e.target.getAttribute('data-fleet-field');
+          if (!field || !fleetEditState[index]) return;
+          fleetEditState[index][field] = e.target.value;
+          if (field === 'icon' && !fleetEditState[index].logoUrl) {
+            const logoWrap = card.querySelector('[data-fleet-logo]');
+            if (logoWrap) logoWrap.innerHTML = fleetLogoMarkup(fleetEditState[index]);
+          }
+        });
+
+        fleetEditGridEl.addEventListener('change', async (e) => {
+          const fileInput = e.target.closest('[data-fleet-logo-file]');
+          if (!fileInput || !fileInput.files || !fileInput.files[0]) return;
+          const card = fileInput.closest('[data-fleet-index]');
+          if (!card) return;
+          const index = Number(card.getAttribute('data-fleet-index'));
+          if (!fleetEditState[index]) return;
+          try {
+            const dataUrl = await resizeFleetLogoFile(fileInput.files[0]);
+            fleetEditState[index].logoUrl = dataUrl;
+            renderFleetEditGrid();
+          } catch (err) {
+            alert(err.message || 'Logo upload failed.');
+          } finally {
+            fileInput.value = '';
+          }
+        });
+
+        fleetEditGridEl.addEventListener('click', (e) => {
+          const clearBtn = e.target.closest('[data-fleet-clear-logo]');
+          const removeBtn = e.target.closest('[data-fleet-remove]');
+          const card = e.target.closest('[data-fleet-index]');
+          if (!card) return;
+          const index = Number(card.getAttribute('data-fleet-index'));
+          if (!fleetEditState[index]) return;
+
+          if (clearBtn) {
+            fleetEditState[index].logoUrl = '';
+            renderFleetEditGrid();
+            return;
+          }
+          if (removeBtn) {
+            if (!confirm('Remove this fleet item?')) return;
+            fleetEditState.splice(index, 1);
+            renderFleetEditGrid();
+          }
+        });
+      }
+
+      const addFleetItemBtn = document.getElementById('addFleetItemBtn');
+      if (addFleetItemBtn) {
+        addFleetItemBtn.addEventListener('click', () => {
+          ensureFleetEditState();
+          fleetEditState.push({
+            key: 'fleet-' + Date.now(),
+            name: 'New fleet item',
+            count: '1',
+            icon: 'fa-truck',
+            logoUrl: ''
+          });
+          renderFleetEditGrid();
+          const cards = document.querySelectorAll('#fleetEditGrid [data-fleet-index]');
+          const last = cards[cards.length - 1];
+          const nameInput = last && last.querySelector('[data-fleet-field="name"]');
+          if (nameInput) {
+            nameInput.focus();
+            nameInput.select();
+          }
+        });
+      }
 
       // Financials edit state (series kept in memory until Save & Publish)
       let financialsEditState = null;
@@ -1826,26 +2033,32 @@
 
 
 
-      // Save Fleet Counts Button Handler
+      // Save Fleet Inventory Button Handler
       const saveFleetBtn = document.getElementById('saveFleetBtn');
       if (saveFleetBtn) {
         saveFleetBtn.addEventListener('click', async () => {
-          const fleetInputs = document.querySelectorAll('.fleet-edit-input');
-          const currentData = securityEngine.getFleetInventory();
+          const cleaned = ensureFleetEditState()
+            .map((f) => securityEngine.normalizeFleetItem(f))
+            .filter((f) => String(f.name || '').trim().length > 0);
 
-          fleetInputs.forEach(input => {
-            const key = input.getAttribute('data-key');
-            const target = currentData.find(f => f.key === key);
-            if (target) {
-              target.count = input.value.trim();
-            }
-          });
+          if (!cleaned.length) {
+            showSaveResultAlert(
+              document.getElementById('fleetStatusAlert'),
+              { success: false, message: 'Add at least one fleet item before publishing.' },
+              'Add at least one fleet item before publishing.'
+            );
+            return;
+          }
 
-          const result = await securityEngine.updateFleetInventory(currentData);
+          const result = await securityEngine.updateFleetInventory(cleaned);
+          if (result.success) {
+            fleetEditState = cleaned;
+            renderFleetEditGrid();
+          }
           showSaveResultAlert(
             document.getElementById('fleetStatusAlert'),
             result,
-            'Fleet asset counts updated and published live to website!'
+            'Fleet inventory updated and published live to website!'
           );
         });
       }
@@ -1876,21 +2089,22 @@
         const rows = document.querySelectorAll('#infraInventoryEditBody tr');
         const catOpts = securityEngine.getInfrastructureCategoryOptions();
         const catMap = Object.fromEntries(catOpts.map((c) => [c.value, c]));
+        const reserved = new Set(catOpts.map((c) => c.value).concat(['all', 'other', 'custom']));
         infraEditState.inventory = Array.from(rows).map((tr, index) => {
           const selectVal = tr.querySelector('.infra-row-category')?.value || 'machinery';
-          const customInput = tr.querySelector('.infra-row-category-custom');
+          const nameInput = tr.querySelector('.infra-row-category-name');
+          let categoryLabel = (nameInput?.value || '').trim();
           let category;
-          let categoryLabel;
 
-          if (selectVal === '__custom__') {
-            categoryLabel = (customInput?.value || '').trim() || 'Custom';
+          if (selectVal === '__custom__' || !catMap[selectVal]) {
+            categoryLabel = categoryLabel || 'Custom';
             category = securityEngine.slugifyInfrastructureCategory(categoryLabel);
-            if (catMap[category] || category === 'all' || category === 'other' || category === 'custom') {
+            if (reserved.has(category) || catMap[category]) {
               category = `custom-${category}`;
             }
           } else {
             category = selectVal;
-            categoryLabel = (catMap[category] && catMap[category].label) || selectVal;
+            categoryLabel = categoryLabel || catMap[category].label || selectVal;
           }
 
           return {
@@ -1908,20 +2122,44 @@
 
       function wireInfraCategoryRow(tr) {
         const select = tr.querySelector('.infra-row-category');
-        const customWrap = tr.querySelector('.infra-row-custom-wrap');
-        const customInput = tr.querySelector('.infra-row-category-custom');
-        if (!select || !customWrap) return;
+        const nameInput = tr.querySelector('.infra-row-category-name');
+        if (!select || !nameInput) return;
 
-        const syncCustomVisibility = () => {
-          const isCustom = select.value === '__custom__';
-          customWrap.style.display = isCustom ? 'block' : 'none';
-          if (isCustom && customInput && !customInput.value.trim()) {
-            customInput.focus();
+        const catOpts = securityEngine.getInfrastructureCategoryOptions();
+        const catMap = Object.fromEntries(catOpts.map((c) => [c.value, c]));
+
+        select.addEventListener('change', () => {
+          if (select.value === '__custom__') {
+            if (!nameInput.value.trim()) nameInput.focus();
+            return;
           }
-        };
+          const preset = catMap[select.value];
+          if (preset) nameInput.value = preset.label;
+        });
 
-        select.addEventListener('change', syncCustomVisibility);
-        syncCustomVisibility();
+        // If the typed name no longer matches the selected preset, switch to Custom.
+        nameInput.addEventListener('input', () => {
+          if (select.value === '__custom__') return;
+          const preset = catMap[select.value];
+          if (preset && nameInput.value.trim() !== preset.label) {
+            select.value = '__custom__';
+          }
+        });
+      }
+
+      function syncInfraEditStateToCache() {
+        if (!infraEditState || !window.securityEngine) return;
+        try {
+          const snapshot = JSON.parse(JSON.stringify(infraEditState));
+          if (securityEngine.useApi()) {
+            securityEngine._cmsCache = securityEngine._cmsCache || {};
+            securityEngine._cmsCache.infrastructure = snapshot;
+          } else {
+            localStorage.setItem('sc_admin_infrastructure_v2', JSON.stringify(snapshot));
+          }
+        } catch (err) {
+          console.warn('Failed to sync infrastructure draft cache', err);
+        }
       }
 
       function renderInfrastructureEditor() {
@@ -1953,7 +2191,7 @@
           const options = cats.map((c) =>
             `<option value="${c.value}" ${!isCustom && c.value === row.category ? 'selected' : ''}>${escapeHtml(c.label)}</option>`
           ).join('') + `<option value="__custom__" ${isCustom ? 'selected' : ''}>Other / Custom…</option>`;
-          const customVal = isCustom ? escapeHtml(row.categoryLabel || '') : '';
+          const nameVal = escapeHtml(row.categoryLabel || (isCustom ? '' : (cats.find((c) => c.value === row.category)?.label || '')));
           return `
             <tr data-id="${escapeHtml(row.id)}">
               <td style="text-align:center; color:#64748b;">${index + 1}</td>
@@ -1962,10 +2200,8 @@
               <td><input type="text" class="dash-search infra-row-unit" value="${escapeHtml(row.unit)}" style="width:100%; padding:8px 10px; text-align:center;"></td>
               <td>
                 <div style="display:flex; flex-direction:column; gap:6px; min-width:200px;">
-                  <select class="dash-select infra-row-category" style="width:100%; padding:8px 10px; min-width:0;">${options}</select>
-                  <div class="infra-row-custom-wrap" style="display:${isCustom ? 'block' : 'none'};">
-                    <input type="text" class="dash-search infra-row-category-custom" value="${customVal}" placeholder="Type custom category name" style="width:100%; padding:8px 10px;" aria-label="Custom category name">
-                  </div>
+                  <select class="dash-select infra-row-category" style="width:100%; padding:8px 10px; min-width:0;" aria-label="Category preset">${options}</select>
+                  <input type="text" class="dash-search infra-row-category-name" value="${nameVal}" placeholder="Category name (editable)" style="width:100%; padding:8px 10px;" aria-label="Category name">
                 </div>
               </td>
               <td style="text-align:center;">
@@ -1980,16 +2216,32 @@
         if (countEl) countEl.textContent = `(${infraEditState.inventory.length} items)`;
 
         tbody.querySelectorAll('tr').forEach((tr) => wireInfraCategoryRow(tr));
+      }
 
-        tbody.querySelectorAll('.infra-row-delete').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const tr = btn.closest('tr');
-            const id = tr?.getAttribute('data-id');
-            if (!id || !confirm('Delete this inventory row?')) return;
-            collectInfraFormIntoState();
-            infraEditState.inventory = infraEditState.inventory.filter((r) => r.id !== id);
-            renderInfraInventoryRows();
-          });
+      const infraInventoryBody = document.getElementById('infraInventoryEditBody');
+      if (infraInventoryBody && !infraInventoryBody.dataset.deleteBound) {
+        infraInventoryBody.dataset.deleteBound = '1';
+        infraInventoryBody.addEventListener('click', (e) => {
+          const btn = e.target.closest('.infra-row-delete');
+          if (!btn || !infraInventoryBody.contains(btn)) return;
+          e.preventDefault();
+          e.stopPropagation();
+          const tr = btn.closest('tr');
+          const id = String(tr?.getAttribute('data-id') || '');
+          if (!id || !confirm('Delete this inventory row?')) return;
+          if (!infraEditState) renderInfrastructureEditor();
+          // Drop the row from the DOM first so collect cannot resurrect it
+          tr.remove();
+          collectInfraFormIntoState();
+          infraEditState.inventory = (infraEditState.inventory || []).filter(
+            (r) => String(r.id) !== id
+          );
+          syncInfraEditStateToCache();
+          renderInfraInventoryRows();
+          showInfraAlert(
+            `Row removed (${infraEditState.inventory.length} items left). Click Save & Publish to apply.`,
+            true
+          );
         });
       }
 
@@ -3714,7 +3966,7 @@
       if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
           securityEngine.terminateSession('LOGOUT', 'Super Admin logged out manually.');
-          window.location.href = 'admin-login.html';
+          window.location.href = '/admin-login';
         });
       }
 

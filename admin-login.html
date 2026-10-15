@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Base Styles -->
-  <link rel="stylesheet" href="styles.css?v=122">
+  <link rel="stylesheet" href="styles.css?v=206">
 
   <style>
     :root {
@@ -347,7 +347,7 @@
   <div class="admin-container">
     <!-- Brand Header -->
     <div class="admin-brand-header">
-      <a href="index.html">
+      <a href="/">
         <img src="logo-final.png?v=6" alt="Sekar Construction Logo" class="admin-brand-logo">
       </a>
     </div>
@@ -432,7 +432,7 @@
     <!-- Footer Links -->
     <div class="admin-footer-links">
       <p>&copy; 2026 Sekar Constructions. Class-I Civil Engineering Firm.</p>
-      <p><a href="index.html">&larr; Return to Public Website</a></p>
+      <p><a href="/">&larr; Return to Public Website</a></p>
     </div>
   </div>
 
@@ -452,8 +452,8 @@
   </div>
 
   <!-- Security Engine Core -->
-  <script src="config.site.js?v=124"></script>
-  <script src="admin-auth.js?v=143"></script>
+  <script src="config.site.js?v=126"></script>
+  <script src="admin-auth.js?v=147"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -461,8 +461,17 @@
 
       // Auto redirect if session active
       if (securityEngine && securityEngine.isSessionValid()) {
-        window.location.href = 'admin-dashboard.html';
+        window.location.href = '/admin-dashboard';
         return;
+      }
+
+      // Wake / verify API early so the first login click is less likely to Failed to fetch
+      if (securityEngine && securityEngine.useApi()) {
+        securityEngine.pingApi().then((ping) => {
+          if (!ping.ok) {
+            showAlert(ping.message || 'API is unreachable.', 'warning');
+          }
+        });
       }
 
       // UI Elements
@@ -475,6 +484,8 @@
 
       const step1Form = document.getElementById('step1Form');
       const step2Form = document.getElementById('step2Form');
+      const step1Btn = document.getElementById('step1Btn');
+      const step2Btn = document.getElementById('step2Btn');
 
       const adminUsername = document.getElementById('adminUsername');
       const adminPassword = document.getElementById('adminPassword');
@@ -486,6 +497,28 @@
       const showQrModalBtn = document.getElementById('showQrModalBtn');
       const qrModal = document.getElementById('qrModal');
       const closeQrBtn = document.getElementById('closeQrBtn');
+
+      let step1Busy = false;
+      let step2Busy = false;
+      let suppressPinAutoSubmit = false;
+
+      // Helper function to show alert banner
+      function showAlert(message, type = 'danger') {
+        adminAlert.className = `admin-alert show ${type}`;
+        alertMsg.textContent = message;
+        
+        if (type === 'danger') {
+          alertIcon.className = 'fa-solid fa-triangle-exclamation';
+        } else if (type === 'warning') {
+          alertIcon.className = 'fa-solid fa-shield-halved';
+        } else {
+          alertIcon.className = 'fa-solid fa-circle-check';
+        }
+      }
+
+      function hideAlert() {
+        adminAlert.className = 'admin-alert';
+      }
 
       // Populate QR info (phase-2 — no client secret)
       if (securityEngine) {
@@ -507,22 +540,15 @@
         });
       }
 
-      // Helper function to show alert banner
-      function showAlert(message, type = 'danger') {
-        adminAlert.className = `admin-alert show ${type}`;
-        alertMsg.textContent = message;
-        
-        if (type === 'danger') {
-          alertIcon.className = 'fa-solid fa-triangle-exclamation';
-        } else if (type === 'warning') {
-          alertIcon.className = 'fa-solid fa-shield-halved';
-        } else {
-          alertIcon.className = 'fa-solid fa-circle-check';
+      function setButtonBusy(btn, busy, busyLabel) {
+        if (!btn) return;
+        btn.disabled = !!busy;
+        if (busy) {
+          if (!btn.dataset.idleHtml) btn.dataset.idleHtml = btn.innerHTML;
+          btn.innerHTML = busyLabel || 'Please wait…';
+        } else if (btn.dataset.idleHtml) {
+          btn.innerHTML = btn.dataset.idleHtml;
         }
-      }
-
-      function hideAlert() {
-        adminAlert.className = 'admin-alert';
       }
 
       // Toggle Password Visibility
@@ -537,6 +563,7 @@
       // STEP 1 Submission
       step1Form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (step1Busy) return;
         hideAlert();
 
         const userVal = adminUsername.value.trim();
@@ -547,31 +574,43 @@
           return;
         }
 
-        const res = await securityEngine.authenticateCredentials(userVal, pwdVal);
-        if (!res.success) {
-          let msg = res.message || 'Login failed.';
-          if (!res.locked && !/authenticator|2fa|two-factor/i.test(msg)) {
-            msg += ' If you recently changed your password, use the new one. This account also requires Google Authenticator after the password step.';
+        step1Busy = true;
+        setButtonBusy(step1Btn, true, '<span>Signing in…</span>');
+        try {
+          const res = await securityEngine.authenticateCredentials(userVal, pwdVal);
+          if (res.inFlight) return;
+          if (!res.success) {
+            let msg = res.message || 'Login failed.';
+            const isNetwork = !!(res.network || /cannot reach the api|failed to fetch|networkerror|load failed/i.test(msg));
+            if (!res.locked && !isNetwork && !/authenticator|2fa|two-factor|progress/i.test(msg)) {
+              msg += ' If you recently changed your password, use the new one. This account also requires Google Authenticator after the password step.';
+            }
+            showAlert(msg, res.locked ? 'warning' : 'danger');
+          } else if (res.requires2FA === false) {
+            showAlert(res.message, 'success');
+            if (res.mustChangePassword) {
+              showAlert((res.message || '') + ' Use Change Password in the dashboard / API before go-live.', 'warning');
+            }
+            setTimeout(() => { window.location.href = '/admin-dashboard'; }, 600);
+            return;
+          } else {
+            step1View.classList.remove('active');
+            step2View.classList.add('active');
+            showAlert(res.message, 'success');
+            pinBoxes[0].focus();
           }
-          showAlert(msg, res.locked ? 'warning' : 'danger');
-        } else if (res.requires2FA === false) {
-          showAlert(res.message, 'success');
-          if (res.mustChangePassword) {
-            showAlert((res.message || '') + ' Use Change Password in the dashboard / API before go-live.', 'warning');
-          }
-          setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 600);
-        } else {
-          step1View.classList.remove('active');
-          step2View.classList.add('active');
-          showAlert(res.message, 'success');
-          pinBoxes[0].focus();
+        } finally {
+          step1Busy = false;
+          setButtonBusy(step1Btn, false);
         }
       });
 
-      // 2FA Pin Box Handler
+      // 2FA Pin Box Handler — single auto-submit path (paste must not double-fire)
       pinBoxes.forEach((box, idx) => {
-        box.addEventListener('input', async (e) => {
-          const val = e.target.value;
+        box.addEventListener('input', (e) => {
+          if (step2Busy || suppressPinAutoSubmit) return;
+          const val = e.target.value.replace(/\D/g, '').slice(0, 1);
+          e.target.value = val;
           if (val && idx < pinBoxes.length - 1) {
             pinBoxes[idx + 1].focus();
           }
@@ -590,17 +629,21 @@
 
         box.addEventListener('paste', (e) => {
           e.preventDefault();
+          if (step2Busy) return;
           const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
           const digits = pasteData.replace(/\D/g, '').slice(0, 6);
           if (digits.length > 0) {
+            suppressPinAutoSubmit = true;
             digits.split('').forEach((char, i) => {
               if (pinBoxes[i]) pinBoxes[i].value = char;
             });
             const focusIndex = Math.min(digits.length, 5);
             pinBoxes[focusIndex].focus();
+            // Submit once from paste only — ignore any synthetic input events
             if (digits.length === 6) {
               step2Form.requestSubmit();
             }
+            queueMicrotask(() => { suppressPinAutoSubmit = false; });
           }
         });
       });
@@ -608,6 +651,7 @@
       // Back to Step 1
       if (backToStep1Btn) {
         backToStep1Btn.addEventListener('click', () => {
+          if (step2Busy) return;
           step2View.classList.remove('active');
           step1View.classList.add('active');
           hideAlert();
@@ -617,6 +661,7 @@
       // STEP 2 Submission
       step2Form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (step2Busy) return;
         hideAlert();
 
         const enteredPin = Array.from(pinBoxes).map(b => b.value).join('');
@@ -625,16 +670,27 @@
           return;
         }
 
-        const res = await securityEngine.verify2FAPin(enteredPin);
-        if (!res.success) {
-          showAlert(res.message, 'danger');
-          pinBoxes.forEach(b => b.value = '');
-          pinBoxes[0].focus();
-        } else {
-          showAlert(res.message, 'success');
-          setTimeout(() => {
-            window.location.href = 'admin-dashboard.html';
-          }, 800);
+        step2Busy = true;
+        setButtonBusy(step2Btn, true, '<span>Verifying…</span>');
+        pinBoxes.forEach((b) => { b.disabled = true; });
+        try {
+          const res = await securityEngine.verify2FAPin(enteredPin);
+          if (res.inFlight) return;
+          if (!res.success) {
+            showAlert(res.message, 'danger');
+            pinBoxes.forEach((b) => { b.value = ''; b.disabled = false; });
+            pinBoxes[0].focus();
+          } else {
+            showAlert(res.message, 'success');
+            setTimeout(() => {
+              window.location.href = '/admin-dashboard';
+            }, 800);
+            return;
+          }
+        } finally {
+          step2Busy = false;
+          setButtonBusy(step2Btn, false);
+          pinBoxes.forEach((b) => { b.disabled = false; });
         }
       });
 

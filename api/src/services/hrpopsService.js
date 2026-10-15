@@ -4,7 +4,8 @@ const CANDIDATE_PORTAL = '/api/CandidatePortal';
 const DROPDOWN = '/api/Dropdown';
 const DEFAULT_COMPANY_ID = 215;
 const DEFAULT_CAREERS_PORTAL_URL = 'https://www.hrpops.com/careers/{companyId}';
-const RESUME_MIME_ALLOW = /pdf|msword|officedocument|plain|octet-stream/i;
+// MIME allowlist (defense in depth — magic bytes are decisive).
+const RESUME_MIME_ALLOW = /^(application\/pdf|application\/msword|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document)$/i;
 const RESUME_EXT_ALLOW = /\.(pdf|doc|docx)$/i;
 const PHOTO_MIME_ALLOW = /^image\/(jpeg|jpg|png|webp)$/i;
 const PHOTO_EXT_ALLOW = /\.(jpe?g|png|webp)$/i;
@@ -52,6 +53,150 @@ function stripHtml(html) {
     .replace(/<[^>]*>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/** Reject PE/ELF/scripts/HTML masquerading as documents or images. */
+function looksLikeExecutableOrScript(buf) {
+  if (!buf || buf.length < 2) return true;
+  // MZ (Windows PE / .exe / .dll)
+  if (buf[0] === 0x4d && buf[1] === 0x5a) return true;
+  // ELF
+  if (buf.length >= 4 && buf[0] === 0x7f && buf[1] === 0x45 && buf[2] === 0x4c && buf[3] === 0x46) {
+    return true;
+  }
+  // Mach-O fat / 32/64
+  if (
+    buf.length >= 4 &&
+    ((buf[0] === 0xca && buf[1] === 0xfe && buf[2] === 0xba && buf[3] === 0xbe) ||
+      (buf[0] === 0xce && buf[1] === 0xfa && buf[2] === 0xed && buf[3] === 0xfe) ||
+      (buf[0] === 0xcf && buf[1] === 0xfa && buf[2] === 0xed && buf[3] === 0xfe))
+  ) {
+    return true;
+  }
+  const head = buf.subarray(0, Math.min(buf.length, 256)).toString('utf8').toLowerCase();
+  if (head.startsWith('#!')) return true;
+  if (/^\s*<(!doctype\s+html|html|script|svg)\b/.test(head)) return true;
+  if (head.includes('<script')) return true;
+  return false;
+}
+
+function isPdfMagic(buf) {
+  if (!buf || buf.length < 4) return false;
+  return buf.subarray(0, 4).toString('ascii') === '%PDF';
+}
+
+function isOleDocMagic(buf) {
+  // Compound File Binary (legacy .doc): D0 CF 11 E0 A1 B1 1A E1
+  return (
+    buf &&
+    buf.length >= 8 &&
+    buf[0] === 0xd0 &&
+    buf[1] === 0xcf &&
+    buf[2] === 0x11 &&
+    buf[3] === 0xe0 &&
+    buf[4] === 0xa1 &&
+    buf[5] === 0xb1 &&
+    buf[6] === 0x1a &&
+    buf[7] === 0xe1
+  );
+}
+
+function isZipMagic(buf) {
+  // PK\x03\x04 local file header (also allow empty/spanned variants lightly)
+  return buf && buf.length >= 4 && buf[0] === 0x50 && buf[1] === 0x4b && (buf[2] === 0x03 || buf[2] === 0x05 || buf[2] === 0x07) && (buf[3] === 0x04 || buf[3] === 0x06 || buf[3] === 0x08);
+}
+
+/** DOCX is a ZIP that must contain a word/ path entry (reject bare ZIP renamed .docx). */
+function isDocxMagic(buf) {
+  if (!isZipMagic(buf)) return false;
+  const sample = buf.subarray(0, Math.min(buf.length, 8192)).toString('binary');
+  // Local/central headers store the filename as ASCII after the fixed header.
+  return /word\//i.test(sample) || /\[Content_Types\]\.xml/i.test(sample);
+}
+
+function detectResumeKind(buf) {
+  if (looksLikeExecutableOrScript(buf)) return null;
+  if (isPdfMagic(buf)) return 'pdf';
+  if (isOleDocMagic(buf)) return 'doc';
+  if (isDocxMagic(buf)) return 'docx';
+  return null;
+}
+
+function isJpegMagic(buf) {
+  return buf && buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff;
+}
+
+function isPngMagic(buf) {
+  return (
+    buf &&
+    buf.length >= 8 &&
+    buf[0] === 0x89 &&
+    buf[1] === 0x50 &&
+    buf[2] === 0x4e &&
+    buf[3] === 0x47 &&
+    buf[4] === 0x0d &&
+    buf[5] === 0x0a &&
+    buf[6] === 0x1a &&
+    buf[7] === 0x0a
+  );
+}
+
+function isWebpMagic(buf) {
+  // RIFF....WEBP
+  return (
+    buf &&
+    buf.length >= 12 &&
+    buf[0] === 0x52 &&
+    buf[1] === 0x49 &&
+    buf[2] === 0x46 &&
+    buf[3] === 0x46 &&
+    buf[8] === 0x57 &&
+    buf[9] === 0x45 &&
+    buf[10] === 0x42 &&
+    buf[11] === 0x50
+  );
+}
+
+function detectPhotoKind(buf) {
+  if (looksLikeExecutableOrScript(buf)) return null;
+  if (isJpegMagic(buf)) return 'jpeg';
+  if (isPngMagic(buf)) return 'png';
+  if (isWebpMagic(buf)) return 'webp';
+  return null;
+}
+
+function resumeMimeMatchesKind(mime, kind) {
+  const m = String(mime || '').toLowerCase();
+  if (kind === 'pdf') return m === 'application/pdf';
+  if (kind === 'doc') return m === 'application/msword';
+  if (kind === 'docx') {
+    return m === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  }
+  return false;
+}
+
+function resumeExtMatchesKind(name, kind) {
+  const n = String(name || '').toLowerCase();
+  if (kind === 'pdf') return n.endsWith('.pdf');
+  if (kind === 'doc') return n.endsWith('.doc');
+  if (kind === 'docx') return n.endsWith('.docx');
+  return false;
+}
+
+function photoMimeMatchesKind(mime, kind) {
+  const m = String(mime || '').toLowerCase();
+  if (kind === 'jpeg') return m === 'image/jpeg' || m === 'image/jpg';
+  if (kind === 'png') return m === 'image/png';
+  if (kind === 'webp') return m === 'image/webp';
+  return false;
+}
+
+function photoExtMatchesKind(name, kind) {
+  const n = String(name || '').toLowerCase();
+  if (kind === 'jpeg') return /\.jpe?g$/i.test(n);
+  if (kind === 'png') return n.endsWith('.png');
+  if (kind === 'webp') return n.endsWith('.webp');
+  return false;
 }
 
 function authHeaders(extra) {
@@ -307,8 +452,16 @@ function assertResumeFile(file) {
   }
   const name = safeUploadFilename(file.originalname, 'resume.pdf');
   const mime = String(file.mimetype || '');
-  if (!RESUME_MIME_ALLOW.test(mime) && !RESUME_EXT_ALLOW.test(name)) {
-    const err = new Error('Resume must be a PDF or Word document.');
+  const kind = detectResumeKind(file.buffer);
+  // Magic bytes are decisive; MIME + extension must also agree (AND).
+  if (
+    !kind ||
+    !RESUME_MIME_ALLOW.test(mime) ||
+    !RESUME_EXT_ALLOW.test(name) ||
+    !resumeMimeMatchesKind(mime, kind) ||
+    !resumeExtMatchesKind(name, kind)
+  ) {
+    const err = new Error('Invalid resume file type.');
     err.status = 400;
     err.code = 'INVALID_RESUME';
     throw err;
@@ -330,8 +483,15 @@ function assertProfilePic(file) {
   }
   const name = safeUploadFilename(file.originalname, 'profile.jpg');
   const mime = String(file.mimetype || '');
-  if (!PHOTO_MIME_ALLOW.test(mime) && !PHOTO_EXT_ALLOW.test(name)) {
-    const err = new Error('Profile photo must be JPG, PNG, or WEBP.');
+  const kind = detectPhotoKind(file.buffer);
+  if (
+    !kind ||
+    !PHOTO_MIME_ALLOW.test(mime) ||
+    !PHOTO_EXT_ALLOW.test(name) ||
+    !photoMimeMatchesKind(mime, kind) ||
+    !photoExtMatchesKind(name, kind)
+  ) {
+    const err = new Error('Invalid profile photo file type.');
     err.status = 400;
     err.code = 'INVALID_PHOTO';
     throw err;
